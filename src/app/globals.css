@@ -1,0 +1,365 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-anton);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ─────────────────────────────────────────────────────────────
+     INTER SMJV 2026 — palette
+     Warm cream background, ink navy text, saffron primary,
+     peacock teal secondary. Green/mint reserved for success
+     states only. No pink, purple, or red as decoration.
+     ───────────────────────────────────────────────────────────── */
+  --color-fest-deep: #1C2438;     /* deep ink navy — headings, header bar */
+  --color-fest-bg: #FBF8F1;       /* warm paper cream — page background */
+  --color-fest-bg2: #F5F0E6;      /* slightly deeper cream — alt bands */
+  --color-fest-panel: rgba(255, 255, 255, 0.50);    /* frosted glass — primary cards */
+  --color-fest-panel2: rgba(255, 255, 255, 0.42);   /* frosted glass — secondary panels */
+  --color-fest-inner: rgba(255, 255, 255, 0.55);    /* frosted hover / inset */
+  --color-fest-input: rgba(255, 255, 255, 0.40);    /* frosted input fields */
+  --color-fest-border: rgba(255, 255, 255, 0.75);   /* translucent frosted border */
+  --color-fest-orange: #D97706;   /* deep saffron — primary accent */
+  --color-fest-orange-text: #B45309; /* darker saffron — text on cream (4.5:1) */
+  --color-fest-yellow: #E8A317;   /* marigold gold — borders/bg only */
+  --color-fest-gold: #B8860B;     /* deep gold — data labels */
+  --color-fest-green: #15803D;    /* forest green — success border */
+  --color-fest-mint: #059669;     /* deep mint — success text */
+  --color-fest-teal: #0D7377;     /* peacock teal — secondary accent */
+  --color-fest-label: #6B5D4F;    /* warm taupe — muted text */
+  --color-fest-white: #1C2438;    /* DARK INK — body text */
+  --color-fest-ink: #FFFFFF;      /* white — text on saffron CTA */
+  --color-fest-alert: #B45309;    /* deep amber — warning text */
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #FBF8F1;
+  --foreground: #1C2438;
+  --card: rgba(255, 255, 255, 0.50);
+  --card-foreground: #1C2438;
+  --popover: rgba(255, 255, 255, 0.85);
+  --popover-foreground: #1C2438;
+  --primary: #D97706;
+  --primary-foreground: #FFFFFF;
+  --secondary: rgba(255, 255, 255, 0.42);
+  --secondary-foreground: #1C2438;
+  --muted: rgba(242, 237, 226, 0.50);
+  --muted-foreground: #6B5D4F;
+  --accent: rgba(255, 255, 255, 0.55);
+  --accent-foreground: #B45309;
+  --destructive: #B91C1C;
+  --border: rgba(255, 255, 255, 0.75);
+  --input: rgba(255, 255, 255, 0.40);
+  --ring: #D97706;
+  --chart-1: #D97706;
+  --chart-2: #E8A317;
+  --chart-3: #15803D;
+  --chart-4: #0D7377;
+  --chart-5: #B45309;
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #1C2438;
+  --sidebar-primary: #D97706;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #FAF6EE;
+  --sidebar-accent-foreground: #1C2438;
+  --sidebar-border: #E7E1D5;
+  --sidebar-ring: #D97706;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-synthesis: none;
+    /* Slightly heavier base weight for better readability on cream.
+       Inter variable font supports full weight range; 500 (medium)
+       gives body text more presence without looking bold. */
+    font-weight: 500;
+  }
+  ::selection {
+    background: #D97706;
+    color: #FFFFFF;
+  }
+}
+
+/* gradient text — animated moving gradient. The fest-grad
+   animation moves the gradient horizontally at 2.5s for a
+   lively shimmer. */
+@keyframes fest-grad {
+  0%, 100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+.fest-gradient-text {
+  background-image: linear-gradient(92deg, #E8A317 0%, #D97706 40%, #0D7377 75%, #D97706 100%);
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fest-grad 2.5s ease-in-out infinite;
+  will-change: background-position;
+}
+
+/* gold shimmer text — animated gradient. Faster shimmer (1.5s)
+   for a lively sparkle effect on the intro. */
+@keyframes cinematic-shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.cinematic-gold-text {
+  background: linear-gradient(90deg, #FBBF24 0%, #FEF3C7 30%, #FBBF24 55%, #D97706 80%, #FBBF24 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: cinematic-shimmer 1.5s linear infinite;
+  will-change: background-position;
+}
+
+/* CTA breathing glow — GPU-friendly. The button keeps a static
+   base shadow; a ::before pseudo-element holds the "peak" glow
+   box-shadow and only its opacity animates (GPU-composited). */
+@keyframes fest-cta-glow {
+  0%, 100% { opacity: 0; }
+  50%      { opacity: 1; }
+}
+
+/* Drop shadow on cinematic intro scene text for readability.
+   Applies to all text descendants of `.scene-stage` (the intro
+   section + scene content wrapper). Three-layer shadow tuned for
+   the cream background (`#FBF8F1`) where yellow (`#E8A317`) and
+   saffron (`#D97706`) text have low native contrast:
+   - tight 1px dark drop for crisp edge contrast
+   - wider 2px blur for separation from atmospheric tint layers
+   - thin 0px/1px faux-outline that makes light-colored text pop
+   Inline `textShadow` styles (e.g. sparkles) override this
+   automatically via inline-style specificity. */
+.scene-stage p,
+.scene-stage h1,
+.scene-stage h2,
+.scene-stage h3,
+.scene-stage h4,
+.scene-stage span,
+.scene-stage button,
+.scene-stage a {
+  text-shadow:
+    0 1px 2px rgba(28, 36, 56, 0.55),
+    0 2px 6px rgba(28, 36, 56, 0.30),
+    0 0 1px rgba(28, 36, 56, 0.40);
+}
+
+/* Override for the CTA button — its white text on the saffron
+   gradient already has strong contrast. The heavy scene-wide
+   shadow would look grungy here, so use a subtle drop only.
+   Higher specificity (.scene-stage .animate-cta-glow) beats
+   the global .scene-stage button/span rules above. */
+.scene-stage .animate-cta-glow,
+.scene-stage .animate-cta-glow span {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+
+.animate-cta-glow {
+  position: relative;
+  isolation: isolate;
+  box-shadow: 0 10px 40px -10px rgba(217, 119, 6, 0.35);
+}
+.animate-cta-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 6px rgba(232, 163, 23, 0.18),
+    0 10px 48px -6px rgba(217, 119, 6, 0.55);
+  opacity: 0;
+  z-index: -1;
+  pointer-events: none;
+  will-change: opacity;
+  animation: fest-cta-glow 2.4s ease-in-out infinite;
+}
+
+/* rotating light rays behind a focal point (intro torch) */
+@keyframes cinematic-rays {
+  to { transform: rotate(360deg); }
+}
+.animate-rays {
+  animation: cinematic-rays 24s linear infinite;
+  will-change: transform;
+}
+
+/* film grain texture — procedural noise via SVG turbulence filter.
+   Adds warmth and depth, breaks up flat digital surfaces. */
+.film-grain {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+}
+
+/* refined light scrollbar for the form */
+.fest-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #D6CFBF transparent;
+}
+.fest-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.fest-scroll::-webkit-scrollbar-thumb {
+  background: #D6CFBF;
+  border-radius: 999px;
+}
+.fest-scroll::-webkit-scrollbar-thumb:hover {
+  background: #D97706;
+}
+.fest-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ID-pass printing: print only the pass card */
+@media print {
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 0;
+    background: #fff !important;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GLASSMORPHISM DESIGN UTILITIES
+   Frosted surfaces, specular edge highlights, and diffuse depth.
+   ───────────────────────────────────────────────────────────── */
+.fest-glass {
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(20px) saturate(170%);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow:
+    0 16px 40px 0 rgba(28, 36, 56, 0.05),
+    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95);
+}
+
+.fest-glass-card {
+  background: rgba(255, 255, 255, 0.70) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    0 10px 30px 0 rgba(28, 36, 56, 0.04),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.fest-glass-subtle {
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(12px) saturate(150%);
+  -webkit-backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow:
+    0 4px 16px 0 rgba(28, 36, 56, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.fest-glass-input {
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(231, 225, 213, 0.8) !important;
+  box-shadow: inset 0 1px 2px 0 rgba(28, 36, 56, 0.03);
+}
+
+.fest-glass-input:focus,
+.fest-glass-input:focus-within {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: #D97706 !important;
+  box-shadow:
+    0 0 0 3px rgba(217, 119, 6, 0.22),
+    inset 0 1px 2px 0 rgba(28, 36, 56, 0.02) !important;
+}
+
+.fest-glass-header {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow:
+    0 4px 24px 0 rgba(28, 36, 56, 0.03),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* Radix popover & dropdown glassmorphism */
+[data-slot="select-content"],
+[data-slot="popover-content"] {
+  background: rgba(255, 255, 255, 0.88) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow:
+    0 16px 40px 0 rgba(28, 36, 56, 0.1),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.95) !important;
+}
+
+/* dialog overlay — frosted glass backdrop */
+[data-slot="dialog-overlay"] {
+  background: rgba(28, 36, 56, 0.45) !important;
+  backdrop-filter: blur(8px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
+}
+
+/* reduced motion — disable all animations and transitions for
+   users who prefer reduced motion. Covers both CSS animations
+   and transitions, plus smooth scroll. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}

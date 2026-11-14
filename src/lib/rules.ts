@@ -1,0 +1,370 @@
+/* INTER SMJV 2026 — Official Tournament Rules & Regulations
+ * Comprehensive rulebook for Boys and Girls athletic & indoor ties.
+ * Transcribed verbatim from official tournament PDFs uploaded by the organizing committee:
+ * - Boys Inter_SMJV_Sports_Rules.pdf
+ * - Girls Inter_SMJV_Sports_Rules.pdf
+ * - Boys Inter_SMJV_Tournament_Schedule.pdf
+ */
+
+export interface RuleDetail {
+  sport: string;
+  emoji: string;
+  tag: string;
+  duration: string;
+  squad?: string;
+  items: string[];
+}
+
+export interface RulesData {
+  title: string;
+  subtitle: string;
+  pdfUrl: string;
+  schedulePdfUrl: string;
+  quotaRule: string;
+  eligibility: string[];
+  codeOfConduct: string[];
+  sportsRules: RuleDetail[];
+}
+
+export const BOYS_RULES: RulesData = {
+  title: "BOYS TOURNAMENT REGULATIONS",
+  subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Men's division.",
+  pdfUrl: "/rule-books-and-schedules/boys-sports-rules.pdf",
+  schedulePdfUrl: "/rule-books-and-schedules/tournament-schedule.pdf",
+  quotaRule: "A player can choose either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports (Total exactly 3 sports).",
+  eligibility: [
+    "Participant must be a bona fide resident or enrolled student of Shri Mahavira Jaina Vidyalaya (SMJV).",
+    "Valid SMJV Hostel G.R. Number and official digital accreditation pass with scannable QR code are mandatory at entry.",
+    "Official tournament uniform kit (allocated T-shirt and track pant) must be worn during all matches.",
+    "Teams must report to the respective ground/court in charge 15 minutes prior to the scheduled fixture time.",
+    "Walkover will be awarded to the opponent if a team fails to report within 10 minutes after official call.",
+  ],
+  codeOfConduct: [
+    "Referees and umpires decisions are final and binding in all circumstances.",
+    "Any unsportsmanlike behavior or verbal abuse will result in immediate disqualification of the athlete.",
+    "Protests regarding referee decisions must be submitted in writing by the Team Captain within 30 minutes of match completion.",
+  ],
+  sportsRules: [
+    {
+      sport: "CRICKET",
+      emoji: "🏏",
+      tag: "OUTDOOR · MAIN CRICKET OVAL",
+      duration: "10 / 12 / 15 Overs per innings",
+      squad: "11 players + 4 extras (15 total)",
+      items: [
+        "Team of 11 players with 4 extras (11 players + 4 extras).",
+        "League matches will be 10 overs per innings. Semi-final matches will be 12 overs per innings. The final match will be 15 overs per innings.",
+        "Overs may be reduced according to the match situation. Over rates are applicable.",
+        "Providing a runner to the batsman will be decided by the umpires.",
+        "Chucking is not allowed. Two bouncers are allowed per over.",
+        "A free hit will be awarded for a no-ball.",
+        "After two beamers, the bowler will not be allowed to bowl further in the match.",
+        "Player substitutions must be made after obtaining the umpires' permission.",
+        "In case of a tie, a Super Over will be played. If the Super Over is also tied, the team scoring more boundaries in the match will win.",
+      ],
+    },
+    {
+      sport: "FOOTBALL",
+      emoji: "⚽",
+      tag: "OUTDOOR · FOOTBALL FIELD",
+      duration: "8-a-side format",
+      squad: "8 playing + 5 extra (13 total)",
+      items: [
+        "Event is for SMJV students only; each player may represent only one team.",
+        "Team format: 8 playing players + 5 extra players (13 total).",
+        "Teams must report 30 minutes before match; toss is 15 minutes before scheduled start.",
+        "Teams change sides at half-time. Substitutions must be made from the registered team roster.",
+        "A tied match is decided by penalty shootout: 5 kicks per team; any 5 rostered players may take kicks.",
+        "Throw-ins awarded to opposing team when ball crosses side boundary.",
+        "Closed-toe athletic shoes mandatory; metal cleats, jeans, watches, and jewelry strictly prohibited.",
+        "Serious misconduct, dangerous contact, sliding tackles, or abusive language results in red card/disqualification.",
+      ],
+    },
+    {
+      sport: "VOLLEYBALL",
+      emoji: "🏐",
+      tag: "OUTDOOR · FLOODLIT VOLLEY COURT",
+      duration: "Best of 3 sets to 25 pts (Final: Best of 5 to 15)",
+      squad: "6 playing + 4 extra (10 total)",
+      items: [
+        "A team of 10 players is to be made (6 playing + 4 extra). Rotation need not be followed.",
+        "All matches will be best of 3 sets; 25 points per set. Final will be best of 5 sets; 15 points per set.",
+        "Serve can be continued till a wrong serve is committed. Once service breaks, same player cannot serve again till next service break.",
+        "One time-out per set is allowed (2 minutes). Any number of substitutes are allowed.",
+        "Legs can be used during the point. Tossing the ball during serve is compulsory.",
+        "Touching the net is a foul. Leg crossing the net line is considered as a point to opponent.",
+        "Serving before whistle is a foul. Crossing line before ball enters other half during serve is a foul.",
+        "Carrying and rolling of ball are strictly not allowed.",
+      ],
+    },
+    {
+      sport: "BADMINTON",
+      emoji: "🏸",
+      tag: "INDOOR · WOODEN COURT",
+      duration: "Best of 3 sets to 15 points",
+      squad: "Singles & Doubles pairs",
+      items: [
+        "Singles (1 vs 1): Team consists of 2 players competing individually, one against one. Each match is best of 3 sets, 15 points per set.",
+        "Doubles (2 vs 2): Team consists of 2 players playing together. Each match is best of 3 sets, 15 points per set.",
+        "A player/team must win by 2 points at 15–15. At 20–20, the side scoring the 20th point wins.",
+        "The serve must be made diagonally into opponent's service court: right side on even score, left side on odd score.",
+        "Singles court uses inner side lines and outer back boundary lines. Doubles court uses outer side lines during rallies.",
+        "Doubles service court is wider and shorter than singles service court.",
+        "Either partner may hit the shuttle, but the same player cannot hit it twice consecutively.",
+        "Touching the net with racket or body during play is a fault. If match reaches 3rd set, change ends after 8 points.",
+      ],
+    },
+    {
+      sport: "TABLE TENNIS",
+      emoji: "🏓",
+      tag: "INDOOR · TT ARENA",
+      duration: "Best of 3 games (S–D–S)",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "The team that wins any 2 of the 3 games advances to the next round.",
+        "Ball used will be Stag 3 Star (White).",
+        "Moving or shaking the table will lead to loss of a point.",
+        "Cross service in doubles is compulsory. Ball touching the hand is a foul, except the fingers.",
+        "While serving, some part of the body should be inside the line of the table. If ball is not properly tossed, 1 warning will be given; point to opponent henceforth.",
+        "Bat touching the table is not a foul unless table is moved.",
+        "Manipulative rackets (dead bats, rubber gum) will lead to disqualification.",
+        "1 time-out per set is allowed (1 minute). Players must serve only after referee reads scores.",
+      ],
+    },
+    {
+      sport: "CHESS",
+      emoji: "♟️",
+      tag: "INDOOR · MINDS ARENA",
+      duration: "30 min + 5s increment",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "Each game is best of 3 games. The team that wins any 2 of the 3 games advances to the next round.",
+        "Touch and move will be strictly followed.",
+        "Maximum of 2 illegal moves are allowed; the game ends at the third illegal move.",
+        "There is no 50-move rule; unlimited moves are allowed if the king is the only piece left.",
+        "The timings will be 30 minutes + 5 seconds increment after each move (or 25+5 rapid).",
+        "Castling is allowed only if the king has not moved from its position. At the time of check, castling is not allowed.",
+        "The player is not necessarily required to say 'check' even after check is imposed. If opponent plays without noticing, it counts as an illegal move.",
+        "Only one hand can be used to move the pieces. Say 'adjust' before adjusting chessmen, else touch-move applies.",
+        "En-passant rule is applicable. All other standard FIDE rules apply. Referee's decision is final.",
+      ],
+    },
+    {
+      sport: "CARROM",
+      emoji: "🎯",
+      tag: "INDOOR · CARROM LOUNGE",
+      duration: "Best of 3 games (S–D–S)",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "The team that wins any 2 of the 3 games advances to the next round.",
+        "Tapping is not allowed from the striker line. Tapping is allowed but moving a coin during tapping is a foul; number of fouls will depend on the number of coins moved.",
+        "Last coin touch is allowed. While placing a coin on the board, no other coin should be moved.",
+        "Movement of chair is a foul. Once a player gets up from his chair, the match ends.",
+        "Keeping hand on the board during opponent's turn is a foul. Not saying the word 'break' while breaking is a foul.",
+        "All fouls will only be considered if the opponent appeals to the referee.",
+        "In a doubles match, foul can be claimed by any partner, but the foul can be kept on the board only by the player sitting on the right side. While keeping the foul, striker must be kept below the striking line.",
+        "For double due in case of the queen, only the queen and one extra coin will be called.",
+        "In case of due in the last coin, the set will be considered won by the team pocketing the coin.",
+        "Powder will be used according to the needs of the player who has the break chance. Powder will not be available in between games.",
+        "Face expressions in doubles will directly lead to foul without a warning.",
+        "Rotation will be clockwise; break rotation will be anticlockwise.",
+      ],
+    },
+    {
+      sport: "PICKLE BALL",
+      emoji: "🥒",
+      tag: "INDOOR · PICKLEBALL COURT",
+      duration: "11 points (win by 2), S–D–S",
+      squad: "3 players + 2 extra (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "The team that wins any 2 of the 3 games advances to the next round.",
+        "Each individual pickleball game is played to 11 points, win by 2.",
+        "Standard pickleball court dimensions, net height, paddles and balls will be used.",
+        "Serve must be made diagonally into opposite service court; server must stand behind baseline at contact.",
+        "The two-bounce rule applies: return of serve must bounce, and serving team's next shot must also bounce before volleys.",
+        "Non-volley zone (kitchen): players must not volley while standing in zone or touching line; momentum cannot carry them in.",
+        "In doubles, correct service sequence and server position must be followed; score called before serving.",
+      ],
+    },
+  ],
+};
+
+export const GIRLS_RULES: RulesData = {
+  title: "GIRLS TOURNAMENT REGULATIONS",
+  subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Women's division.",
+  pdfUrl: "/rule-books-and-schedules/girls-sports-rules.pdf",
+  schedulePdfUrl: "/rule-books-and-schedules/girls-tournament-schedule.pdf",
+  quotaRule: "A player can choose either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports (Total exactly 3 sports).",
+  eligibility: [
+    "Participant must be a registered resident or enrolled student affiliated with Shri Mahavira Jaina Vidyalaya (SMJV).",
+    "Official SMJV digital accreditation pass with scannable QR code must be presented at the reporting desk.",
+    "Official tournament uniform kit allocated for the Women's division must be worn during matches.",
+    "Teams must report at the match venue 15 minutes prior to the announced match start time.",
+    "Walkover will be awarded if a team fails to report within 10 minutes of official call.",
+  ],
+  codeOfConduct: [
+    "Referee and umpire decisions are final in all matters.",
+    "Any form of disciplinary breach or unsporting behavior leads to immediate disqualification.",
+    "Protests regarding decisions must be submitted in writing by the Team Captain within 30 minutes of match completion.",
+  ],
+  sportsRules: [
+    {
+      sport: "CRICKET",
+      emoji: "🏏",
+      tag: "OUTDOOR · CRICKET OVAL",
+      duration: "8 Overs prelim / 10 Overs final",
+      squad: "9 players + 3 extras (12 total)",
+      items: [
+        "Team of 9 players with 3 extras (9 players + 3 extras = 12 total squad).",
+        "8 overs per innings in preliminary stages; 10 overs per innings in finals.",
+        "Over rates are applicable. Providing a runner to batsman decided by umpires.",
+        "Maximum 3 overs per bowler in preliminary stages; 4 overs in finals.",
+        "Free hit awarded for all no-balls.",
+        "In case of tie, Super Over will be played. If super over tied, team scoring more boundaries wins.",
+        "Common out rules: Bowled, Caught, Run out, Hit wicket, Wall or net out (if specified by ground rules).",
+        "Wides and no-balls: Extra runs awarded according to tournament rules.",
+      ],
+    },
+    {
+      sport: "THROWBALL",
+      emoji: "🏐",
+      tag: "OUTDOOR · THROWBALL COURT",
+      duration: "Best of 3 sets to 15 points",
+      squad: "7 active + 3 substitutes (10 total)",
+      items: [
+        "Team structure: Played with 7 active players on court per team (with up to 3 substitutes).",
+        "Catching: Must be caught simultaneously with both hands without movement or sound ('dubs') inside hands. Ground contact compulsory when catching.",
+        "Throwing: Must be released from above shoulder/shoulder-line using only one hand within 3 seconds of catching.",
+        "Footwork: Players are permitted only one step (forward, backward, or sideways) after receiving the ball.",
+        "Serving: Must be executed from service area behind end line within 5 seconds of referee's whistle. Released with palm.",
+        "Scoring: Played using rally points, typically best of 3 sets up to 15 points per set.",
+      ],
+    },
+    {
+      sport: "TUG OF WAR",
+      emoji: "🪢",
+      tag: "OUTDOOR · TUG OF WAR STRIP",
+      duration: "Best of 3 pulls",
+      squad: "8 on rope + 2 substitutes (10 total)",
+      items: [
+        "Each team should have 8 players on the rope and 2 substitutes (equal number of players on both teams).",
+        "Both teams line up on opposite sides of rope.",
+        "Referee commands: 'Pick up the rope', 'Take the strain', and 'Pull'. Players must pull only after signal.",
+        "Team wins a pull when opponent's designated rope marker crosses the centre line.",
+        "Fouls: Wrapping rope around hands, arms, waist or body; sitting or deliberately lying down to gain advantage.",
+        "Starting before referee signal, deliberately releasing rope, or using footwear with spikes is strictly prohibited.",
+      ],
+    },
+    {
+      sport: "KHO KHO",
+      emoji: "🏃‍♀️",
+      tag: "OUTDOOR · KHO KHO ARENA",
+      duration: "Two innings of 9 min each",
+      squad: "12 players match squad (9 field + 3 runners)",
+      items: [
+        "12 players per match squad: 9 chasers take the field, defending team sends 3 runners at a time.",
+        "Eight chasers sit in central lane facing alternate directions; ninth player starts as active attacker.",
+        "Match duration: Each team gets two innings of 9 minutes each (10-minute break between turns, 5-minute interval between innings).",
+        "Attacker tries to touch runners to get them out. Can give 'Kho' by touching teammate from behind and saying 'Kho' clearly.",
+        "The new attacker continues the chase, following rules for direction, central lane, and poles.",
+        "Scoring: Each runner put out earns chasing team 1 point. Team with higher total score at end wins.",
+        "Fouls: Giving incorrect/invalid Kho, crossing central lane improperly, moving in prohibited direction or receding.",
+        "First Kho is compulsory before chasing begins. Three runners must enter within 5 seconds after previous 3 are out.",
+      ],
+    },
+    {
+      sport: "BADMINTON",
+      emoji: "🏸",
+      tag: "INDOOR · WOODEN COURT",
+      duration: "Best of 3 sets to 15 points",
+      squad: "Singles & Doubles pairs",
+      items: [
+        "Singles (1 vs 1) and Doubles (2 vs 2). Best of 3 sets, 15 points per set.",
+        "Must win by 2 points at 15–15. At 20–20, the player/team scoring the 20th point wins.",
+        "Serve diagonally into opponent's service court (right side on even score, left on odd score).",
+        "Singles uses inner side lines; doubles uses outer side lines with wider/shorter service court.",
+        "Either partner in doubles may hit shuttle, but same player cannot hit twice consecutively.",
+        "Touching net with racket or body is a fault. Shuttle landing outside boundaries is out.",
+        "If game reaches 3rd set, players must change ends after 8 points.",
+      ],
+    },
+    {
+      sport: "TABLE TENNIS",
+      emoji: "🏓",
+      tag: "INDOOR · TT ARENA",
+      duration: "Best of 3 games (S–D–S)",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "Team winning 2 of 3 games advances to next round.",
+        "Official ball: Stag 3 Star (White).",
+        "Moving or shaking table leads to loss of point.",
+        "Cross service in doubles is compulsory. Ball touching hand is a foul (except fingers).",
+        "While serving, some part of body must be inside line of table. Toss ball properly or point to opponent after 1 warning.",
+        "Bat touching table is not a foul unless table moved.",
+        "Manipulative rackets (dead bats, rubber gum) will lead to disqualification.",
+        "1 time-out per set allowed (1 minute). Serve only after referee reads scores.",
+      ],
+    },
+    {
+      sport: "CHESS",
+      emoji: "♟️",
+      tag: "INDOOR · MINDS ARENA",
+      duration: "30 min + 5s increment",
+      squad: "3 playing + 1 substitute (4 total)",
+      items: [
+        "Each team consists of 4 players, out of which 3 will play and 1 will be a substitute.",
+        "Match played in best-of-three format: team winning 2 out of 3 games declared winner.",
+        "Touch and move will be strictly followed.",
+        "Maximum of 2 illegal moves allowed; game ends at third illegal move.",
+        "There is no 50-move rule; unlimited moves allowed if king is only piece left.",
+        "Timings will be 30 minutes + 5 seconds increment after each move.",
+        "Castling allowed only if king has not been moved from position. King under check cannot castle.",
+        "Player is not necessarily required to say 'check'; opponent playing other move commits illegal move.",
+        "Only one hand can be used to move pieces. Say 'adjust' before adjusting chessmen.",
+        "En-passant rule is applicable. All other standard FIDE rules apply. Referee's decision is final.",
+      ],
+    },
+    {
+      sport: "CARROM",
+      emoji: "🎯",
+      tag: "INDOOR · CARROM LOUNGE",
+      duration: "Best of 3 games (S–D–S)",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "The team that wins any 2 of the 3 games advances to the next round.",
+        "Tapping is not allowed from striker line. Moving a coin during tapping is a foul.",
+        "Last coin touch is allowed. While placing coin on board, no other coin should be moved.",
+        "Movement of chair is a foul. Once a player gets up from chair, the match ends.",
+        "Keeping hand on board during opponent's turn is a foul. Not saying 'break' while breaking is a foul.",
+        "All fouls will only be considered if the opponent appeals to the referee.",
+        "In doubles, foul can be claimed by any partner, but placed on board only by player on right side.",
+        "Powder will be used according to the needs of player who has break chance; not available in between games.",
+        "Face expressions in doubles will directly lead to foul without warning.",
+        "Rotation will be clockwise; break rotation will be anticlockwise.",
+      ],
+    },
+    {
+      sport: "PICKLE BALL",
+      emoji: "🥒",
+      tag: "INDOOR · PICKLEBALL COURT",
+      duration: "11 points (win by 2), S–D–S",
+      squad: "3 players + 2 extras (5 total)",
+      items: [
+        "Team format: 3 players + 2 extra players (5 total). Match format: Singles – Doubles – Singles (S–D–S).",
+        "Team winning 2 of 3 games advances to next round.",
+        "Each individual game played to 11 points, win by 2.",
+        "Standard pickleball court dimensions, net height, paddles and balls used.",
+        "Serve must be made diagonally into opposite service court; server must stand behind baseline at contact.",
+        "Two-bounce rule applies: return of serve must bounce, and serving team's next shot must bounce before volleys.",
+        "Non-volley zone (kitchen): no volleying while in kitchen or touching line; momentum cannot carry player in.",
+        "In doubles, correct service sequence and server position must be followed; score called before serving.",
+      ],
+    },
+  ],
+};
