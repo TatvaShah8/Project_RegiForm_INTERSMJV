@@ -21,14 +21,19 @@ import {
   Award,
   LogIn,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { TournamentNav } from "@/components/navigation/TournamentNav";
 import { CountdownTimer } from "@/components/home/CountdownTimer";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 import { useRegister } from "@/lib/store";
 import { useFestQr, IdPass } from "@/components/register/IdPass";
-import { QrScannerModal } from "@/components/scanner/QrScannerModal";
 import { StudentAuthModal } from "@/components/navigation/StudentAuthModal";
 import { useToast } from "@/hooks/use-toast";
+
+const QrScannerModal = dynamic(
+  () => import("@/components/scanner/QrScannerModal").then((m) => m.QrScannerModal),
+  { ssr: false }
+);
 
 const PARTICIPATING_HOSTELS = [
   { city: "Vadodara", role: "HOST HOSTEL", isHost: true },

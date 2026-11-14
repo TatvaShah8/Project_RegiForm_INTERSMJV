@@ -8,9 +8,14 @@ import { ArrowLeft, ArrowRight, LogIn, LogOut, QrCode } from "lucide-react";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
+import dynamic from "next/dynamic";
 import { IdPass, useFestQr } from "@/components/register/IdPass";
 import { StudentAuthModal } from "@/components/navigation/StudentAuthModal";
-import { QrScannerModal } from "@/components/scanner/QrScannerModal";
+
+const QrScannerModal = dynamic(
+  () => import("@/components/scanner/QrScannerModal").then((m) => m.QrScannerModal),
+  { ssr: false }
+);
 
 interface TournamentNavProps {
   activeNav: "home" | "rules" | "schedule" | "register" | "reel-making" | "contact";

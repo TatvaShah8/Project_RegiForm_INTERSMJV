@@ -14,10 +14,12 @@ var jsQR = (function webpackUniversalModuleDefinition(root, factory) {
 	}
 	else {
 		var mod = factory();
-		root["jsQR"] = mod;
+		if (typeof root !== 'undefined' && root) {
+			root["jsQR"] = mod;
+		}
 		return mod;
 	}
-})(typeof self !== 'undefined' ? self : this, function() {
+})(typeof globalThis !== 'undefined' ? globalThis : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : this || {}, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
