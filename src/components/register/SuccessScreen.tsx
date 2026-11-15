@@ -6,6 +6,7 @@ import { Check } from "lucide-react";
 import { useRegister, selectAge } from "@/lib/store";
 import { ROLE_META, fullName } from "@/lib/fest";
 import { useToast } from "@/hooks/use-toast";
+import { printAccreditationPass } from "@/lib/print-pass";
 import { useFestQr, IdPass } from "./IdPass";
 import { CTAButton } from "./ui-bits";
 
@@ -20,7 +21,7 @@ export function SuccessScreen() {
 
   const printPass = () => {
     setPassOpen(true);
-    setTimeout(() => window.print(), 800);
+    setTimeout(() => printAccreditationPass(), 600);
   };
 
   return (

@@ -14,6 +14,7 @@ import {
   formatDob,
 } from "@/lib/fest";
 import { cn } from "@/lib/utils";
+import { printAccreditationPass } from "@/lib/print-pass";
 import {
   Dialog,
   DialogContent,
@@ -250,7 +251,7 @@ export function IdPass({
         <div className={cn("flex items-center gap-1.5 sm:gap-2.5 border-t border-white/70 bg-white/85 px-3 py-2 sm:px-4 sm:py-2.5 backdrop-blur-md")}>
           <button
             type="button"
-            onClick={() => window.print()}
+            onClick={printAccreditationPass}
             className="h-8.5 sm:h-9.5 flex-1 whitespace-nowrap rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-2 sm:px-3 font-display text-[10px] sm:text-xs uppercase tracking-wider text-fest-ink shadow-xs transition hover:brightness-110 active:scale-[0.98]"
           >
             🖨 PRINT / SAVE PASS
