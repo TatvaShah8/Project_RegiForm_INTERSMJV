@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Ruler } from "lucide-react";
+import { Ruler, Shirt } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRegister, type Role } from "@/lib/store";
 import {
@@ -14,7 +14,10 @@ import {
   QUOTA_RULE,
   AGREEMENT_TEXT,
   getOutdoorSportsForGender,
+  getTshirtSizesForGender,
+  getTrackPantSizesForGender,
   getTrackPantSizeInfo,
+  getJerseySizeInfo,
   type Role as RoleT,
 } from "@/lib/fest";
 import { TrackPantSizeModal } from "./TrackPantSizeModal";
@@ -43,8 +46,18 @@ export function Step4Sports({
   const { toast } = useToast();
   const [errs, setErrs] = React.useState<Record<string, string>>({});
   const [showSizeModal, setShowSizeModal] = React.useState(false);
+  const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("track-pants");
   const q = s.quotaStatus();
-  const pantInfo = getTrackPantSizeInfo(s.waist);
+
+  const jerseySizes = React.useMemo(() => getTshirtSizesForGender(s.gender), [s.gender]);
+  const trackPantSizes = React.useMemo(() => getTrackPantSizesForGender(s.gender), [s.gender]);
+  const jerseyInfo = getJerseySizeInfo(s.tshirt, s.gender);
+  const pantInfo = getTrackPantSizeInfo(s.waist, s.gender);
+
+  const openSizeChart = (cat: "jersey" | "track-pants") => {
+    setSizeModalCategory(cat);
+    setShowSizeModal(true);
+  };
 
   const setErr = (k: string, v?: string) =>
     setErrs((e) => {
@@ -145,16 +158,53 @@ export function Step4Sports({
       </motion.div>
 
       <motion.div variants={staggerChild} className="mt-5 grid gap-5 md:grid-cols-2">
-        <Field label="OFFICIAL TOURNAMENT T-SHIRT SIZE" required error={errs.tshirt}>
+        <Field
+          label="OFFICIAL TOURNAMENT T-SHIRT / JERSEY SIZE"
+          required
+          error={errs.tshirt}
+          right={
+            <button
+              type="button"
+              onClick={() => openSizeChart("jersey")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-fest-orange/40 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange hover:text-fest-ink"
+            >
+              <Shirt className="h-3 w-3" />
+              <span>Size Chart</span>
+            </button>
+          }
+        >
           <PillGroup
             ariaLabel="T-shirt size"
-            options={TSHIRT_SIZES}
+            options={jerseySizes}
             value={s.tshirt}
             onChange={(v) => {
               s.set("tshirt", v);
               setErr("tshirt");
             }}
           />
+
+          {jerseyInfo ? (
+            <div className="mt-2.5 flex items-center justify-between rounded-xl border border-fest-orange/30 bg-fest-orange/10 px-3 py-1.5 text-xs">
+              <span className="font-semibold text-fest-white">
+                Selected: <span className="text-fest-orange font-bold">{jerseyInfo.size}</span>
+              </span>
+              <span className="font-mono text-[11px] text-fest-label">
+                Chest: <b className="text-fest-white">{jerseyInfo.chest}&quot;</b> · Length:{" "}
+                <b className="text-fest-white">{jerseyInfo.length}&quot;</b>
+              </span>
+            </div>
+          ) : (
+            <div className="mt-2 flex items-center justify-between text-[11px] text-fest-label/70">
+              <span>Standard athletic fit</span>
+              <button
+                type="button"
+                onClick={() => openSizeChart("jersey")}
+                className="font-semibold text-fest-orange hover:underline"
+              >
+                View Measurements (Chest &amp; Length) →
+              </button>
+            </div>
+          )}
         </Field>
         <Field
           label="OFFICIAL TRACK PANT SIZE (LOWER)"
@@ -163,7 +213,7 @@ export function Step4Sports({
           right={
             <button
               type="button"
-              onClick={() => setShowSizeModal(true)}
+              onClick={() => openSizeChart("track-pants")}
               className="inline-flex items-center gap-1.5 rounded-lg border border-fest-orange/40 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange hover:text-fest-ink"
             >
               <Ruler className="h-3 w-3" />
@@ -173,7 +223,7 @@ export function Step4Sports({
         >
           <PillGroup
             ariaLabel="Track pant size"
-            options={WAIST_SIZES}
+            options={trackPantSizes}
             value={s.waist}
             onChange={(v) => {
               s.set("waist", v);
@@ -196,7 +246,7 @@ export function Step4Sports({
               <span>Standard athletic fit</span>
               <button
                 type="button"
-                onClick={() => setShowSizeModal(true)}
+                onClick={() => openSizeChart("track-pants")}
                 className="font-semibold text-fest-orange hover:underline"
               >
                 View Measurements (Waist &amp; Length) →
@@ -389,8 +439,15 @@ export function Step4Sports({
       <TrackPantSizeModal
         open={showSizeModal}
         onOpenChange={setShowSizeModal}
-        selectedSize={s.waist}
-        onSelectSize={(val) => {
+        initialCategory={sizeModalCategory}
+        gender={s.gender}
+        selectedJerseySize={s.tshirt}
+        selectedTrackPantSize={s.waist}
+        onSelectJerseySize={(val) => {
+          s.set("tshirt", val);
+          setErr("tshirt");
+        }}
+        onSelectTrackPantSize={(val) => {
           s.set("waist", val);
           setErr("waist");
         }}
