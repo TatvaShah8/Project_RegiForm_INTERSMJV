@@ -28,7 +28,7 @@ export const DEMO_STUDENT: Partial<RegisterState> = {
   emergency: "9825011111",
   relation: "Father",
   role: "sports",
-  tshirt: "L",
+  tshirt: "40 (L)",
   waist: "40 (L)",
   outdoor: ["Cricket", "Volleyball"],
   indoor: ["Table Tennis"],

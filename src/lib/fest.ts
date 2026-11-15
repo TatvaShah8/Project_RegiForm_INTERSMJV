@@ -52,8 +52,6 @@ export const RELATIONS = [
   "Other Relative",
 ] as const;
 
-export const TSHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
-
 export interface JerseySizeInfo {
   size: string;
   chest: string;
@@ -87,17 +85,24 @@ export const GIRLS_JERSEY_SIZES = [
   "XXXL (46)",
 ] as const;
 
-/** Standardized Boys Sports Jersey Size Chart */
+/** STARTDESI – Men's Sports Jersey Size Chart */
 export const BOYS_JERSEY_SIZE_CHART: readonly JerseySizeInfo[] = [
-  { size: "XS (34)", chest: "34", length: "26" },
-  { size: "S (36)", chest: "36", length: "27" },
-  { size: "M (38)", chest: "38", length: "28" },
-  { size: "L (40)", chest: "40", length: "29" },
-  { size: "XL (42)", chest: "42", length: "30" },
-  { size: "XXL (44)", chest: "44", length: "31" },
+  { size: "36 (S)", chest: "36", length: "26" },
+  { size: "38 (M)", chest: "38", length: "27" },
+  { size: "40 (L)", chest: "40", length: "28" },
+  { size: "42 (XL)", chest: "42", length: "29" },
+  { size: "44 (XXL)", chest: "44", length: "30" },
 ] as const;
 
-export const BOYS_JERSEY_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
+export const BOYS_JERSEY_SIZES = [
+  "36 (S)",
+  "38 (M)",
+  "40 (L)",
+  "42 (XL)",
+  "44 (XXL)",
+] as const;
+
+export const TSHIRT_SIZES = BOYS_JERSEY_SIZES;
 
 /** Standardized Girls Track Pants Size Chart */
 export const GIRLS_TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
@@ -184,6 +189,7 @@ export function getJerseySizeInfo(
   const list = gender === "FEMALE" ? GIRLS_JERSEY_SIZE_CHART : BOYS_JERSEY_SIZE_CHART;
   const foundInList =
     list.find((item) => item.size.toLowerCase() === clean) ||
+    list.find((item) => item.size.toLowerCase().includes(`(${clean})`)) ||
     list.find((item) => item.size.toLowerCase().includes(clean)) ||
     list.find((item) => item.chest.includes(clean));
   if (foundInList) return foundInList;
@@ -191,6 +197,7 @@ export function getJerseySizeInfo(
   const otherList = gender === "FEMALE" ? BOYS_JERSEY_SIZE_CHART : GIRLS_JERSEY_SIZE_CHART;
   return (
     otherList.find((item) => item.size.toLowerCase() === clean) ||
+    otherList.find((item) => item.size.toLowerCase().includes(`(${clean})`)) ||
     otherList.find((item) => item.size.toLowerCase().includes(clean)) ||
     otherList.find((item) => item.chest.includes(clean))
   );

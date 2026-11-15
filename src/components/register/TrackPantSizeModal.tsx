@@ -68,10 +68,10 @@ export function TrackPantSizeModal({
   const chartTitle = isJersey
     ? isGirls
       ? "Standardized Girls Sports Jersey Size Chart"
-      : "Standardized Boys Sports Jersey Size Chart"
+      : "STARTDESI – Men's Sports Jersey Size Chart"
     : isGirls
     ? "Standardized Girls Track Pants Size Chart"
-    : "Standardized Boys Track Pants Size Chart";
+    : "STARTDESI – Men's Track Pants Size Chart";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
