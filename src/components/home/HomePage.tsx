@@ -44,10 +44,6 @@ const PARTICIPATING_HOSTELS = [
   { city: "Vallabh Vidyanagar", role: "PARTICIPANT", isHost: false },
   { city: "Bhavnagar", role: "PARTICIPANT", isHost: false },
   { city: "Surat", role: "PARTICIPANT", isHost: false },
-  { city: "Jamnagar", role: "PARTICIPANT", isHost: false },
-  { city: "Rajkot", role: "PARTICIPANT", isHost: false },
-  { city: "Surendranagar", role: "PARTICIPANT", isHost: false },
-  { city: "Anand", role: "PARTICIPANT", isHost: false },
 ];
 
 const SPORTS_LIST = [

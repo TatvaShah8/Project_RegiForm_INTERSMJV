@@ -112,7 +112,10 @@ export const ROLE_META: Record<Role, { emoji: string; title: string; sub: string
 
 /** Rule text transcribed from the reference quota box. */
 export const QUOTA_RULE =
-  "A player can choose either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports (Total exactly 3 sports).";
+  "A player can register for 1, 2, or 3 sports. For 3 sports: either 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).";
+
+export const BHAVNAGAR_QUOTA_RULE =
+  "Special Exception for Bhavnagar SMJV Branch: Students of Bhavnagar Branch can select as many indoor and outdoor sports as they want without any limit.";
 
 export const AGREEMENT_TEXT =
   "I agree to tournament sportsmanship regulations and verify that all information provided is accurate. I authorize saving my credentials securely in this browser for auto-login.";

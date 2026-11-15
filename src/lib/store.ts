@@ -62,7 +62,18 @@ export interface RegisterState {
   issueOtps: () => void;
   verifyOtp: (channel: "email" | "mobile", code: string) => boolean;
   toggleSport: (kind: "outdoor" | "indoor", name: string) => { ok: boolean; reason?: string };
-  quotaStatus: () => { total: number; outdoor: number; indoor: number; valid: boolean; message: string; tone: "ok" | "pending" };
+  quotaStatus: () => {
+    total: number;
+    outdoor: number;
+    indoor: number;
+    valid: boolean;
+    message: string;
+    tone: "ok" | "pending";
+    isBhavnagar: boolean;
+    maxTotal: number;
+    maxOutdoor: number;
+    maxIndoor: number;
+  };
   complete: () => void;
   loginAccount: (account: Partial<RegisterState>) => void;
   logout: () => void;
@@ -152,12 +163,21 @@ export const useRegister = create<RegisterState>()(
         const list = kind === "outdoor" ? s.outdoor : s.indoor;
         const other = kind === "outdoor" ? s.indoor : s.outdoor;
         const has = list.includes(name);
+        const isBhavnagar = (s.branch || "").trim().toLowerCase() === "bhavnagar";
 
         if (!has) {
-          if (list.length >= 2)
-            return { ok: false, reason: `Quota limit: at most 2 ${kind} sports per the 2+1 / 1+2 rule.` };
-          if (list.length + other.length >= 3)
-            return { ok: false, reason: "Total is already 3 sports — remove one before adding another." };
+          if (!isBhavnagar) {
+            if (list.length >= 2)
+              return {
+                ok: false,
+                reason: `Quota limit: at most 2 ${kind} sports allowed (choose 1 or 2 ${kind} sports, max 3 total).`,
+              };
+            if (list.length + other.length >= 3)
+              return {
+                ok: false,
+                reason: "Maximum 3 sports allowed. Remove one before selecting another.",
+              };
+          }
           const next = kind === "outdoor" ? { outdoor: [...list, name] } : { indoor: [...list, name] };
           set(next);
           return { ok: true };
@@ -171,19 +191,64 @@ export const useRegister = create<RegisterState>()(
       },
 
       quotaStatus: () => {
-        const { outdoor, indoor } = get();
+        const s = get();
+        const { outdoor, indoor, branch } = s;
         const total = outdoor.length + indoor.length;
-        const valid = total === 3 && outdoor.length <= 2 && indoor.length <= 2;
+        const isBhavnagar = (branch || "").trim().toLowerCase() === "bhavnagar";
+
+        if (isBhavnagar) {
+          const valid = total >= 1;
+          let message: string;
+          let tone: "ok" | "pending";
+          if (valid) {
+            message = `Bhavnagar Special Quota: ${total} sport(s) selected (${outdoor.length} Outdoor + ${indoor.length} Indoor). No upper limit!`;
+            tone = "ok";
+          } else {
+            message = "Bhavnagar Special Quota: Please select at least 1 sport (no upper limit on sports).";
+            tone = "pending";
+          }
+          return {
+            total,
+            outdoor: outdoor.length,
+            indoor: indoor.length,
+            valid,
+            message,
+            tone,
+            isBhavnagar: true,
+            maxTotal: Infinity,
+            maxOutdoor: Infinity,
+            maxIndoor: Infinity,
+          };
+        }
+
+        const valid = total >= 1 && total <= 3 && outdoor.length <= 2 && indoor.length <= 2;
         let message: string;
         let tone: "ok" | "pending";
         if (valid) {
-          message = `Valid selection confirmed: ${outdoor.length} Outdoor + ${indoor.length} Indoor sports.`;
+          if (total === 3) {
+            message = `Valid selection confirmed: 3 sports (${outdoor.length} Outdoor + ${indoor.length} Indoor).`;
+          } else if (total === 2) {
+            message = `Valid selection: 2 sports selected (${outdoor.length} Outdoor + ${indoor.length} Indoor). You can add 1 more sport if desired.`;
+          } else {
+            message = `Valid selection: 1 sport selected (${outdoor.length ? "1 Outdoor" : "1 Indoor"}). You can add up to 2 more sports if desired.`;
+          }
           tone = "ok";
         } else {
-          message = `Current status: Please select ${3 - total} more sport(s) following the 2+1 or 1+2 rule.`;
+          message = "Please select 1, 2, or 3 sports (for 3 sports: 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor).";
           tone = "pending";
         }
-        return { total, outdoor: outdoor.length, indoor: indoor.length, valid, message, tone };
+        return {
+          total,
+          outdoor: outdoor.length,
+          indoor: indoor.length,
+          valid,
+          message,
+          tone,
+          isBhavnagar: false,
+          maxTotal: 3,
+          maxOutdoor: 2,
+          maxIndoor: 2,
+        };
       },
 
       complete: () => {

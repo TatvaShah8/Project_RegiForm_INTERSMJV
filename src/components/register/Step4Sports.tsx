@@ -64,7 +64,9 @@ export function Step4Sports({
     if (!s.tshirt) e.tshirt = "Select your T-shirt size";
     if (!s.waist) e.waist = "Select your track pant size";
     if (s.role === "sports" && !q.valid)
-      e.sports = "Pick exactly 3 sports (2 Outdoor + 1 Indoor, or 1 + 2)";
+      e.sports = q.isBhavnagar
+        ? "Please select at least 1 sport (no limit for Bhavnagar branch)"
+        : "Select 1, 2, or 3 sports (for 3 sports: 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor)";
     if (!s.agreement) e.agreement = "Please accept the tournament regulations";
     setErrs(e);
 
@@ -168,7 +170,9 @@ export function Step4Sports({
             variants={staggerChild}
             className={cn(
               "mt-6 rounded-2xl border p-5 shadow-sm backdrop-blur-xl",
-              q.tone === "ok"
+              q.isBhavnagar
+                ? "border-fest-orange/50 bg-fest-orange/10"
+                : q.tone === "ok"
                 ? "border-fest-green/40 bg-fest-green/10"
                 : "border-fest-yellow/50 bg-fest-yellow/10"
             )}
@@ -177,22 +181,42 @@ export function Step4Sports({
               <span
                 className={cn(
                   "text-xs font-bold uppercase tracking-[0.14em]",
-                  q.tone === "ok" ? "text-fest-mint" : "text-fest-yellow"
+                  q.isBhavnagar
+                    ? "text-fest-orange"
+                    : q.tone === "ok"
+                    ? "text-fest-mint"
+                    : "text-fest-yellow"
                 )}
               >
-                {q.tone === "ok" ? "✓" : "⚠"} {genderWord} Sports Quota Rule:
+                {q.isBhavnagar
+                  ? "🌟 BHAVNAGAR BRANCH SPECIAL EXCEPTION"
+                  : `${q.tone === "ok" ? "✓" : "⚠"} ${genderWord} Sports Quota Rule:`}
               </span>
               <span className="rounded-md border border-white/80 bg-white/60 px-2.5 py-1 font-mono text-[10px] tracking-wider text-fest-label shadow-sm backdrop-blur-sm">
-                Selected: {q.outdoor} Outdoor · {q.indoor} Indoor (Total: {q.total}/3)
+                {q.isBhavnagar
+                  ? `Selected: ${q.outdoor} Outdoor · ${q.indoor} Indoor (Total: ${q.total} · No Limit)`
+                  : `Selected: ${q.outdoor} Outdoor · ${q.indoor} Indoor (Total: ${q.total}/3)`}
               </span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-fest-label">
-              A player can choose <b className="text-fest-white">either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports</b> (Total exactly 3 sports).
+              {q.isBhavnagar ? (
+                <span>
+                  Students of <b className="text-fest-white">Bhavnagar SMJV Branch</b> have{" "}
+                  <b className="text-fest-orange">no limit on sports selection</b>! You can register for as many indoor and outdoor sports as you wish (minimum 1 sport).
+                </span>
+              ) : (
+                <span>
+                  A player can choose <b className="text-fest-white">1, 2, or 3 sports</b>. If choosing 3 sports:{" "}
+                  <b className="text-fest-white">either 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor</b> (maximum 2 in either category).
+                </span>
+              )}
             </p>
             <p
               className={cn(
                 "mt-2 text-sm font-medium",
-                q.tone === "ok" ? "text-fest-mint" : "text-fest-yellow"
+                q.isBhavnagar
+                  ? q.valid ? "text-fest-mint" : "text-fest-orange"
+                  : q.tone === "ok" ? "text-fest-mint" : "text-fest-yellow"
               )}
             >
               {q.tone === "ok" ? "✓" : "•"} {q.message}
@@ -200,7 +224,15 @@ export function Step4Sports({
           </motion.div>
 
           <motion.div variants={staggerChild} className="mt-6">
-            <SectionLabel emoji="🏟" title={`OUTDOOR SPORTS (${q.outdoor}/2 SELECTED)`} right="MAIN GROUNDS" />
+            <SectionLabel
+              emoji="🏟"
+              title={
+                q.isBhavnagar
+                  ? `OUTDOOR SPORTS (${q.outdoor} SELECTED · NO LIMIT)`
+                  : `OUTDOOR SPORTS (${q.outdoor}/2 SELECTED)`
+              }
+              right="MAIN GROUNDS"
+            />
             <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
               {getOutdoorSportsForGender(s.gender).map((sp) => {
                 const active = s.outdoor.includes(sp.name);
@@ -227,7 +259,15 @@ export function Step4Sports({
           </motion.div>
 
           <motion.div variants={staggerChild} className="mt-6">
-            <SectionLabel emoji="🏸" title={`INDOOR SPORTS (${q.indoor}/2 SELECTED)`} right="INDOOR HALL & CHESS ROOM" />
+            <SectionLabel
+              emoji="🏸"
+              title={
+                q.isBhavnagar
+                  ? `INDOOR SPORTS (${q.indoor} SELECTED · NO LIMIT)`
+                  : `INDOOR SPORTS (${q.indoor}/2 SELECTED)`
+              }
+              right="INDOOR HALL & CHESS ROOM"
+            />
             <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-5">
               {INDOOR_SPORTS.map((sp) => {
                 const active = s.indoor.includes(sp.name);

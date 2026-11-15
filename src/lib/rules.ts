@@ -31,7 +31,7 @@ export const BOYS_RULES: RulesData = {
   subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Men's division.",
   pdfUrl: "/rule-books-and-schedules/boys-sports-rules.pdf",
   schedulePdfUrl: "/rule-books-and-schedules/tournament-schedule.pdf",
-  quotaRule: "A player can choose either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports (Total exactly 3 sports).",
+  quotaRule: "A player can choose 1, 2, or 3 sports. For 3 sports: either 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).",
   eligibility: [
     "Participant must be a bona fide resident or enrolled student of Shri Mahavira Jaina Vidyalaya (SMJV).",
     "Valid SMJV Hostel G.R. Number and official digital accreditation pass with scannable QR code are mandatory at entry.",
@@ -198,7 +198,7 @@ export const GIRLS_RULES: RulesData = {
   subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Women's division.",
   pdfUrl: "/rule-books-and-schedules/girls-sports-rules.pdf",
   schedulePdfUrl: "/rule-books-and-schedules/girls-tournament-schedule.pdf",
-  quotaRule: "A player can choose either 2 Outdoor + 1 Indoor sports, or 1 Outdoor + 2 Indoor sports (Total exactly 3 sports).",
+  quotaRule: "A player can choose 1, 2, or 3 sports. For 3 sports: either 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).",
   eligibility: [
     "Participant must be a registered resident or enrolled student affiliated with Shri Mahavira Jaina Vidyalaya (SMJV).",
     "Official SMJV digital accreditation pass with scannable QR code must be presented at the reporting desk.",
