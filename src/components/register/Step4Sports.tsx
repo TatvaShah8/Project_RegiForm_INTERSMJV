@@ -99,7 +99,7 @@ export function Step4Sports({
     s.complete();
     toast({
       title: "REGISTRATION COMPLETE 🏅",
-      description: "Generating your official INTER SMJV 2026 ID pass…",
+      description: "Generating your official SMJV Youth Festival 2026 ID pass…",
     });
     onComplete();
   };

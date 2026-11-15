@@ -1,5 +1,5 @@
 /**
- * Dedicated utility for printing and exporting the INTER SMJV 2026 Accreditation ID Pass.
+ * Dedicated utility for printing and exporting the SMJV Youth Festival 2026 Accreditation ID Pass.
  * Generates an isolated, self-contained HTML document inside a hidden iframe.
  * Ensures exact 1-page output, vibrant print colors, scannable QR code, and zero blank sheets.
  */
@@ -54,7 +54,7 @@ export function printPassCard(data: PassPrintData) {
 <html>
 <head>
   <meta charset="utf-8">
-  <title>INTER SMJV 2026 - Accreditation Pass - ${data.name || "Participant"}</title>
+  <title>SMJV Youth Festival 2026 - Accreditation Pass - ${data.name || "Participant"}</title>
   <style>
     @page {
       size: A4 portrait;
@@ -323,9 +323,9 @@ export function printPassCard(data: PassPrintData) {
   <div class="pass-container">
     <div class="pass-header">
       <div class="header-left">
-        <img src="/logo.jpg" alt="INTER SMJV Logo" class="header-logo" onerror="this.style.display='none'" />
+        <img src="/logo.jpg" alt="SMJV Youth Festival Logo" class="header-logo" onerror="this.style.display='none'" />
         <div>
-          <h1 class="header-title">INTER SMJV 2026</h1>
+          <h1 class="header-title">SMJV YOUTH FESTIVAL 2026</h1>
           <p class="header-subtitle">VADODARA</p>
         </div>
       </div>
@@ -381,7 +381,7 @@ export function printPassCard(data: PassPrintData) {
       </div>
     </div>
     <div class="pass-footer">
-      SHREE MAHAVIRA JAINA VIDYALAYA · INTER SMJV 2026 · VADODARA
+      SHREE MAHAVIRA JAINA VIDYALAYA · SMJV YOUTH FESTIVAL 2026 · VADODARA
     </div>
   </div>
 </body>

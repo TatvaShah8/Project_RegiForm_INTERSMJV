@@ -3,7 +3,7 @@
 import * as React from "react";
 
 /* ═════════════════════════════════════════════════════════════
-   INTER SMJV 2026 — Custom Sports Icon Set
+   SMJV YOUTH FESTIVAL 2026 — Custom Sports Icon Set
    Hand-crafted line-art SVG icons for tournament sports.
    Redrawn based on real sports equipment reference for
    accurate, recognizable shapes. Unified design language:

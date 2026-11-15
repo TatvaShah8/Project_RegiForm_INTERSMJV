@@ -437,7 +437,7 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
             </h3>
 
             <p className="mt-2 text-xs sm:text-sm leading-relaxed text-fest-label">
-              Pass scanning is exclusively available to registered and logged-in students of INTER SMJV 2026. Please log in or complete your registration to scan athlete passes.
+              Pass scanning is exclusively available to registered and logged-in students of SMJV Youth Festival 2026. Please log in or complete your registration to scan athlete passes.
             </p>
 
             <div className="mt-6 flex w-full flex-col gap-2.5">
@@ -475,7 +475,7 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
         className="w-[calc(100%-1rem)] max-w-[480px] sm:max-w-[540px] flex flex-col gap-0 overflow-hidden rounded-3xl border border-white/85 bg-white/95 p-0 shadow-[0_24px_64px_rgba(28,36,56,0.22),inset_0_1px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl"
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>INTER SMJV Student QR Code Scanner</DialogTitle>
+          <DialogTitle>SMJV Youth Festival Student QR Code Scanner</DialogTitle>
           <DialogDescription>Scan student ID passes and connect during the tournament.</DialogDescription>
         </DialogHeader>
 
@@ -630,7 +630,7 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
                               <span>CALL</span>
                             </a>
                             <a
-                              href={`https://wa.me/91${scannedResult.mobile}?text=Hi%20${encodeURIComponent(scannedResult.firstName)},%20great%20connecting%20at%20INTER%20SMJV%202026!`}
+                              href={`https://wa.me/91${scannedResult.mobile}?text=Hi%20${encodeURIComponent(scannedResult.firstName)},%20great%20connecting%20at%20SMJV%20Youth%20Festival%202026!`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 rounded-lg bg-green-600 px-2.5 py-1 font-mono text-[10px] font-bold text-white shadow-2xs hover:bg-green-700"

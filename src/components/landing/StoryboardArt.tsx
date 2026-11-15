@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────────
-   INTER SMJV 2026 — Storyboard illustrations
+   SMJV YOUTH FESTIVAL 2026 — Storyboard illustrations
    Hand-crafted SVG assets for the hostel-tournament intro:
    - Torch (the summons flame)
    - Hostel crests (4 rival shields)

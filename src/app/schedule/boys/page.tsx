@@ -58,7 +58,7 @@ export default function BoysSchedulePage() {
       </main>
 
       <footer className="mt-auto border-t border-fest-border/60 py-4 text-center font-mono text-xs tracking-[0.25em] text-fest-label">
-        INTER SMJV 2026 · ORGANIZING COMMITTEE · VADODARA
+        SMJV YOUTH FESTIVAL 2026 · ORGANIZING COMMITTEE · VADODARA
       </footer>
     </div>
   );

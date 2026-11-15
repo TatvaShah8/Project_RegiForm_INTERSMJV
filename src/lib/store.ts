@@ -264,7 +264,7 @@ export const useRegister = create<RegisterState>()(
               name: [s.firstName, s.surname].filter(Boolean).join(" "),
               email: s.email,
               gr: s.grNo,
-              fest: "INTER SMJV 2026",
+              fest: "SMJV Youth Festival 2026",
               savedAt: new Date().toISOString(),
             })
           );
@@ -289,7 +289,7 @@ export const useRegister = create<RegisterState>()(
                 name: [account.firstName, account.surname].filter(Boolean).join(" "),
                 email: account.email,
                 gr: account.grNo,
-                fest: "INTER SMJV 2026",
+                fest: "SMJV Youth Festival 2026",
                 savedAt: new Date().toISOString(),
               })
             );

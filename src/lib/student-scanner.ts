@@ -1,5 +1,5 @@
 /**
- * INTER SMJV 2026 — Student Accreditation QR Scanner & Networking
+ * SMJV YOUTH FESTIVAL 2026 — Student Accreditation QR Scanner & Networking
  * Handles QR parsing, student profile extraction, vCard export,
  * and local storage of scanned student connections.
  * 

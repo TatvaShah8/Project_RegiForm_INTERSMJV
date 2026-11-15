@@ -16,7 +16,7 @@ import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 
 /* ─────────────────────────────────────────────────────────────
 
-   INTER SMJV 2026 — Tournament Schedule & Rules View
+   SMJV YOUTH FESTIVAL 2026 — Tournament Schedule & Rules View
 
    Features:
 
@@ -105,7 +105,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
               src="/logo.jpg"
 
 
-              alt="INTER SMJV 2026 Logo"
+              alt="SMJV Youth Festival 2026 Logo"
 
 
               className="h-8 w-8 rounded-full border border-fest-orange/30 object-cover shadow-sm md:h-9 md:w-9"
@@ -117,7 +117,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
             <span>
 
 
-              INTER SMJV <span className="fest-gradient-text">2026</span>
+              SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
 
 
             </span>
@@ -735,7 +735,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
               <p className="mx-auto mt-2 max-w-md text-sm text-fest-label">
 
-                Pick your sport, choose your events, and register your team for INTER SMJV 2026.
+                Pick your sport, choose your events, and register your team for SMJV Youth Festival 2026.
 
               </p>
 
@@ -777,7 +777,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
       <footer className="mt-auto border-t border-fest-border/60 py-4 text-center font-mono text-xs tracking-[0.25em] text-fest-label">
 
-        INTER SMJV 2026 · ORGANIZING COMMITTEE · VADODARA
+        SMJV YOUTH FESTIVAL 2026 · ORGANIZING COMMITTEE · VADODARA
 
       </footer>
 

@@ -74,11 +74,11 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
             <span className="flex items-center gap-2.5 font-display text-lg uppercase tracking-wide text-fest-deep md:text-xl">
               <img
                 src="/logo.jpg"
-                alt="INTER SMJV 2026 Logo"
+                alt="SMJV Youth Festival 2026 Logo"
                 className="h-8 w-8 rounded-full border border-fest-orange/30 object-cover shadow-sm md:h-9 md:w-9"
               />
               <span>
-                INTER SMJV <span className="fest-gradient-text">2026</span>
+                SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
               </span>
             </span>
             <span className="hidden font-mono text-[10px] tracking-[0.25em] text-fest-label sm:inline">
@@ -184,7 +184,7 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
       </main>
 
       <footer className="mt-auto border-t border-fest-border/60 py-4 text-center font-mono text-[10px] tracking-[0.25em] text-fest-label/70">
-        INTER SMJV 2026 · ORGANIZING COMMITTEE · VADODARA
+        SMJV YOUTH FESTIVAL 2026 · ORGANIZING COMMITTEE · VADODARA
       </footer>
     </div>
   );

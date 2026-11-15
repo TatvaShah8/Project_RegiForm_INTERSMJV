@@ -1,4 +1,4 @@
-// INTER SMJV 2026 - Support & Issue Tickets System
+// SMJV Youth Festival 2026 - Support & Issue Tickets System
 
 export interface SupportTicket {
   id: string;
@@ -107,9 +107,9 @@ export function deleteTicket(id: string): SupportTicket[] {
 }
 
 export function generateMailtoReplyUrl(ticket: SupportTicket): string {
-  const subject = encodeURIComponent(`Re: [INTER SMJV 2026 Support #${ticket.id}] Helpdesk Resolution`);
+  const subject = encodeURIComponent(`Re: [SMJV Youth Festival 2026 Support #${ticket.id}] Helpdesk Resolution`);
   const body = encodeURIComponent(
-    `Hello ${ticket.name},\n\nThank you for reaching out to the INTER SMJV 2026 Organizing Committee.\n\nRegarding your issue:\n"${ticket.issue}"\n\n[Type your resolution / response here]\n\nWarm regards,\nINTER SMJV 2026 Organizing Committee\nVadodara Host Branch\nEmail: ${ADMIN_SUPPORT_EMAIL}`
+    `Hello ${ticket.name},\n\nThank you for reaching out to the SMJV Youth Festival 2026 Organizing Committee.\n\nRegarding your issue:\n"${ticket.issue}"\n\n[Type your resolution / response here]\n\nWarm regards,\nSMJV Youth Festival 2026 Organizing Committee\nVadodara Host Branch\nEmail: ${ADMIN_SUPPORT_EMAIL}`
   );
   return `mailto:${ticket.email}?subject=${subject}&body=${body}`;
 }

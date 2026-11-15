@@ -6,7 +6,7 @@ import { Torch, Crest, TrophyLarge, Laurel, HOSTELS, SPORTS_GRID } from "./Story
 import { SPORT_ICONS } from "./SportsIcons";
 
 /* ═════════════════════════════════════════════════════════════
-   INTER SMJV 2026 — Cinematic Animated Film Intro
+   SMJV YOUTH FESTIVAL 2026 — Cinematic Animated Film Intro
    A 5-scene narrative sequence for the hostel-tournament,
    directed like an animated film: ambient atmosphere, screen
    impacts, kinetic typography, film-cut transitions, and a
@@ -34,10 +34,10 @@ export function Landing({ onEnter, startScene = 0 }: { onEnter: () => void; star
   return (
     <section
       className="scene-stage relative h-[100dvh] w-full overflow-hidden bg-transparent"
-      aria-label="INTER SMJV 2026 — Hostel Championship cinematic intro"
+      aria-label="SMJV Youth Festival 2026 — Hostel Championship cinematic intro"
     >
       <p className="sr-only">
-        The torch is lit for INTER SMJV 2026. Four hostels assemble. Ten battles
+        The torch is lit for SMJV Youth Festival 2026. Four hostels assemble. Ten battles
         await. Glory calls. Are you ready, SMJVian?
       </p>
 
@@ -89,7 +89,7 @@ export function Landing({ onEnter, startScene = 0 }: { onEnter: () => void; star
 
       {/* ── wordmark (top-right, subtle) ─────────────────────── */}
       <div className="absolute right-5 top-[4vh] z-40 font-mono text-[9px] tracking-[0.3em] text-fest-deep/50 md:right-8 md:text-[10px]">
-        INTER-SMJV 2026
+        SMJV YOUTH FESTIVAL 2026
       </div>
 
       {/* ── progress bar (bottom edge, film timeline) ────────── */}
@@ -244,7 +244,7 @@ function SceneSummons({ reduced }: { reduced: boolean | null }) {
         transition={{ delay: 0.55, duration: 0.4 }}
         className="relative z-10 mt-2 font-mono text-[10px] tracking-[0.3em] text-fest-deep/70 md:text-xs"
       >
-        INTER-SMJV 2026 · HOSTEL CHAMPIONSHIP
+        SMJV YOUTH FESTIVAL 2026 · HOSTEL CHAMPIONSHIP
       </motion.p>
 
       {/* date seal — decorative */}
@@ -679,7 +679,7 @@ function SceneCall({ onEnter }: { onEnter: () => void }) {
         className="pointer-events-none absolute h-48 w-48 rounded-full border-2 border-fest-orange/40"
       />
 
-      {/* Official INTER SMJV 2026 Logo */}
+      {/* Official SMJV Youth Festival 2026 Logo */}
       <motion.div
         initial={{ opacity: 0, scale: 0.5, y: -15 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -688,7 +688,7 @@ function SceneCall({ onEnter }: { onEnter: () => void }) {
       >
         <img
           src="/logo.jpg"
-          alt="INTER SMJV 2026 Official Logo"
+          alt="SMJV Youth Festival 2026 Official Logo"
           className="h-24 w-24 rounded-full border-2 border-fest-orange/50 object-cover shadow-[0_10px_30px_rgba(217,119,6,0.35)] md:h-28 md:w-28"
         />
       </motion.div>

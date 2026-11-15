@@ -91,7 +91,7 @@ export default function ReelMakingPage() {
       </main>
 
       <footer className="mt-auto border-t border-fest-border/60 py-4 text-center font-mono text-xs tracking-[0.25em] text-fest-label">
-        INTER SMJV 2026 · VADODARA · OFFICIAL REEL ARENA
+        SMJV YOUTH FESTIVAL 2026 · VADODARA · OFFICIAL REEL ARENA
       </footer>
     </div>
   );

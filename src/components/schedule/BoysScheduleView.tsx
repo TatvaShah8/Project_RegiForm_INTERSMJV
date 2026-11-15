@@ -105,7 +105,7 @@ export function BoysScheduleView({
             Ready to Compete?
           </h3>
           <p className="mx-auto mt-2 max-w-md text-sm text-fest-label">
-            Pick your sport, choose your events, and register your team for INTER SMJV 2026.
+            Pick your sport, choose your events, and register your team for SMJV Youth Festival 2026.
           </p>
           <button
             onClick={onProceed}

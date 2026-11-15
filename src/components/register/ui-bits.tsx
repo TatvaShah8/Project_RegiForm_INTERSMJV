@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 /* ─────────────────────────────────────────────────────────────
-   INTER SMJV 2026 — shared form atoms
+   SMJV YOUTH FESTIVAL 2026 — shared form atoms
    Styled to match the reference app: dark navy panels, lavender
    uppercase labels, yellow→orange gradient CTAs, mono chips.
    ───────────────────────────────────────────────────────────── */

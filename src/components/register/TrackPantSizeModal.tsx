@@ -88,7 +88,7 @@ export function TrackPantSizeModal({
                   {chartTitle}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-fest-label">
-                  INTER SMJV 2026 Tournament Apparel Measurement Guide (Inches)
+                  SMJV Youth Festival 2026 Tournament Apparel Measurement Guide (Inches)
                 </DialogDescription>
               </div>
             </div>

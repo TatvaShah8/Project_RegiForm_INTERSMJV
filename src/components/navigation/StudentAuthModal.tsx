@@ -107,12 +107,12 @@ export function StudentAuthModal({
             <div className="flex items-center gap-3">
               <img
                 src="/logo.jpg"
-                alt="INTER SMJV 2026 Logo"
+                alt="SMJV Youth Festival 2026 Logo"
                 className="h-10 w-10 rounded-full border border-fest-orange/40 object-cover shadow-sm"
               />
               <div>
                 <p className="font-display text-base uppercase leading-tight tracking-wide text-fest-deep">
-                  INTER SMJV <span className="fest-gradient-text">2026</span>
+                  SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
                 </p>
                 <p className="font-mono text-[10px] font-bold tracking-[0.2em] text-fest-label">
                   STUDENT ACCREDITATION PORTAL
@@ -294,7 +294,7 @@ export function StudentAuthModal({
                   New Student Registration
                 </h3>
                 <p className="mt-0.5 text-xs text-fest-label">
-                  Join INTER SMJV 2026! Complete the simple 4-step registration to participate and get your tournament ID badge.
+                  Join SMJV Youth Festival 2026! Complete the simple 4-step registration to participate and get your tournament ID badge.
                 </p>
               </div>
 

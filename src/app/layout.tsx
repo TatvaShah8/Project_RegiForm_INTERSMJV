@@ -23,11 +23,11 @@ const jetMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "INTER SMJV 2026 · Official Registration Portal",
+  title: "SMJV Youth Festival 2026 · Official Registration Portal",
   description:
-    "Official sports & cultural fest registration portal for INTER SMJV 2026 — Shri Mahavira Jaina Vidyalaya, Vadodara. Register, verify and generate your official tournament ID pass.",
+    "Official sports & cultural fest registration portal for SMJV Youth Festival 2026 — Shri Mahavira Jaina Vidyalaya, Vadodara. Register, verify and generate your official tournament ID pass.",
   keywords: [
-    "INTER SMJV 2026",
+    "SMJV Youth Festival 2026",
     "SMJV",
     "Shri Mahavira Jaina Vidyalaya",
     "Vadodara",

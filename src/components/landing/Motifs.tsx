@@ -4,7 +4,7 @@ import * as React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 /* ─────────────────────────────────────────────────────────────
-   INTER SMJV 2026 — landing visuals
+   SMJV YOUTH FESTIVAL 2026 — landing visuals
    Hand-drawn geometric silhouettes: cultural (garba dancer, diya,
    dhol, rangoli) and sports (cricket, football, badminton) motifs
    that morph behind the headline throughout the intro.

@@ -79,7 +79,7 @@ export function ContactView() {
 
   const mailtoAdminUrl = submittedTicket
     ? `mailto:${ADMIN_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-        `[INTER SMJV 2026 Issue #${submittedTicket.id}] from ${submittedTicket.name}`
+        `[SMJV Youth Festival 2026 Issue #${submittedTicket.id}] from ${submittedTicket.name}`
       )}&body=${encodeURIComponent(
         `Hello Organizing Committee,\n\nI have submitted a support issue on the portal:\n\n• Ticket ID: ${submittedTicket.id}\n• Student Name: ${submittedTicket.name}\n• Reply Email: ${submittedTicket.email}\n\n• Issue Description:\n"${submittedTicket.issue}"\n\nPlease review and reply back to my email.\n\nThank you!`
       )}`
@@ -95,7 +95,7 @@ export function ContactView() {
           <div className="mb-2 flex items-center justify-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-white/70 px-3.5 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-fest-orange shadow-xs backdrop-blur-md">
               <LifeBuoy className="h-3.5 w-3.5 text-fest-orange" />
-              INTER SMJV 2026 SUPPORT HELPDESK
+              SMJV YOUTH FESTIVAL 2026 SUPPORT HELPDESK
             </span>
           </div>
 
@@ -278,7 +278,7 @@ export function ContactView() {
                 DIRECT HELPLINE & VENUE
               </span>
               <h4 className="font-display text-lg uppercase tracking-wide text-fest-deep">
-                INTER SMJV 2026 ORGANIZING COMMITTEE
+                SMJV YOUTH FESTIVAL 2026 ORGANIZING COMMITTEE
               </h4>
               <p className="mt-0.5 font-mono text-xs text-fest-label">
                 Shri Mahavira Jaina Vidyalaya, Vadodara Branch · 24–27 Dec 2026

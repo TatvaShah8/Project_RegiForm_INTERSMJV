@@ -62,15 +62,15 @@ export function TournamentNav({
           <Link
             href="/"
             className="flex items-center gap-2 font-display text-base uppercase tracking-wide text-fest-deep transition hover:opacity-90 active:scale-95 sm:gap-2.5 sm:text-lg md:text-xl"
-            title="INTER SMJV 2026 - Go to Home"
+            title="SMJV Youth Festival 2026 - Go to Home"
           >
             <img
               src="/logo.jpg"
-              alt="INTER SMJV 2026 Logo"
+              alt="SMJV Youth Festival 2026 Logo"
               className="h-7 w-7 rounded-full border border-fest-orange/30 object-cover shadow-sm sm:h-8 sm:w-8 md:h-9 md:w-9"
             />
             <span className="whitespace-nowrap">
-              INTER SMJV <span className="fest-gradient-text">2026</span>
+              SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
             </span>
           </Link>
 

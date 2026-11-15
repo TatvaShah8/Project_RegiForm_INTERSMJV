@@ -1,8 +1,8 @@
-/* INTER SMJV 2026 — shared constants & helpers
+/* SMJV Youth Festival 2026 — shared constants & helpers
  * Field lists, options and wording transcribed from the reference app screenshots. */
 
-export const FEST_NAME = "INTER SMJV 2026";
-export const FEST_ORG = "INTER SMJV Vadodara Organizing Committee";
+export const FEST_NAME = "SMJV Youth Festival 2026";
+export const FEST_ORG = "SMJV Youth Festival Vadodara Organizing Committee";
 
 export const BOYS_BRANCHES = [
   "Vadodara",

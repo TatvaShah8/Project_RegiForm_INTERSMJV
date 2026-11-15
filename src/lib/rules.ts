@@ -1,4 +1,4 @@
-/* INTER SMJV 2026 — Official Tournament Rules & Regulations
+/* SMJV YOUTH FESTIVAL 2026 — Official Tournament Rules & Regulations
  * Comprehensive rulebook for Boys and Girls athletic & indoor ties.
  * Transcribed verbatim from official tournament PDFs uploaded by the organizing committee:
  * - Boys Inter_SMJV_Sports_Rules.pdf

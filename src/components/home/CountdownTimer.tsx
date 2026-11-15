@@ -75,7 +75,7 @@ export function CountdownTimer() {
               THE TOURNAMENT HAS BEGUN!
             </h3>
             <p className="mt-2 text-sm text-fest-label">
-              Welcome to INTER SMJV 2026 Vadodara. Head over to the schedule to check live match fixtures.
+              Welcome to SMJV Youth Festival 2026 Vadodara. Head over to the schedule to check live match fixtures.
             </p>
           </div>
         ) : (

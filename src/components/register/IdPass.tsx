@@ -116,7 +116,7 @@ export function IdPass({
         className="flex flex-col gap-0 w-[calc(100%-1rem)] max-w-[460px] sm:max-w-[540px] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/85 bg-white/95 p-0 shadow-[0_24px_64px_rgba(28,36,56,0.18),inset_0_1px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl"
       >
         <DialogHeader className="sr-only">
-          <DialogTitle>Official INTER SMJV 2026 ID pass</DialogTitle>
+          <DialogTitle>Official SMJV Youth Festival 2026 ID pass</DialogTitle>
           <DialogDescription>Tournament accreditation pass with QR verification.</DialogDescription>
         </DialogHeader>
 
@@ -127,12 +127,12 @@ export function IdPass({
             <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
               <img
                 src="/logo.jpg"
-                alt="INTER SMJV 2026 Logo"
+                alt="SMJV Youth Festival 2026 Logo"
                 className="h-7 w-7 sm:h-9 sm:w-9 shrink-0 rounded-full border border-black/20 object-cover shadow-xs"
               />
               <div className="min-w-0">
                 <p className="font-display text-base sm:text-xl uppercase leading-none tracking-wide text-fest-ink">
-                  INTER SMJV 2026
+                  SMJV YOUTH FESTIVAL 2026
                 </p>
                 <p className="mt-0.5 font-mono text-[8.5px] sm:text-[10px] font-bold tracking-[0.2em] text-fest-ink/80">
                   VADODARA

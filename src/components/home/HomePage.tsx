@@ -101,7 +101,7 @@ export function HomePage() {
 
           {/* Main Title */}
           <h1 className="font-display text-4xl uppercase leading-tight tracking-wide text-fest-deep sm:text-6xl md:text-7xl">
-            INTER SMJV <span className="fest-gradient-text">2026</span>
+            SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
           </h1>
 
           <p className="mx-auto mt-2 max-w-2xl font-mono text-xs font-semibold uppercase tracking-widest text-fest-label sm:text-sm">
@@ -410,7 +410,7 @@ export function HomePage() {
               <div className="flex items-center justify-center sm:justify-start gap-2">
                 <img
                   src="/logo.jpg"
-                  alt="INTER SMJV 2026"
+                  alt="SMJV Youth Festival 2026"
                   className="h-9 w-9 rounded-full border border-fest-orange/40 object-cover shadow-sm"
                 />
                 <span className="font-display text-lg uppercase tracking-wide text-fest-deep">
@@ -455,7 +455,7 @@ export function HomePage() {
             </Link>
           </div>
           <p className="font-mono text-[11px] text-fest-label">
-            © 2026 INTER SMJV VADODARA ORGANIZING COMMITTEE · ALL RIGHTS RESERVED
+            © 2026 SMJV YOUTH FESTIVAL VADODARA ORGANIZING COMMITTEE · ALL RIGHTS RESERVED
           </p>
         </footer>
       </main>

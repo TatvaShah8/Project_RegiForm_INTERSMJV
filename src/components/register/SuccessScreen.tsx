@@ -86,7 +86,7 @@ export function SuccessScreen() {
         <div className="mt-8 w-full max-w-xl rounded-2xl border border-white/80 bg-white/50 p-5 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl backdrop-saturate-180">
           <div className="flex items-center justify-between gap-3">
             <span className="font-display text-lg uppercase tracking-wide text-fest-white">
-              INTER SMJV 2026
+              SMJV YOUTH FESTIVAL 2026
             </span>
             <span className="rounded-full border border-fest-orange/50 bg-fest-orange/15 px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-fest-orange">
               {roleMeta?.passLabel ?? "PARTICIPANT"}

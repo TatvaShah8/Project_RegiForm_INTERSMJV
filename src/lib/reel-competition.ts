@@ -1,5 +1,5 @@
 /**
- * INTER SMJV 2026 — Official Reel Making Competition Regulations
+ * SMJV Youth Festival 2026 — Official Reel Making Competition Regulations
  * Digital Challenge: "THE REEL ARENA – SMJV 2026"
  * Transcribed from official tournament documentation by SMJV Vadodara Organising Committee.
  * Note: PDF download is restricted; all rules are rendered natively for registered students.
@@ -34,11 +34,11 @@ export const REEL_COMPETITION = {
   tagline: "BEFORE THE GAME BEGINS, THE REEL BATTLE BEGINS!",
   title: "THE REEL ARENA – SMJV 2026",
   subtitle: "12 SMJVs · ONE DIGITAL BATTLEFIELD · UNLIMITED CREATIVITY",
-  edition: "THE FIRST-EVER SMJV INTER-SMJV REEL MAKING COMPETITION",
+  edition: "THE FIRST-EVER SMJV YOUTH FESTIVAL REEL MAKING COMPETITION",
   
   mission: {
     heading: "THE COUNTDOWN STARTS BEFORE THE FIRST WHISTLE!",
-    body: "The excitement of the Inter-SMJV Sports Tournament begins long before the players step onto the field. For the first time, SMJV is bringing all 12 SMJVs together for a creative digital challenge. Create a powerful Reel that builds hype, celebrates hostel spirit and gets everyone excited for 24, 25, 26 & 27 December 2026.",
+    body: "The excitement of the SMJV Youth Festival begins long before the players step onto the field. For the first time, SMJV is bringing all 12 SMJVs together for a creative digital challenge. Create a powerful Reel that builds hype, celebrates hostel spirit and gets everyone excited for 24, 25, 26 & 27 December 2026.",
     callToAction: "Your mission: Turn your creativity into tournament excitement. Tell a story, capture the spirit of sportsmanship and make your SMJV's voice stand out!",
   },
 
@@ -101,9 +101,9 @@ export const REEL_COMPETITION = {
       id: 6,
       number: "06",
       title: "Tournament Connection",
-      summary: "The Reel must promote or relate to the Inter-SMJV Sports Tournament 2026, its sports, spirit, participants or build-up.",
+      summary: "The Reel must promote or relate to the SMJV Youth Festival 2026, its sports, spirit, participants or build-up.",
       category: "content",
-      badge: "INTER SMJV SPIRIT",
+      badge: "SMJV YOUTH FESTIVAL SPIRIT",
       iconName: "Flame",
     },
     {
@@ -189,7 +189,7 @@ export const REEL_COMPETITION = {
     },
     {
       parameter: "Tournament Relevance",
-      whatJudgesLookFor: "Clear connection with the Inter-SMJV Sports Tournament.",
+      whatJudgesLookFor: "Clear connection with the SMJV Youth Festival.",
       marks: 20,
       accent: "#0D9488",
     },
@@ -240,7 +240,7 @@ export const REEL_COMPETITION = {
     },
     {
       date: "24–27 DEC 2026",
-      title: "Inter-SMJV Sports Tournament 2026",
+      title: "SMJV Youth Festival 2026",
       description: "Live tournament action in Vadodara. Winners showcased on tournament big screens and social channels.",
     },
   ] as TimelineEvent[],

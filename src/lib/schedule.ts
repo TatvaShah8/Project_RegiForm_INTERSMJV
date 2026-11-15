@@ -1,4 +1,4 @@
-/* INTER SMJV 2026 — Tournament Schedule
+/* SMJV YOUTH FESTIVAL 2026 — Tournament Schedule
  * Transcribed verbatim from the official schedule PDF.
  * 3 days · 8 sports · 7 teams.
  * Teams: Ahmedabad Attackers, Andheri Aces, Bhavnagar Warriors,
