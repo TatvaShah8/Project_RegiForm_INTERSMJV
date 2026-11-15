@@ -14,7 +14,7 @@ import {
   formatDob,
 } from "@/lib/fest";
 import { cn } from "@/lib/utils";
-import { printAccreditationPass } from "@/lib/print-pass";
+import { printPassCard } from "@/lib/print-pass";
 import {
   Dialog,
   DialogContent,
@@ -86,6 +86,28 @@ export function IdPass({
   const age = selectAge(s.dob);
   const sports = [...s.outdoor, ...s.indoor];
   const roleMeta = s.role ? ROLE_META[s.role] : null;
+
+  const handlePrint = () => {
+    printPassCard({
+      name: fullName(s) || "SMJVIAN",
+      grNo: s.grNo || "—",
+      branch: s.branch?.toUpperCase() || "SMJV",
+      bloodGroup: s.bloodGroup || "—",
+      age: age ? `${age} yrs` : "—",
+      gender: s.gender ? s.gender.charAt(0) + s.gender.slice(1).toLowerCase() : "—",
+      dob: formatDob(s.dob),
+      mobile: s.mobile || "—",
+      email: s.email || "—",
+      college: s.college || "—",
+      course: s.course || "—",
+      year: s.year || "—",
+      role: roleMeta?.passLabel ?? "PARTICIPANT",
+      sports: sports.map((name) => sportChip(name)),
+      kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      photo: s.photo,
+      qr,
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -251,7 +273,7 @@ export function IdPass({
         <div className={cn("flex items-center gap-1.5 sm:gap-2.5 border-t border-white/70 bg-white/85 px-3 py-2 sm:px-4 sm:py-2.5 backdrop-blur-md")}>
           <button
             type="button"
-            onClick={printAccreditationPass}
+            onClick={handlePrint}
             className="h-8.5 sm:h-9.5 flex-1 whitespace-nowrap rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-2 sm:px-3 font-display text-[10px] sm:text-xs uppercase tracking-wider text-fest-ink shadow-xs transition hover:brightness-110 active:scale-[0.98]"
           >
             🖨 PRINT / SAVE PASS

@@ -257,7 +257,7 @@
   background: transparent;
 }
 
-/* ID-pass printing: print only the pass card cleanly on a single sheet */
+/* Standard print utilities */
 @media print {
   @page {
     size: auto;
@@ -267,83 +267,12 @@
   html, body {
     background: #ffffff !important;
     color: #0f172a !important;
-    height: auto !important;
-    min-height: auto !important;
-    overflow: visible !important;
   }
 
-  /* Hide background website contents when printing from accreditation pass modal */
-  body > *:not([data-slot="dialog-portal"]):not(iframe) {
-    display: none !important;
-  }
-
-  /* Reset Radix Dialog modal styles for print view */
-  [data-slot="dialog-portal"] {
-    display: block !important;
-    position: static !important;
-  }
-
-  [data-slot="dialog-overlay"] {
-    display: none !important;
-  }
-
-  [data-slot="dialog-content"] {
-    position: static !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    max-width: 480px !important;
-    width: 100% !important;
-    margin: 10px auto !important;
-    padding: 0 !important;
-    border: 2px solid #cbd5e1 !important;
-    border-radius: 24px !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    background: #ffffff !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* Hide interactive buttons during printing */
-  [data-slot="dialog-content"] > div:last-child,
-  button {
-    display: none !important;
-  }
-
-  .print-area {
-    position: static !important;
-    inset: auto !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #ffffff !important;
-    color: #0f172a !important;
-    visibility: visible !important;
-  }
-
-  .print-area * {
-    visibility: visible !important;
-  }
-
-  /* Ensure background colors, gradients, and QR code print properly */
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
     color-adjust: exact !important;
-  }
-
-  /* Ensure text and cards have high contrast for physical paper / PDF */
-  .print-area .text-fest-white {
-    color: #0f172a !important;
-  }
-  .print-area .text-fest-label {
-    color: #334155 !important;
-  }
-  .print-area .bg-white\/60,
-  .print-area .bg-white\/70,
-  .print-area .bg-white\/80 {
-    background-color: #f8fafc !important;
-    border-color: #cbd5e1 !important;
   }
 }
 

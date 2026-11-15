@@ -4,9 +4,9 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useRegister, selectAge } from "@/lib/store";
-import { ROLE_META, fullName } from "@/lib/fest";
+import { ROLE_META, fullName, OUTDOOR_SPORTS, INDOOR_SPORTS, formatDob } from "@/lib/fest";
 import { useToast } from "@/hooks/use-toast";
-import { printAccreditationPass } from "@/lib/print-pass";
+import { printPassCard } from "@/lib/print-pass";
 import { useFestQr, IdPass } from "./IdPass";
 import { CTAButton } from "./ui-bits";
 
@@ -20,8 +20,29 @@ export function SuccessScreen() {
   const roleMeta = s.role ? ROLE_META[s.role] : null;
 
   const printPass = () => {
-    setPassOpen(true);
-    setTimeout(() => printAccreditationPass(), 600);
+    printPassCard({
+      name: fullName(s) || "SMJVIAN",
+      grNo: s.grNo || "—",
+      branch: s.branch?.toUpperCase() || "SMJV",
+      bloodGroup: s.bloodGroup || "—",
+      age: age ? `${age} yrs` : "—",
+      gender: s.gender ? s.gender.charAt(0) + s.gender.slice(1).toLowerCase() : "—",
+      dob: formatDob(s.dob),
+      mobile: s.mobile || "—",
+      email: s.email || "—",
+      college: s.college || "—",
+      course: s.course || "—",
+      year: s.year || "—",
+      role: roleMeta?.passLabel ?? "PARTICIPANT",
+      sports: sports.map((name) => {
+        const all = [...OUTDOOR_SPORTS, ...INDOOR_SPORTS];
+        const found = all.find((sp) => sp.name === name);
+        return found ? `${found.emoji} ${found.name}` : name;
+      }),
+      kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      photo: s.photo,
+      qr,
+    });
   };
 
   return (
