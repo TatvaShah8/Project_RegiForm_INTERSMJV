@@ -53,7 +53,43 @@ export const RELATIONS = [
 ] as const;
 
 export const TSHIRT_SIZES = ["XS", "S", "M", "L", "XL", "XXL"] as const;
-export const WAIST_SIZES = ["28", "30", "32", "34", "36", "38", "40"] as const;
+
+export interface TrackPantSizeInfo {
+  size: string;
+  waist: string;
+  length: string;
+}
+
+/** Official track pant size chart matching tournament kit specifications */
+export const TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
+  { size: "36 (S)", waist: "28–30", length: "38" },
+  { size: "38 (M)", waist: "30–32", length: "39" },
+  { size: "40 (L)", waist: "32–34", length: "40" },
+  { size: "42 (XL)", waist: "34–36", length: "41" },
+  { size: "44 (XXL)", waist: "36–38", length: "42" },
+  { size: "46 (3XL)", waist: "38–40", length: "43" },
+] as const;
+
+export const TRACK_PANT_SIZES = [
+  "36 (S)",
+  "38 (M)",
+  "40 (L)",
+  "42 (XL)",
+  "44 (XXL)",
+  "46 (3XL)",
+] as const;
+
+export const WAIST_SIZES = TRACK_PANT_SIZES;
+
+export function getTrackPantSizeInfo(val?: string): TrackPantSizeInfo | undefined {
+  if (!val) return undefined;
+  const clean = val.trim().toLowerCase();
+  return (
+    TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase() === clean) ||
+    TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase().startsWith(clean)) ||
+    TRACK_PANT_SIZE_CHART.find((item) => item.waist.includes(clean))
+  );
+}
 
 export const BOYS_OUTDOOR_SPORTS = [
   { emoji: "🏏", name: "CRICKET" },

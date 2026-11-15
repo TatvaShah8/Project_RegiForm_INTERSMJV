@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
+import { Ruler } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRegister, type Role } from "@/lib/store";
 import {
@@ -13,8 +14,10 @@ import {
   QUOTA_RULE,
   AGREEMENT_TEXT,
   getOutdoorSportsForGender,
+  getTrackPantSizeInfo,
   type Role as RoleT,
 } from "@/lib/fest";
+import { TrackPantSizeModal } from "./TrackPantSizeModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
@@ -39,7 +42,9 @@ export function Step4Sports({
   const s = useRegister();
   const { toast } = useToast();
   const [errs, setErrs] = React.useState<Record<string, string>>({});
+  const [showSizeModal, setShowSizeModal] = React.useState(false);
   const q = s.quotaStatus();
+  const pantInfo = getTrackPantSizeInfo(s.waist);
 
   const setErr = (k: string, v?: string) =>
     setErrs((e) => {
@@ -151,9 +156,23 @@ export function Step4Sports({
             }}
           />
         </Field>
-        <Field label="TRACK PANT WAIST SIZE (INCHES)" required error={errs.waist}>
+        <Field
+          label="OFFICIAL TRACK PANT SIZE (LOWER)"
+          required
+          error={errs.waist}
+          right={
+            <button
+              type="button"
+              onClick={() => setShowSizeModal(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-fest-orange/40 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange hover:text-fest-ink"
+            >
+              <Ruler className="h-3 w-3" />
+              <span>Size Chart</span>
+            </button>
+          }
+        >
           <PillGroup
-            ariaLabel="Track pant waist size"
+            ariaLabel="Track pant size"
             options={WAIST_SIZES}
             value={s.waist}
             onChange={(v) => {
@@ -161,6 +180,29 @@ export function Step4Sports({
               setErr("waist");
             }}
           />
+
+          {pantInfo ? (
+            <div className="mt-2.5 flex items-center justify-between rounded-xl border border-fest-orange/30 bg-fest-orange/10 px-3 py-1.5 text-xs">
+              <span className="font-semibold text-fest-white">
+                Selected: <span className="text-fest-orange font-bold">{pantInfo.size}</span>
+              </span>
+              <span className="font-mono text-[11px] text-fest-label">
+                Waist: <b className="text-fest-white">{pantInfo.waist}&quot;</b> · Length:{" "}
+                <b className="text-fest-white">{pantInfo.length}&quot;</b>
+              </span>
+            </div>
+          ) : (
+            <div className="mt-2 flex items-center justify-between text-[11px] text-fest-label/70">
+              <span>Standard athletic fit</span>
+              <button
+                type="button"
+                onClick={() => setShowSizeModal(true)}
+                className="font-semibold text-fest-orange hover:underline"
+              >
+                View Measurements (Waist &amp; Length) →
+              </button>
+            </div>
+          )}
         </Field>
       </motion.div>
 
@@ -343,6 +385,16 @@ export function Step4Sports({
           COMPLETE REGISTRATION & GENERATE ID PASS 🏅
         </CTAButton>
       </motion.div>
+
+      <TrackPantSizeModal
+        open={showSizeModal}
+        onOpenChange={setShowSizeModal}
+        selectedSize={s.waist}
+        onSelectSize={(val) => {
+          s.set("waist", val);
+          setErr("waist");
+        }}
+      />
     </motion.div>
   );
 }

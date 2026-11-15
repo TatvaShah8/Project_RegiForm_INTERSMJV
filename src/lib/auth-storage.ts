@@ -29,7 +29,7 @@ export const DEMO_STUDENT: Partial<RegisterState> = {
   relation: "Father",
   role: "sports",
   tshirt: "L",
-  waist: "32",
+  waist: "40 (L)",
   outdoor: ["Cricket", "Volleyball"],
   indoor: ["Table Tennis"],
   agreement: true,
