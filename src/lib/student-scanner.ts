@@ -22,6 +22,7 @@ export interface ScannedStudent {
   course: string;
   college: string;
   year?: string;
+  jerseyNumber?: string;
   scannedAt: string;
 }
 
@@ -174,6 +175,7 @@ export function parseScannedQr(rawText: string): ScannedStudent | null {
     const course = data.co || data.course || "";
     const college = data.cl || data.college || "";
     const year = data.yr || data.year || "";
+    const jerseyNumber = data.jn || data.jerseyNumber || "";
 
     // Lookup local database or sample accounts to find high-res photo if available
     let photo = data.photo || null;
@@ -208,6 +210,7 @@ export function parseScannedQr(rawText: string): ScannedStudent | null {
       course: course || "—",
       college: college || "—",
       year: year || "",
+      jerseyNumber: jerseyNumber || undefined,
       scannedAt: new Date().toISOString(),
     };
 

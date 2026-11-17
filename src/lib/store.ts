@@ -48,6 +48,7 @@ export interface RegisterState {
 
   /* step 04 — participation */
   role: Role | "";
+  jerseyNumber: string;
   tshirt: string;
   waist: string;
   outdoor: string[];
@@ -115,6 +116,7 @@ const initial = {
   relation: "",
 
   role: "" as Role | "",
+  jerseyNumber: "",
   tshirt: "",
   waist: "",
   outdoor: [] as string[],
@@ -343,6 +345,7 @@ export const useRegister = create<RegisterState>()(
           emergency: "9825011111",
           relation: "Father",
           role: "sports",
+          jerseyNumber: "10",
           tshirt: "40 (L)",
           waist: "40 (L)",
           outdoor: ["Cricket", "Volleyball"],

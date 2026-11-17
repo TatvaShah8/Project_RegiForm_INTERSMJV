@@ -656,7 +656,14 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
                             <Building className="h-3 w-3 text-fest-orange" />
                             <span>SMJV BRANCH</span>
                           </span>
-                          <p className="mt-0.5 font-medium text-fest-deep">{scannedResult.branch || "—"}</p>
+                          <p className="mt-0.5 font-medium text-fest-deep">
+                            {scannedResult.branch || "—"}
+                            {scannedResult.jerseyNumber ? (
+                              <span className="ml-1.5 rounded bg-fest-orange/15 px-1.5 py-0.5 font-mono text-[10px] font-bold text-fest-orange">
+                                #{scannedResult.jerseyNumber}
+                              </span>
+                            ) : null}
+                          </p>
                         </div>
                       </div>
 

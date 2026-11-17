@@ -20,6 +20,7 @@ export interface PassPrintData {
   role: string;
   sports: string[];
   kit: string;
+  jerseyNumber?: string;
   photo?: string | null;
   qr: string;
 }
@@ -371,7 +372,7 @@ export function printPassCard(data: PassPrintData) {
           ${sportsHtml}
         </div>
         <div class="kit-badge">
-          <span class="info-label">KIT:</span> ${data.kit}
+          <span class="info-label">KIT:</span> ${data.kit} ${data.jerseyNumber ? `· <span style="color:#d97706;font-weight:800;">#${data.jerseyNumber}</span>` : ""}
         </div>
       </div>
 

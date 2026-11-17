@@ -41,6 +41,7 @@ export function useFestQr() {
       co: s.course || "B.Tech Computer Science",
       cl: s.college || "Faculty of Technology & Engineering, MSU",
       yr: s.year || "3rd Year",
+      jn: s.jerseyNumber || "",
     });
     QRCode.toDataURL(payload, {
       margin: 1,
@@ -59,6 +60,7 @@ export function useFestQr() {
     s.course,
     s.college,
     s.year,
+    s.jerseyNumber,
   ]);
   return url;
 }
@@ -104,6 +106,7 @@ export function IdPass({
       role: roleMeta?.passLabel ?? "PARTICIPANT",
       sports: sports.map((name) => sportChip(name)),
       kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      jerseyNumber: s.jerseyNumber,
       photo: s.photo,
       qr,
     });
@@ -238,6 +241,11 @@ export function IdPass({
                 <span className="font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-gold">
                   {s.tshirt || "—"} / {s.waist || "—"}
                 </span>
+                {s.jerseyNumber && (
+                  <span className="ml-1 rounded bg-fest-orange/15 px-1.5 py-0.2 font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-orange">
+                    #{s.jerseyNumber}
+                  </span>
+                )}
               </div>
             </div>
 

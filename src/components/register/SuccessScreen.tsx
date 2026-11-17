@@ -40,6 +40,7 @@ export function SuccessScreen() {
         return found ? `${found.emoji} ${found.name}` : name;
       }),
       kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      jerseyNumber: s.jerseyNumber,
       photo: s.photo,
       qr,
     });
@@ -110,7 +111,7 @@ export function SuccessScreen() {
               </p>
               <p className="mt-0.5 font-mono text-xs text-fest-label">
                 GR: <span className="text-fest-gold">{s.grNo || "—"}</span> · {s.branch || "—"} ·{" "}
-                {age ?? "—"} yrs
+                {age ?? "—"} yrs {s.jerseyNumber ? `· Jersey #${s.jerseyNumber}` : ""}
               </p>
               <p className="mt-0.5 truncate font-mono text-xs text-fest-yellow">
                 {s.role === "sports" && sports.length > 0

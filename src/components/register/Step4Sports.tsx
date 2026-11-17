@@ -24,6 +24,11 @@ import { TrackPantSizeModal } from "./TrackPantSizeModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
+  checkJerseyAvailability,
+  getTakenJerseyNumbers,
+  normalizeJerseyNumber,
+} from "@/lib/auth-storage";
+import {
   StepHeading,
   Field,
   PillGroup,
@@ -54,6 +59,21 @@ export function Step4Sports({
   const jerseyInfo = getJerseySizeInfo(s.tshirt, s.gender);
   const pantInfo = getTrackPantSizeInfo(s.waist, s.gender);
 
+  const jerseyCheck = React.useMemo(() => {
+    if (!s.jerseyNumber.trim()) return null;
+    return checkJerseyAvailability(s.jerseyNumber, s.branch, s.gender, {
+      email: s.email,
+      grNo: s.grNo,
+    });
+  }, [s.jerseyNumber, s.branch, s.gender, s.email, s.grNo]);
+
+  const takenNumbers = React.useMemo(() => {
+    return getTakenJerseyNumbers(s.branch, s.gender, {
+      email: s.email,
+      grNo: s.grNo,
+    });
+  }, [s.branch, s.gender, s.email, s.grNo]);
+
   const openSizeChart = (cat: "jersey" | "track-pants") => {
     setSizeModalCategory(cat);
     setShowSizeModal(true);
@@ -79,6 +99,17 @@ export function Step4Sports({
   const submit = () => {
     const e: Record<string, string> = {};
     if (!s.role) e.role = "Choose how you're participating";
+    if (!s.jerseyNumber?.trim()) {
+      e.jerseyNumber = "Please enter your desired jersey number (e.g. 7, 10, 18, 99)";
+    } else {
+      const check = checkJerseyAvailability(s.jerseyNumber, s.branch, s.gender, {
+        email: s.email,
+        grNo: s.grNo,
+      });
+      if (!check.available) {
+        e.jerseyNumber = check.reason || "This jersey number is already taken.";
+      }
+    }
     if (!s.tshirt) e.tshirt = "Select your T-shirt size";
     if (!s.waist) e.waist = "Select your track pant size";
     if (s.role === "sports" && !q.valid)
@@ -253,6 +284,105 @@ export function Step4Sports({
               </button>
             </div>
           )}
+        </Field>
+      </motion.div>
+
+      {/* ── Official Tournament Jersey Number Field ── */}
+      <motion.div variants={staggerChild} className="mt-5">
+        <Field
+          label="OFFICIAL TOURNAMENT JERSEY NUMBER (PRINTED ON APPAREL)"
+          required
+          error={errs.jerseyNumber}
+          right={
+            <span className="font-mono text-[10.5px] font-bold text-fest-label">
+              Allocation: <b className="text-fest-orange">First-come, first-served</b>
+            </span>
+          }
+        >
+          <div className="relative rounded-2xl border border-white/80 bg-white/40 p-4 shadow-[0_6px_20px_rgba(28,36,56,0.04),inset_0_1px_2px_rgba(255,255,255,0.9)] backdrop-blur-xl">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-3">
+                  {/* Visual Jersey Preview Badge */}
+                  <div className="relative flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border-2 border-fest-orange/40 bg-gradient-to-br from-fest-yellow/20 via-fest-orange/20 to-fest-orange/10 shadow-inner">
+                    <span className="font-mono text-[8px] font-bold uppercase tracking-wider text-fest-orange">
+                      JERSEY
+                    </span>
+                    <span className="font-display text-xl font-bold text-fest-deep leading-none">
+                      {s.jerseyNumber.trim() ? `#${normalizeJerseyNumber(s.jerseyNumber)}` : "#—"}
+                    </span>
+                  </div>
+
+                  {/* Input field */}
+                  <div className="flex-1">
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={3}
+                      value={s.jerseyNumber}
+                      onChange={(e) => {
+                        const val = e.target.value.replace(/\D/g, "").slice(0, 3);
+                        s.set("jerseyNumber", val);
+                        setErr("jerseyNumber");
+                      }}
+                      placeholder="e.g. 7, 10, 18, 99"
+                      className="w-full rounded-xl border border-white/90 bg-white/80 px-4 py-2.5 font-mono text-base font-bold text-fest-deep shadow-inner placeholder:text-fest-label/50 focus:border-fest-orange focus:bg-white focus:outline-hidden"
+                    />
+                    <p className="mt-1 font-mono text-[11px] text-fest-label">
+                      Unique per <b>{s.branch || "Branch"}</b> ({s.gender === "FEMALE" ? "Female" : "Male"} division).
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Real-time Status Feedback */}
+              <div className="sm:max-w-[280px]">
+                {jerseyCheck ? (
+                  jerseyCheck.available ? (
+                    <div className="flex items-center gap-2 rounded-xl border border-green-500/40 bg-green-500/15 px-3 py-2 text-xs font-semibold text-green-700">
+                      <span className="text-base leading-none">✓</span>
+                      <span>
+                        Jersey <b>#{jerseyCheck.normalized}</b> is available for {s.branch || "your branch"} ({s.gender === "FEMALE" ? "Female" : "Male"} division)!
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/15 px-3 py-2 text-xs font-semibold text-red-700">
+                      <span className="text-base leading-none">✗</span>
+                      <span>
+                        Jersey <b>#{jerseyCheck.normalized}</b> is already claimed by <b>{jerseyCheck.claimedBy}</b> for {s.branch} ({s.gender === "FEMALE" ? "Female" : "Male"}). Please pick another.
+                      </span>
+                    </div>
+                  )
+                ) : (
+                  <div className="rounded-xl border border-fest-border/50 bg-white/50 px-3 py-2 font-mono text-[10.5px] text-fest-label">
+                    🔒 First-come, first-served per branch &amp; division.
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* List of already taken numbers in this division */}
+            {takenNumbers.length > 0 && (
+              <div className="mt-3 border-t border-fest-border/40 pt-2.5">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-fest-label">
+                  Already claimed for {s.branch || "Branch"} ({s.gender === "FEMALE" ? "Female" : "Male"} division):
+                </span>
+                <div className="mt-1 flex flex-wrap gap-1.5">
+                  {takenNumbers.map((t) => (
+                    <span
+                      key={t.number}
+                      className="inline-flex items-center gap-1 rounded-md border border-fest-border/60 bg-white/70 px-2 py-0.5 font-mono text-[10px] font-bold text-fest-deep shadow-2xs"
+                      title={`Claimed by ${t.takenBy}`}
+                    >
+                      <span className="text-red-600">#{t.number}</span>
+                      <span className="text-[9px] text-fest-label">({t.takenBy})</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </Field>
       </motion.div>
 
