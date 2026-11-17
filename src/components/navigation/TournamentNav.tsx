@@ -54,49 +54,49 @@ export function TournamentNav({
     <SectionErrorBoundary name="Tournament Navigation">
       {/* ── Top Fixed Header Bar ── */}
       <header className="sticky top-0 z-40 border-b border-white/75 bg-white/55 shadow-[0_4px_30px_rgba(28,36,56,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-180">
-        <div className="relative mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3 md:px-6">
-          {/* Left spacer so center title stays balanced */}
-          <div className="w-8 shrink-0 sm:w-24" />
+        <div className="relative mx-auto flex w-full max-w-5xl items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
+          {/* Left spacer so center title stays balanced on desktop */}
+          <div className="hidden sm:block sm:w-20 md:w-24 shrink-0" />
 
           {/* Center Brand Title & Logo: Click redirects to Home */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-display text-base uppercase tracking-wide text-fest-deep transition hover:opacity-90 active:scale-95 sm:gap-2.5 sm:text-lg md:text-xl"
+            className="flex min-w-0 items-center gap-1.5 font-display text-xs uppercase tracking-wide text-fest-deep transition hover:opacity-90 active:scale-95 sm:gap-2.5 sm:text-base md:text-xl"
             title="SMJV Youth Festival 2026 - Go to Home"
           >
             <img
               src="/logo.jpg"
               alt="SMJV Youth Festival 2026 Logo"
-              className="h-7 w-7 rounded-full border border-fest-orange/30 object-cover shadow-sm sm:h-8 sm:w-8 md:h-9 md:w-9"
+              className="h-7 w-7 shrink-0 rounded-full border border-fest-orange/30 object-cover shadow-sm sm:h-8 sm:w-8 md:h-9 md:w-9"
             />
-            <span className="whitespace-nowrap">
+            <span className="truncate whitespace-nowrap">
               SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
             </span>
           </Link>
 
           {/* ── Header Actions: QR Scanner & Profile / Auth Controls ── */}
-          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="flex shrink-0 items-center gap-1 sm:gap-2">
             {isLoggedIn ? (
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
                 {/* Quick QR Scanner Button (Only available for registered/logged-in students) */}
                 <button
                   type="button"
                   onClick={() => setScannerOpen(true)}
-                  className="flex items-center gap-1.5 rounded-full border border-fest-orange/40 bg-gradient-to-r from-fest-yellow/20 via-white/80 to-fest-orange/20 px-2.5 py-1 sm:px-3 sm:py-1.5 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-fest-orange/20 active:scale-95"
+                  className="flex items-center gap-1.5 rounded-full border border-fest-orange/40 bg-gradient-to-r from-fest-yellow/20 via-white/80 to-fest-orange/20 px-2 py-1 sm:px-3 sm:py-1.5 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-fest-orange/20 active:scale-95"
                   title="Scan Student QR Code Pass"
                 >
-                  <QrCode className="h-4 w-4 text-fest-orange" />
+                  <QrCode className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-fest-orange shrink-0" />
                   <span className="hidden sm:inline">SCAN PASS</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setIdPassOpen(true)}
-                  className="group flex items-center gap-2.5 rounded-full border border-white/90 bg-white/75 py-1 pl-1 pr-3.5 shadow-[0_4px_16px_rgba(28,36,56,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-xl transition hover:border-fest-orange/60 hover:bg-white active:scale-95"
+                  className="group flex items-center gap-1.5 sm:gap-2.5 rounded-full border border-white/90 bg-white/75 py-0.5 sm:py-1 pl-0.5 sm:pl-1 pr-2 sm:pr-3.5 shadow-[0_4px_16px_rgba(28,36,56,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-xl transition hover:border-fest-orange/60 hover:bg-white active:scale-95"
                   title="Click to view Official Student ID Pass"
                 >
                   {/* Circle Photo (No green dot) */}
-                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border-2 border-fest-orange bg-white shadow-sm md:h-9 md:w-9">
+                  <div className="relative h-7 w-7 sm:h-8 sm:w-8 shrink-0 overflow-hidden rounded-full border-2 border-fest-orange bg-white shadow-sm md:h-9 md:w-9">
                     {s.photo ? (
                       <img
                         src={s.photo}
@@ -104,14 +104,14 @@ export function TournamentNav({
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-fest-yellow to-fest-orange font-display text-xs font-bold text-fest-ink">
+                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-fest-yellow to-fest-orange font-display text-[10px] sm:text-xs font-bold text-fest-ink">
                         {initials}
                       </div>
                     )}
                   </div>
 
                   {/* Name beside circle (No id pass number) */}
-                  <span className="max-w-[120px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange sm:max-w-[180px] md:text-sm">
+                  <span className="max-w-[70px] sm:max-w-[120px] md:max-w-[180px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange md:text-sm">
                     {displayName}
                   </span>
                 </button>
@@ -120,7 +120,7 @@ export function TournamentNav({
                 <button
                   type="button"
                   onClick={handleLogout}
-                  className="rounded-full border border-white/80 bg-white/60 p-2 text-fest-label shadow-sm backdrop-blur-md transition hover:border-red-400 hover:bg-red-50 hover:text-red-600 active:scale-95"
+                  className="rounded-full border border-white/80 bg-white/60 p-1.5 sm:p-2 text-fest-label shadow-sm backdrop-blur-md transition hover:border-red-400 hover:bg-red-50 hover:text-red-600 active:scale-95"
                   title="Log Out / Switch Account"
                 >
                   <LogOut className="h-3.5 w-3.5" />
@@ -130,11 +130,12 @@ export function TournamentNav({
               <button
                 type="button"
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-fest-yellow to-fest-orange px-3.5 py-1.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95 md:px-4"
+                className="flex items-center gap-1 sm:gap-1.5 rounded-lg bg-gradient-to-r from-fest-yellow to-fest-orange px-2.5 py-1.5 sm:px-3.5 sm:py-1.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95 md:px-4"
               >
-                <LogIn className="h-3.5 w-3.5" />
-                <span>LOG IN / REGISTER</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <LogIn className="h-3.5 w-3.5 shrink-0" />
+                <span className="sm:hidden">LOGIN</span>
+                <span className="hidden sm:inline">LOG IN / REGISTER</span>
+                <ArrowRight className="hidden sm:inline h-3.5 w-3.5 shrink-0" />
               </button>
             )}
           </div>

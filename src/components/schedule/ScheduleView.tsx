@@ -80,13 +80,13 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
       <header className="sticky top-0 z-40 border-b border-white/75 bg-white/55 shadow-[0_4px_30px_rgba(28,36,56,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-180">
 
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3 md:px-6">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
 
           <button
 
             onClick={onBack}
 
-            className="flex items-center gap-1.5 rounded-lg border border-white/80 bg-white/50 px-3 py-1.5 font-mono text-xs font-bold tracking-wide text-fest-label shadow-sm backdrop-blur-md transition hover:border-fest-orange/50 hover:bg-white/75 hover:text-fest-deep"
+            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-white/80 bg-white/50 px-2.5 py-1.5 font-mono text-xs font-bold tracking-wide text-fest-label shadow-sm backdrop-blur-md transition hover:border-fest-orange/50 hover:bg-white/75 hover:text-fest-deep sm:px-3"
 
           >
 
@@ -96,7 +96,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
           </button>
 
-          <span className="flex items-center gap-2.5 font-display text-lg uppercase tracking-wide text-fest-deep md:text-xl">
+          <span className="flex min-w-0 items-center gap-1.5 font-display text-xs uppercase tracking-wide text-fest-deep sm:gap-2.5 sm:text-base md:text-xl">
 
 
             <img
@@ -108,13 +108,13 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
               alt="SMJV Youth Festival 2026 Logo"
 
 
-              className="h-8 w-8 rounded-full border border-fest-orange/30 object-cover shadow-sm md:h-9 md:w-9"
+              className="h-7 w-7 shrink-0 rounded-full border border-fest-orange/30 object-cover shadow-sm sm:h-8 sm:w-8 md:h-9 md:w-9"
 
 
             />
 
 
-            <span>
+            <span className="truncate whitespace-nowrap">
 
 
               SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
@@ -129,13 +129,13 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
             onClick={onProceed}
 
-            className="flex items-center gap-1.5 rounded-lg bg-gradient-to-r from-fest-yellow to-fest-orange px-3.5 py-1.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95 md:px-4"
+            className="flex shrink-0 items-center gap-1 rounded-lg bg-gradient-to-r from-fest-yellow to-fest-orange px-2.5 py-1.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95 sm:gap-1.5 sm:px-3.5 md:px-4"
 
           >
 
-            REGISTER
+            <span>REGISTER</span>
 
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="hidden sm:inline h-4 w-4" />
 
           </button>
 

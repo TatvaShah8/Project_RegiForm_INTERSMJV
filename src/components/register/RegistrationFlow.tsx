@@ -70,21 +70,21 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
       {/* wordmark bar */}
       {showHeader && (
         <header className="sticky top-0 z-40 border-b border-white/75 bg-white/55 shadow-[0_4px_30px_rgba(28,36,56,0.04),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-2xl backdrop-saturate-180">
-          <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-3 md:px-6">
-            <span className="flex items-center gap-2.5 font-display text-lg uppercase tracking-wide text-fest-deep md:text-xl">
+          <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-3 py-2.5 sm:px-4 sm:py-3 md:px-6">
+            <span className="flex min-w-0 items-center gap-1.5 font-display text-xs uppercase tracking-wide text-fest-deep sm:gap-2.5 sm:text-base md:text-xl">
               <img
                 src="/logo.jpg"
                 alt="SMJV Youth Festival 2026 Logo"
-                className="h-8 w-8 rounded-full border border-fest-orange/30 object-cover shadow-sm md:h-9 md:w-9"
+                className="h-7 w-7 shrink-0 rounded-full border border-fest-orange/30 object-cover shadow-sm sm:h-8 sm:w-8 md:h-9 md:w-9"
               />
-              <span>
+              <span className="truncate whitespace-nowrap">
                 SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
               </span>
             </span>
             <span className="hidden font-mono text-[10px] tracking-[0.25em] text-fest-label sm:inline">
               OFFICIAL REGISTRATION · VADODARA
             </span>
-            <span className="rounded-md border border-white/80 bg-white/50 px-2.5 py-1 font-mono text-[10px] font-bold tracking-widest text-fest-yellow shadow-sm backdrop-blur-md">
+            <span className="shrink-0 rounded-md border border-white/80 bg-white/50 px-2 py-1 sm:px-2.5 font-mono text-[10px] font-bold tracking-widest text-fest-yellow shadow-sm backdrop-blur-md">
               {stepLabel}
             </span>
           </div>
