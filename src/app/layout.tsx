@@ -63,8 +63,9 @@ export default function RootLayout({
             preload="auto"
             className="absolute inset-0 h-full w-full object-cover"
           >
-            <source src="/rule-books-and-schedules/BG_Video.mp4" type="video/mp4" />
             <source src="/BG_Video.mp4" type="video/mp4" />
+            <source src="/BG_Video.MP4" type="video/mp4" />
+            <source src="/rule-books-and-schedules/BG_Video.mp4" type="video/mp4" />
           </video>
 
           {/* Luminous veil to maintain optimal readability for typography & glassmorphism cards */}
