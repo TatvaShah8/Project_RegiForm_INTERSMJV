@@ -100,13 +100,15 @@ export function HomePage() {
           </div>
 
           {/* Main Title */}
-          <h1 className="font-display text-4xl uppercase leading-tight tracking-wide text-fest-deep sm:text-6xl md:text-7xl">
+          <h1 className="font-display text-4xl uppercase leading-tight tracking-wide text-fest-deep drop-shadow-xs sm:text-6xl md:text-7xl">
             SMJV YOUTH FESTIVAL <span className="fest-gradient-text">2026</span>
           </h1>
 
-          <p className="mx-auto mt-2 max-w-2xl font-mono text-xs font-semibold uppercase tracking-widest text-fest-label sm:text-sm">
-            ANNUAL INTER-HOSTEL SPORTS & CULTURAL TOURNAMENT
-          </p>
+          <div className="mx-auto mt-2.5 flex justify-center">
+            <span className="inline-flex items-center rounded-full border border-white/70 bg-white/60 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-widest text-fest-deep shadow-xs backdrop-blur-md sm:text-xs">
+              ANNUAL INTER-HOSTEL SPORTS &amp; CULTURAL TOURNAMENT
+            </span>
+          </div>
 
           {/* Date & Location Badges */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5 sm:gap-3 text-xs sm:text-sm text-fest-label">
