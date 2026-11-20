@@ -159,31 +159,31 @@ export function Step2Verify({
       <motion.div variants={staggerChild}>
         <StepHeading
           num="02"
-          title="Student Security & Authentication"
+          title="Student Email Authentication"
           subtitle={
             isCultural
-              ? "Cultural Team Security: Verify your email address via Google 1-Click or Firebase Email Verification Link."
-              : "Sports Team Security: Verify your email address via Google 1-Click or Firebase Email Verification Link."
+              ? "Cultural Team Security: Verify your email address via Google 1-Click or Firebase Email Verification Link to activate your tournament ID pass."
+              : "Sports Team Security: Verify your email address via Google 1-Click or Firebase Email Verification Link to activate your tournament ID pass."
           }
         />
       </motion.div>
 
-      {/* Main Two-Column Verification Grid */}
-      <div className="mt-6 grid gap-6 md:grid-cols-2">
-        {/* ── CARD 1: EMAIL AUTHENTICATION ── */}
+      {/* Centered Email Authentication Container */}
+      <div className="mt-6 max-w-2xl mx-auto">
+        {/* ── EMAIL AUTHENTICATION ── */}
         <motion.div
           variants={staggerChild}
           className={cn(
-            "flex flex-col justify-between rounded-2xl border p-5 backdrop-blur-xl transition-all",
+            "rounded-3xl border p-6 sm:p-8 backdrop-blur-2xl transition-all",
             s.emailVerified
               ? "border-fest-green/50 bg-fest-green/[0.12] shadow-sm"
-              : "border-white/85 bg-white/60 shadow-[0_12px_32px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)]"
+              : "border-white/85 bg-white/70 shadow-[0_16px_40px_rgba(28,36,56,0.07),inset_0_1.5px_2px_rgba(255,255,255,0.95)]"
           )}
         >
           <div>
             <div className="flex items-center justify-between gap-3">
               <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
-                📧 EMAIL AUTHENTICATION
+                📧 OFFICIAL STUDENT EMAIL AUTHENTICATION
               </span>
               <span
                 className={cn(
@@ -197,36 +197,36 @@ export function Step2Verify({
               </span>
             </div>
 
-            <p className="mt-2.5 font-mono text-sm font-bold text-fest-deep">
+            <p className="mt-2.5 font-mono text-base font-bold text-fest-deep">
               {s.email || "No email entered"}
             </p>
 
             {s.emailVerified ? (
-              <div className="mt-4 rounded-xl border border-fest-green/40 bg-fest-green/10 p-3.5 text-xs text-fest-green">
-                <p className="font-semibold text-sm">✓ Official Email Verified</p>
+              <div className="mt-5 rounded-2xl border border-fest-green/40 bg-fest-green/10 p-4 text-xs text-fest-green">
+                <p className="font-semibold text-sm">✓ Official Email Verified &amp; Authenticated</p>
                 <p className="mt-1 text-xs text-fest-deep">
-                  Your email address is authenticated and securely linked to your tournament ID pass.
+                  Your email address is securely verified and linked to your festival ID pass. Click below to continue.
                 </p>
                 <button
                   type="button"
                   onClick={() => s.set("emailVerified", false)}
-                  className="mt-3 font-mono text-[10px] text-fest-orange underline underline-offset-2"
+                  className="mt-3 font-mono text-[11px] text-fest-orange underline underline-offset-2"
                 >
                   Change Email / Re-verify
                 </button>
               </div>
             ) : (
-              <div className="mt-4 space-y-3.5">
+              <div className="mt-5 space-y-4">
                 {/* Method 1: Google 1-Click Verification */}
-                <div className="rounded-2xl border-2 border-fest-orange/40 bg-gradient-to-br from-amber-50/80 to-fest-orange/15 p-4 shadow-sm">
+                <div className="rounded-2xl border-2 border-fest-orange/40 bg-gradient-to-br from-amber-50/80 to-fest-orange/15 p-4 sm:p-5 shadow-sm">
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-wider text-fest-orange">
-                    RECOMMENDED · 1-CLICK AUTH
+                    RECOMMENDED · 1-CLICK INSTANT AUTHENTICATION
                   </span>
                   <button
                     type="button"
                     disabled={loadingGoogle}
                     onClick={handleGoogleVerify}
-                    className="mt-2.5 flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-fest-border bg-white px-3 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs transition hover:border-fest-orange hover:bg-fest-orange/5 active:scale-95 disabled:opacity-60"
+                    className="mt-2.5 flex h-11 w-full items-center justify-center gap-3 rounded-xl border border-fest-border bg-white px-4 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs transition hover:border-fest-orange hover:bg-fest-orange/5 active:scale-95 disabled:opacity-60"
                   >
                     <svg className="h-4 w-4" viewBox="0 0 24 24">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -236,22 +236,22 @@ export function Step2Verify({
                     </svg>
                     <span>{loadingGoogle ? "AUTHENTICATING…" : "VERIFY WITH GOOGLE"}</span>
                   </button>
-                  <p className="mt-2 text-[10px] text-fest-label leading-relaxed">
-                    Instantly authenticates your email address via Google. You will still enter your official certificate name &amp; details manually.
+                  <p className="mt-2 text-[11px] text-fest-label leading-relaxed">
+                    Instantly pre-verifies your email address via Google. You will still enter your official certificate name &amp; details manually.
                   </p>
                 </div>
 
                 {/* Method 2: Firebase Real Email Verification Link */}
-                <div className="rounded-2xl border border-white/80 bg-white/70 p-4 shadow-xs">
+                <div className="rounded-2xl border border-white/80 bg-white/80 p-4 sm:p-5 shadow-xs">
                   <span className="block font-mono text-[10px] font-bold uppercase tracking-wider text-fest-label">
                     OFFICIAL FIREBASE EMAIL VERIFICATION LINK
                   </span>
-                  <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                  <div className="mt-3 flex flex-wrap items-center gap-2.5">
                     <button
                       type="button"
                       disabled={sendingEmail}
                       onClick={handleSendFirebaseLink}
-                      className="inline-flex h-10 items-center gap-1.5 rounded-xl bg-fest-orange px-4 font-display text-xs uppercase tracking-wider text-fest-ink shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
+                      className="inline-flex h-10 items-center gap-2 rounded-xl bg-fest-orange px-4 font-display text-xs uppercase tracking-wider text-fest-ink shadow-sm transition hover:brightness-110 active:scale-95 disabled:opacity-60"
                     >
                       <span>{sendingEmail ? "Sending…" : "📧 Send Verification Link"}</span>
                     </button>
@@ -267,54 +267,17 @@ export function Step2Verify({
                     )}
                   </div>
                   {emailSentNotice ? (
-                    <p className="mt-2.5 font-mono text-[11px] text-fest-green">
+                    <p className="mt-3 font-mono text-[11px] text-fest-green">
                       ✓ Verification email sent to <b>{s.email}</b>! Click the link in your email inbox, then click <b>Check Status ↻</b>.
                     </p>
                   ) : (
-                    <p className="mt-2 text-[10px] text-fest-label leading-relaxed">
-                      Click to receive an official verification link in your email inbox.
+                    <p className="mt-2 text-[11px] text-fest-label leading-relaxed">
+                      Click to receive an official verification email link in your inbox.
                     </p>
                   )}
                 </div>
               </div>
             )}
-          </div>
-        </motion.div>
-
-        {/* ── CARD 2: REGISTERED MOBILE NUMBER ── */}
-        <motion.div
-          variants={staggerChild}
-          className="flex flex-col justify-between rounded-2xl border border-fest-green/40 bg-white/60 p-5 shadow-[0_12px_32px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-xl"
-        >
-          <div>
-            <div className="flex items-center justify-between gap-3">
-              <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
-                📱 REGISTERED CONTACT NUMBER
-              </span>
-              <span className="rounded-full border border-fest-green/40 bg-fest-green/20 px-2.5 py-1 font-mono text-[10px] font-bold tracking-widest text-fest-green">
-                RECORDED ✓
-              </span>
-            </div>
-
-            <p className="mt-2.5 font-mono text-base font-bold text-fest-deep">
-              {s.mobile ? `+91 ${s.mobile}` : "No mobile number entered"}
-            </p>
-
-            <div className="mt-4 rounded-xl border border-fest-green/30 bg-fest-green/10 p-3.5 text-xs text-fest-deep">
-              <p className="font-semibold text-fest-green">✓ Contact Number Confirmed</p>
-              <p className="mt-1 text-xs text-fest-label leading-relaxed">
-                Your mobile number is registered for official tournament fixture alerts, schedule updates, team coordination, and emergency contact.
-              </p>
-              <p className="mt-2 font-mono text-[10px] text-fest-label">
-                No SMS code required.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-6 border-t border-fest-border/40 pt-4">
-            <p className="font-mono text-[10px] text-fest-label">
-              Need to change your mobile number? Click <b>← Back to Step 1</b>.
-            </p>
           </div>
         </motion.div>
       </div>
