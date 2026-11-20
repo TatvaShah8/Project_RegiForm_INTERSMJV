@@ -56,20 +56,6 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
   };
 
-  /* issue OTPs when the verification step opens (once per session) */
-  React.useEffect(() => {
-    if (step !== 2) return;
-    const st = useRegister.getState();
-    const already = st.otpIssued;
-    st.issueOtps();
-    if (!already) {
-      toast({
-        title: "VERIFICATION SENT",
-        description: `OTP codes sent to ${st.email} and +91 ${st.mobile}.`,
-      });
-    }
-  }, [step]);
-
   const isCultural = s.role === "cultural";
   const totalSteps = isCultural ? 3 : 4;
 
