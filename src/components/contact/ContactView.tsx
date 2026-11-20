@@ -85,10 +85,10 @@ export function ContactView() {
     : "";
 
   return (
-    <div className="flex min-h-[100dvh] w-full flex-col">
+    <div className="flex min-h-[100dvh] w-full flex-col" suppressHydrationWarning>
       <TournamentNav activeNav="contact" />
 
-      <main className="fest-scroll mx-auto w-full max-w-4xl flex-1 px-4 pb-16 md:px-6">
+      <main className="fest-scroll mx-auto w-full max-w-4xl flex-1 px-4 pb-16 md:px-6" suppressHydrationWarning>
         {/* ── Title Header ── */}
         <section className="mb-8 text-center md:mb-10">
           <div className="mb-2 flex items-center justify-center gap-2">
