@@ -359,10 +359,10 @@ export function Step3General({
       <motion.div variants={staggerChild}>
         <StepHeading
           num="03"
-          title={s.role === "cultural" ? "Student Profile & Jersey Size" : "General Student Information"}
+          title={s.role === "cultural" ? "Student Profile & Apparel Sizes" : "General Student Information"}
           subtitle={
             s.role === "cultural"
-              ? "Complete your profile details and select your tournament jersey size to finalize registration."
+              ? "Complete your profile details and select your tournament jersey & track pant sizes to finalize registration."
               : "All details below appear on your official accreditation badge and tournament records."
           }
         />

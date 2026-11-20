@@ -254,11 +254,28 @@ export function Step2Verify({
 
   return (
     <motion.div variants={staggerParent} initial="hidden" animate="show">
+      <motion.div variants={staggerChild} className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <button
+          type="button"
+          onClick={onBack}
+          className="inline-flex items-center gap-1.5 rounded-xl border border-fest-orange/40 bg-white/70 px-3.5 py-1.5 font-mono text-xs font-semibold text-fest-deep shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-white active:scale-95"
+        >
+          ← Back to Step 1
+        </button>
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-fest-orange/10 px-3 py-1 font-mono text-xs font-bold uppercase text-fest-orange">
+          {s.role === "cultural" ? "🎭 Cultural Team · Step 02 / 03" : "⚡ Sports Team · Step 02 / 04"}
+        </span>
+      </motion.div>
+
       <motion.div variants={staggerChild}>
         <StepHeading
           num="02"
           title="Verify Email & Mobile Number"
-          subtitle="We take student security seriously. Please verify your contact information to activate your portal pass."
+          subtitle={
+            s.role === "cultural"
+              ? "Cultural Team Security: Authenticate your email via Google 1-click or Firebase email link, and verify your mobile number."
+              : "Sports Team Security: Authenticate your email via Google 1-click or Firebase email link, and verify your mobile number."
+          }
         />
       </motion.div>
 
@@ -304,7 +321,9 @@ export function Step2Verify({
           ← BACK
         </CTAButton>
         <CTAButton variant="gradient" disabled={!both} onClick={onNext}>
-          PROCEED TO GENERAL QUESTIONS →
+          {s.role === "cultural"
+            ? "PROCEED TO STEP 3 (PROFILE & APPAREL) →"
+            : "PROCEED TO STEP 3 (GENERAL PROFILE) →"}
         </CTAButton>
       </motion.div>
     </motion.div>
