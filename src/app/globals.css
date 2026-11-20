@@ -64,7 +64,7 @@
   --color-fest-green: #15803D;    /* forest green — success border */
   --color-fest-mint: #059669;     /* deep mint — success text */
   --color-fest-teal: #0D7377;     /* peacock teal — secondary accent */
-  --color-fest-label: #6B5D4F;    /* warm taupe — muted text */
+  --color-fest-label: #1C2438;    /* dark ink navy — high contrast text */
   --color-fest-white: #1C2438;    /* DARK INK — body text */
   --color-fest-ink: #FFFFFF;      /* white — text on saffron CTA */
   --color-fest-alert: #B45309;    /* deep amber — warning text */
@@ -83,7 +83,7 @@
   --secondary: rgba(255, 255, 255, 0.42);
   --secondary-foreground: #1C2438;
   --muted: rgba(242, 237, 226, 0.50);
-  --muted-foreground: #6B5D4F;
+  --muted-foreground: #1C2438;
   --accent: rgba(255, 255, 255, 0.55);
   --accent-foreground: #B45309;
   --destructive: #B91C1C;

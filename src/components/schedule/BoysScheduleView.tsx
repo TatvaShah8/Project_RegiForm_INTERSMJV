@@ -104,7 +104,7 @@ export function BoysScheduleView({
           <h3 className="font-display text-xl uppercase tracking-wide text-fest-deep md:text-2xl">
             Ready to Compete?
           </h3>
-          <p className="mx-auto mt-2 max-w-md text-sm text-fest-label">
+          <p className="mx-auto mt-2 max-w-md text-sm sm:text-base font-medium text-fest-deep">
             Pick your sport, choose your events, and register your team for SMJV Youth Festival 2026.
           </p>
           <button

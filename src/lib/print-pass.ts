@@ -167,7 +167,7 @@ export function printPassCard(data: PassPrintData) {
       justify-content: center;
       font-size: 10px;
       font-weight: bold;
-      color: #64748b;
+      color: #1C2438;
       letter-spacing: 1px;
     }
     .prov-badge {
@@ -248,7 +248,7 @@ export function printPassCard(data: PassPrintData) {
     .info-label {
       font-size: 9px;
       font-weight: 800;
-      color: #64748b;
+      color: #1C2438;
       letter-spacing: 0.8px;
       text-transform: uppercase;
     }
@@ -302,7 +302,7 @@ export function printPassCard(data: PassPrintData) {
     .qr-caption {
       font-size: 9px;
       font-weight: 700;
-      color: #64748b;
+      color: #1C2438;
       letter-spacing: 0.5px;
       margin-top: 6px;
       text-transform: uppercase;

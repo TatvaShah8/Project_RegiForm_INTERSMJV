@@ -184,7 +184,7 @@ export function GirlsScheduleView({
         <h3 className="font-display text-xl uppercase tracking-wide text-fest-deep md:text-2xl">
           Ready to Represent Your Branch?
         </h3>
-        <p className="mx-auto mt-2 max-w-md text-sm text-fest-label">
+        <p className="mx-auto mt-2 max-w-md text-sm sm:text-base font-medium text-fest-deep">
           Choose your sports quota (2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor) and secure your official digital pass.
         </p>
 

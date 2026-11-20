@@ -102,7 +102,7 @@ export function ContactView() {
             CONTACT <span className="fest-gradient-text">US</span>
           </h1>
 
-          <p className="mx-auto mt-2 max-w-lg text-xs leading-relaxed text-fest-label sm:text-sm">
+          <p className="mx-auto mt-2.5 max-w-xl text-sm font-medium leading-relaxed text-fest-deep sm:text-base">
             Have a question regarding matches, schedule, ID passes, or reel submissions? Write your issue below and our organizing committee will reply back to your email.
           </p>
         </section>
@@ -135,18 +135,18 @@ export function ContactView() {
                   </h3>
 
                   <div className="mx-auto mt-4 max-w-sm rounded-2xl border border-fest-orange/25 bg-fest-bg/70 p-4">
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-fest-label">
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-fest-deep">
                       YOUR TICKET REFERENCE NUMBER
                     </span>
                     <p className="mt-0.5 font-mono text-xl font-bold tracking-wider text-fest-orange">
                       {submittedTicket.id}
                     </p>
-                    <p className="mt-2 text-xs text-fest-label">
+                    <p className="mt-2 text-xs font-medium text-fest-deep">
                       Reply will be delivered to: <span className="font-semibold text-fest-deep">{submittedTicket.email}</span>
                     </p>
                   </div>
 
-                  <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-fest-label">
+                  <p className="mx-auto mt-4 max-w-md text-sm font-medium leading-relaxed text-fest-deep">
                     Your inquiry has been registered. Our team will review the issue and respond directly to your email address.
                   </p>
 
@@ -185,14 +185,14 @@ export function ContactView() {
                       YOUR FULL NAME <span className="text-fest-orange">*</span>
                     </label>
                     <div className="relative mt-1.5">
-                      <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fest-label" />
+                      <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fest-deep/70" />
                       <input
                         type="text"
                         required
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="e.g. Aarav Mehta"
-                        className="w-full rounded-2xl border border-white/85 bg-white/70 py-3 pl-10 pr-4 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-label/50 focus:border-fest-orange focus:bg-white focus:outline-hidden"
+                        className="w-full rounded-2xl border border-white/85 bg-white/70 py-3 pl-10 pr-4 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-deep/45 focus:border-fest-orange focus:bg-white focus:outline-hidden"
                       />
                     </div>
                   </div>
@@ -203,19 +203,19 @@ export function ContactView() {
                       <label className="block font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
                         YOUR EMAIL ADDRESS <span className="text-fest-orange">*</span>
                       </label>
-                      <span className="font-mono text-[10px] text-fest-label">
+                      <span className="font-mono text-xs font-medium text-fest-deep">
                         For receiving our reply
                       </span>
                     </div>
                     <div className="relative mt-1.5">
-                      <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fest-label" />
+                      <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-fest-deep/70" />
                       <input
                         type="email"
                         required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="e.g. aarav.mehta@smjv.edu"
-                        className="w-full rounded-2xl border border-white/85 bg-white/70 py-3 pl-10 pr-4 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-label/50 focus:border-fest-orange focus:bg-white focus:outline-hidden"
+                        className="w-full rounded-2xl border border-white/85 bg-white/70 py-3 pl-10 pr-4 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-deep/45 focus:border-fest-orange focus:bg-white focus:outline-hidden"
                       />
                     </div>
                   </div>
@@ -232,7 +232,7 @@ export function ContactView() {
                         value={issue}
                         onChange={(e) => setIssue(e.target.value)}
                         placeholder="Explain your issue, query, or complaint in detail..."
-                        className="w-full rounded-2xl border border-white/85 bg-white/70 p-3.5 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-label/50 focus:border-fest-orange focus:bg-white focus:outline-hidden"
+                        className="w-full rounded-2xl border border-white/85 bg-white/70 p-3.5 font-mono text-sm text-fest-deep shadow-inner backdrop-blur-xl placeholder:text-fest-deep/45 focus:border-fest-orange focus:bg-white focus:outline-hidden"
                       />
                     </div>
                   </div>

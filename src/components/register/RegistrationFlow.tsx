@@ -164,7 +164,7 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                       <h1 className="mt-2 font-display text-2xl uppercase tracking-wide text-fest-deep sm:text-4xl">
                         SELECT YOUR PARTICIPATION TEAM
                       </h1>
-                      <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-fest-label">
+                      <p className="mx-auto mt-2.5 max-w-xl text-sm sm:text-base font-medium leading-relaxed text-fest-deep">
                         Please select how you will participate in the festival. Choose either the Sports Team or Cultural Team to proceed.
                       </p>
                     </div>
@@ -194,7 +194,7 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                           <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-fest-orange transition-colors">
                             REGISTER FOR SPORTS TEAM
                           </h2>
-                          <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-fest-label">
+                          <p className="mt-2.5 text-xs sm:text-sm font-medium leading-relaxed text-fest-deep">
                             Participate as a competing athlete in outdoor and indoor tournament sports (Cricket, Football, Volleyball, Pickleball, Table Tennis, Chess, Badminton, Carrom, Throwball, Tug of War, Kho Kho).
                           </p>
                         </div>
@@ -232,7 +232,7 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                           <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-purple-600 transition-colors">
                             REGISTER FOR CULTURAL TEAM
                           </h2>
-                          <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-fest-label">
+                          <p className="mt-2.5 text-xs sm:text-sm font-medium leading-relaxed text-fest-deep">
                             Represent your hostel branch in Garba, stage drama, music, dance performances, and traditional cultural events (fast 3-step registration with official kit).
                           </p>
                         </div>

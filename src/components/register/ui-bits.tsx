@@ -26,7 +26,7 @@ export function StepHeading({
       <h2 className="font-display text-2xl uppercase leading-tight tracking-wide text-fest-orange md:text-4xl">
         {num} {title}
       </h2>
-      <p className="mt-2 max-w-2xl text-sm text-fest-label">{subtitle}</p>
+      <p className="mt-2 max-w-2xl text-sm sm:text-base font-medium leading-relaxed text-fest-deep">{subtitle}</p>
       <div className="mt-5 h-px w-full bg-gradient-to-r from-fest-orange/70 via-white/80 to-transparent" />
     </div>
   );
@@ -52,10 +52,10 @@ export function Field({
   return (
     <div className={cn("min-w-0", className)}>
       <div className="mb-1.5 flex items-start justify-between gap-3">
-        <label className="text-[11px] font-bold uppercase leading-snug tracking-[0.1em] text-fest-label">
+        <label className="text-[11px] font-bold uppercase leading-snug tracking-[0.1em] text-fest-deep">
           {label}
           {required && <span className="ml-1 text-fest-orange">*</span>}
-          {hint && <span className="mt-0.5 block text-[10px] font-normal normal-case tracking-normal text-fest-label/60">{hint}</span>}
+          {hint && <span className="mt-0.5 block text-[11px] font-medium normal-case tracking-normal text-fest-deep/85">{hint}</span>}
         </label>
         {right}
       </div>
@@ -70,7 +70,7 @@ export function Field({
 }
 
 const baseInput =
-  "h-11 w-full rounded-xl border border-white/75 bg-white/40 backdrop-blur-xl px-4 text-sm text-fest-white shadow-[inset_0_2px_4px_rgba(28,36,56,0.03),inset_0_1px_1.5px_rgba(255,255,255,0.9)] placeholder:font-mono placeholder:text-fest-label/50 transition-all hover:bg-white/60 hover:border-fest-orange/50 focus-visible:bg-white/80 focus-visible:border-fest-orange focus-visible:ring-4 focus-visible:ring-fest-orange/20 disabled:cursor-not-allowed disabled:opacity-60";
+  "h-11 w-full rounded-xl border border-white/75 bg-white/40 backdrop-blur-xl px-4 text-sm text-fest-white shadow-[inset_0_2px_4px_rgba(28,36,56,0.03),inset_0_1px_1.5px_rgba(255,255,255,0.9)] placeholder:font-mono placeholder:text-fest-deep/45 transition-all hover:bg-white/60 hover:border-fest-orange/50 focus-visible:bg-white/80 focus-visible:border-fest-orange focus-visible:ring-4 focus-visible:ring-fest-orange/20 disabled:cursor-not-allowed disabled:opacity-60";
 
 export function FestInput({
   error,

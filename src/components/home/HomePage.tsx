@@ -332,7 +332,7 @@ export function HomePage() {
             <h2 className="mt-2 font-display text-2xl uppercase tracking-wide text-fest-deep sm:text-3xl">
               12 PARTICIPATING SMJV HOSTELS
             </h2>
-            <p className="mx-auto mt-1 max-w-xl text-xs text-fest-label sm:text-sm">
+            <p className="mx-auto mt-1.5 max-w-xl text-sm sm:text-base font-medium text-fest-deep">
               Athletes and contingents representing Shri Mahavira Jaina Vidyalaya hostels from across India
             </p>
           </div>
@@ -380,7 +380,7 @@ export function HomePage() {
             <h2 className="mt-2 font-display text-2xl uppercase tracking-wide text-fest-deep sm:text-3xl">
               COMPETITIVE SPORTS DISCIPLINES
             </h2>
-            <p className="mx-auto mt-1 max-w-xl text-xs text-fest-label sm:text-sm">
+            <p className="mx-auto mt-1.5 max-w-xl text-sm sm:text-base font-medium text-fest-deep">
               Across outdoor fields, indoor courts, and digital arenas
             </p>
           </div>
@@ -422,7 +422,7 @@ export function HomePage() {
               <h3 className="mt-2 font-display text-2xl uppercase tracking-wide text-fest-deep sm:text-3xl">
                 READY FOR THE ULTIMATE HOSTEL BATTLE?
               </h3>
-              <p className="mt-1 max-w-xl text-xs text-fest-label sm:text-sm">
+              <p className="mt-1.5 max-w-xl text-sm sm:text-base font-medium text-fest-deep">
                 Mark your calendars: 24, 25, 26 & 27 December 2026 in Vadodara. Follow rules, check your schedules, and get your pass ready!
               </p>
             </div>

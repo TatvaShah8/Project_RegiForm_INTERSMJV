@@ -238,7 +238,7 @@ export function StudentAuthModal({
                 <h3 className="font-display text-base uppercase tracking-wide text-fest-deep">
                   Student Sign In
                 </h3>
-                <p className="mt-0.5 text-xs text-fest-label">
+                <p className="mt-0.5 text-xs sm:text-sm font-medium text-fest-deep">
                   Enter your registered Email or GR Number to view your official tournament ID pass.
                 </p>
               </div>

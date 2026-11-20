@@ -172,7 +172,7 @@ export function RulesView({
           <h3 className="font-display text-xl uppercase tracking-wide text-fest-deep md:text-2xl">
             Understood the Rules?
           </h3>
-          <p className="mx-auto mt-2 max-w-md text-sm text-fest-label">
+          <p className="mx-auto mt-2 max-w-md text-sm sm:text-base font-medium text-fest-deep">
             Complete your registration, select your sports according to the quota, and generate your official pass.
           </p>
           <button
