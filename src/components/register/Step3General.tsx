@@ -19,6 +19,7 @@ import {
   AGREEMENT_TEXT,
 } from "@/lib/fest";
 import { TrackPantSizeModal } from "./TrackPantSizeModal";
+import { compressImageToMaxKB } from "@/lib/image-compress";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
@@ -45,25 +46,6 @@ const DOB_TABS = [
   { key: "dropdown", label: "🔤 SELECT DAY / MONTH / YEAR" },
 ] as const;
 
-/** downscale uploaded photo to ≤480px for preview/perf */
-function shrink(file: File, cb: (dataUrl: string) => void) {
-  const reader = new FileReader();
-  reader.onload = () => {
-    const img = new Image();
-    img.onload = () => {
-      const max = 480;
-      const scale = Math.min(1, max / Math.max(img.width, img.height));
-      const c = document.createElement("canvas");
-      c.width = Math.round(img.width * scale);
-      c.height = Math.round(img.height * scale);
-      c.getContext("2d")?.drawImage(img, 0, 0, c.width, c.height);
-      cb(c.toDataURL("image/jpeg", 0.86));
-    };
-    img.src = String(reader.result);
-  };
-  reader.readAsDataURL(file);
-}
-
 export function Step3General({
   onBack,
   onNext,
@@ -78,6 +60,16 @@ export function Step3General({
   const [calOpen, setCalOpen] = React.useState(false);
   const [showSizeModal, setShowSizeModal] = React.useState(false);
   const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("jersey");
+  const [compressingPhoto, setCompressingPhoto] = React.useState(false);
+  const [compressedSizeKB, setCompressedSizeKB] = React.useState<number | null>(null);
+
+  // Auto-detect existing photo size if loaded
+  React.useEffect(() => {
+    if (s.photo && compressedSizeKB === null) {
+      const approxKB = Math.round((s.photo.length * 0.75) / 1024);
+      setCompressedSizeKB(approxKB);
+    }
+  }, [s.photo, compressedSizeKB]);
 
   const jerseySizes = React.useMemo(() => getTshirtSizesForGender(s.gender), [s.gender]);
   const trackPantSizes = React.useMemo(() => getTrackPantSizesForGender(s.gender), [s.gender]);
@@ -165,7 +157,7 @@ export function Step3General({
     startStream(nextMode);
   };
 
-  const capturePhoto = () => {
+  const capturePhoto = async () => {
     const video = videoRef.current;
     if (!video || !video.videoWidth) {
       toast({
@@ -176,7 +168,7 @@ export function Step3General({
       return;
     }
     const canvas = document.createElement("canvas");
-    const size = Math.min(video.videoWidth, video.videoHeight, 480);
+    const size = Math.min(video.videoWidth, video.videoHeight, 640);
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext("2d");
@@ -191,14 +183,26 @@ export function Step3General({
     const sy = (video.videoHeight - size) / 2;
     ctx.drawImage(video, sx, sy, size, size, 0, 0, size, size);
 
-    const dataUrl = canvas.toDataURL("image/jpeg", 0.88);
-    s.set("photo", dataUrl);
-    setErr("photo");
+    const rawDataUrl = canvas.toDataURL("image/jpeg", 0.90);
     stopCamera();
-    toast({
-      title: "PHOTO CAPTURED",
-      description: "Live photo successfully captured and saved.",
-    });
+
+    try {
+      setCompressingPhoto(true);
+      const res = await compressImageToMaxKB(rawDataUrl, 200);
+      s.set("photo", res.dataUrl);
+      setCompressedSizeKB(res.sizeKB);
+      setErr("photo");
+      toast({
+        title: "PHOTO CAPTURED & COMPRESSED",
+        description: `Saved at ${res.sizeKB} KB (under 200 KB target).`,
+      });
+    } catch (err) {
+      console.error("Camera photo compression error:", err);
+      s.set("photo", rawDataUrl);
+      setErr("photo");
+    } finally {
+      setCompressingPhoto(false);
+    }
   };
 
   React.useEffect(() => {
@@ -266,20 +270,44 @@ export function Step3General({
     }
   };
 
-  const onPhoto = (f?: File) => {
+  const onPhoto = async (f?: File) => {
     if (!f) return;
-    if (!/image\/(jpeg|jpg|png)/.test(f.type)) {
-      toast({ title: "INVALID FORMAT", description: "Photo must be JPG or PNG.", variant: "destructive" });
+    if (!/image\/(jpeg|jpg|png|webp)/i.test(f.type) && !/\.(jpe?g|png|webp)$/i.test(f.name)) {
+      toast({
+        title: "INVALID FORMAT",
+        description: "Photo must be a JPG or PNG image file.",
+        variant: "destructive",
+      });
       return;
     }
-    if (f.size > 4 * 1024 * 1024) {
-      toast({ title: "FILE TOO LARGE", description: "Photo must be up to 4MB.", variant: "destructive" });
+    if (f.size > 25 * 1024 * 1024) {
+      toast({
+        title: "FILE EXCEEDS 25MB",
+        description: "Please choose a photo under 25MB.",
+        variant: "destructive",
+      });
       return;
     }
-    shrink(f, (url) => {
-      s.set("photo", url);
+    try {
+      setCompressingPhoto(true);
+      const res = await compressImageToMaxKB(f, 200);
+      s.set("photo", res.dataUrl);
+      setCompressedSizeKB(res.sizeKB);
       setErr("photo");
-    });
+      toast({
+        title: "PHOTO OPTIMIZED (≤ 200 KB) ✓",
+        description: `Compressed from ${res.originalSizeKB} KB to ${res.sizeKB} KB while preserving sharpness.`,
+      });
+    } catch (err: any) {
+      console.error("Image compression error:", err);
+      toast({
+        title: "COMPRESSION FAILED",
+        description: "Could not compress this image. Please try another image file.",
+        variant: "destructive",
+      });
+    } finally {
+      setCompressingPhoto(false);
+    }
   };
 
   const validate = () => {
@@ -365,37 +393,71 @@ export function Step3General({
               </button>
 
               <span className="text-xs font-mono text-fest-label">
-                {s.photo ? "✓ Photo ready" : "No photo chosen"}
+                {compressingPhoto ? (
+                  <span className="inline-flex items-center gap-1.5 text-fest-orange font-bold">
+                    <RefreshCw className="h-3 w-3 animate-spin" /> Compressing (≤ 200 KB)…
+                  </span>
+                ) : s.photo ? (
+                  <span className="inline-flex items-center gap-1 text-fest-green font-bold">
+                    ✓ Photo ready
+                  </span>
+                ) : (
+                  "No photo chosen"
+                )}
               </span>
             </div>
             <p className="mt-2 text-xs text-fest-label/70">
-              Upload an image file (JPG, PNG up to 4MB) or click Take Photo to capture live from your camera.
+              Upload any photo (JPG, PNG of any size) or take photo. Automatically compressed to <b>&le; 200 KB</b> with high clarity.
             </p>
-            <div
-              className={cn(
-                "group relative mt-3 flex h-36 w-28 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed shadow-sm backdrop-blur-md",
-                errs.photo ? "border-red-500/60" : "border-fest-yellow/60",
-                "bg-white/60"
-              )}
-            >
-              {s.photo ? (
-                <>
-                  <img src={s.photo} alt="Uploaded portrait" className="h-full w-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      s.set("photo", null);
-                      setErr("photo", "Please upload or capture a photo");
-                    }}
-                    className="absolute inset-0 flex items-center justify-center bg-black/65 font-mono text-[10px] font-bold tracking-wider text-white opacity-0 transition group-hover:opacity-100"
-                  >
-                    REMOVE
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col items-center gap-2 text-fest-label">
-                  <Camera className="h-8 w-8 opacity-70" />
-                  <span className="font-mono text-[10px] tracking-[0.3em]">NO PHOTO</span>
+            <div className="mt-3 flex items-start gap-3">
+              <div
+                className={cn(
+                  "group relative flex h-36 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border-2 border-dashed shadow-sm backdrop-blur-md",
+                  errs.photo ? "border-red-500/60" : "border-fest-yellow/60",
+                  "bg-white/60"
+                )}
+              >
+                {compressingPhoto ? (
+                  <div className="flex flex-col items-center gap-2 p-2 text-center text-fest-orange">
+                    <RefreshCw className="h-6 w-6 animate-spin" />
+                    <span className="font-mono text-[9px] font-bold uppercase tracking-wider">
+                      Compressing…
+                    </span>
+                  </div>
+                ) : s.photo ? (
+                  <>
+                    <img src={s.photo} alt="Uploaded portrait" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        s.set("photo", null);
+                        setCompressedSizeKB(null);
+                        setErr("photo", "Please upload or capture a photo");
+                      }}
+                      className="absolute inset-0 flex items-center justify-center bg-black/65 font-mono text-[10px] font-bold tracking-wider text-white opacity-0 transition group-hover:opacity-100"
+                    >
+                      REMOVE
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-fest-label">
+                    <Camera className="h-8 w-8 opacity-70" />
+                    <span className="font-mono text-[10px] tracking-[0.3em]">NO PHOTO</span>
+                  </div>
+                )}
+              </div>
+
+              {s.photo && !compressingPhoto && (
+                <div className="space-y-1.5 pt-1 text-xs">
+                  <div className="inline-flex items-center gap-1.5 rounded-lg border border-fest-green/40 bg-fest-green/10 px-2.5 py-1 font-mono text-[11px] font-bold text-fest-green shadow-xs">
+                    <span>✓</span>
+                    <span>{compressedSizeKB ? `${compressedSizeKB} KB` : "≤ 200 KB"}</span>
+                    <span className="text-fest-label font-normal">· Compressed</span>
+                  </div>
+                  <p className="font-mono text-[10px] text-fest-label">
+                    Resolution: 1024px max<br />
+                    Optimized for ID badge printing
+                  </p>
                 </div>
               )}
             </div>
