@@ -7,6 +7,8 @@ import { useRegister, selectAge } from "@/lib/store";
 import {
   FEST_NAME,
   FEST_ORG,
+  BOYS_OUTDOOR_SPORTS,
+  GIRLS_OUTDOOR_SPORTS,
   OUTDOOR_SPORTS,
   INDOOR_SPORTS,
   ROLE_META,
@@ -66,7 +68,7 @@ export function useFestQr() {
 }
 
 function sportChip(name: string) {
-  const all = [...OUTDOOR_SPORTS, ...INDOOR_SPORTS];
+  const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
   const found = all.find((sp) => sp.name === name);
   return found ? `${found.emoji} ${found.name}` : `⚡ ${name}`;
 }

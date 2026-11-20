@@ -207,6 +207,7 @@ export const BOYS_OUTDOOR_SPORTS = [
   { emoji: "🏏", name: "CRICKET" },
   { emoji: "⚽", name: "FOOTBALL" },
   { emoji: "🏐", name: "VOLLEYBALL" },
+  { emoji: "🥒", name: "PICKLEBALL" },
 ] as const;
 
 export const GIRLS_OUTDOOR_SPORTS = [
@@ -214,6 +215,7 @@ export const GIRLS_OUTDOOR_SPORTS = [
   { emoji: "🏐", name: "THROWBALL" },
   { emoji: "🪢", name: "TUG OF WAR" },
   { emoji: "🏃‍♀️", name: "KHO KHO" },
+  { emoji: "🥒", name: "PICKLEBALL" },
 ] as const;
 
 export const OUTDOOR_SPORTS = BOYS_OUTDOOR_SPORTS;
@@ -227,7 +229,6 @@ export const INDOOR_SPORTS = [
   { emoji: "🏓", name: "TABLE TENNIS" },
   { emoji: "♟️", name: "CHESS" },
   { emoji: "🏸", name: "BADMINTON" },
-  { emoji: "🥒", name: "PICKLEBALL" },
   { emoji: "🎯", name: "CARROM" },
 ] as const;
 

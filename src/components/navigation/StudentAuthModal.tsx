@@ -313,14 +313,32 @@ export function StudentAuthModal({
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleGoRegister}
-                className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95"
-              >
-                <UserPlus className="h-4 w-4" />
-                START NEW REGISTRATION →
-              </button>
+              <div className="grid gap-2.5">
+                <button
+                  type="button"
+                  onClick={() => {
+                    s.set("role", "sports");
+                    onOpenChange(false);
+                    router.push("/register");
+                  }}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95"
+                >
+                  <span>⚡</span>
+                  <span>REGISTER FOR SPORTS TEAM →</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    s.set("role", "cultural");
+                    onOpenChange(false);
+                    router.push("/register");
+                  }}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border-2 border-fest-orange/40 bg-white/80 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs transition hover:border-fest-orange hover:bg-white active:scale-95"
+                >
+                  <span>🎭</span>
+                  <span>REGISTER FOR CULTURAL TEAM →</span>
+                </button>
+              </div>
 
               <div className="text-center pt-2">
                 <p className="font-mono text-xs text-fest-label">

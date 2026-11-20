@@ -174,17 +174,21 @@ export function SectionLabel({
 }: {
   emoji: string;
   title: string;
-  right?: string;
+  right?: React.ReactNode;
 }) {
   return (
     <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-      <span className="text-xs font-bold uppercase tracking-[0.14em] text-fest-white/90">
+      <span className="text-xs font-bold uppercase tracking-[0.14em] text-fest-deep/90">
         {emoji} {title}
       </span>
       {right && (
-        <span className="rounded-md border border-white/80 bg-white/60 px-2 py-0.5 font-mono text-[10px] tracking-wider text-fest-label shadow-sm backdrop-blur-sm">
-          {right}
-        </span>
+        typeof right === "string" ? (
+          <span className="rounded-md border border-white/80 bg-white/60 px-2 py-0.5 font-mono text-[10px] tracking-wider text-fest-label shadow-sm backdrop-blur-sm">
+            {right}
+          </span>
+        ) : (
+          right
+        )
       )}
     </div>
   );

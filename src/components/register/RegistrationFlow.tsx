@@ -11,7 +11,16 @@ import { Step4Sports } from "./Step4Sports";
 import { SuccessScreen } from "./SuccessScreen";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 
-type Step = 1 | 2 | 3 | 4 | "success";
+type Step = "choose-team" | 1 | 2 | 3 | 4 | "success";
+
+const stepOrder: Record<Step, number> = {
+  "choose-team": 0,
+  1: 1,
+  2: 2,
+  3: 3,
+  4: 4,
+  success: 5,
+};
 
 const stepVariants = {
   enter: (dir: number) => ({
@@ -35,13 +44,13 @@ const stepVariants = {
 
 export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean } = {}) {
   const s = useRegister();
-  const [step, setStep] = React.useState<Step>(1);
+  const [step, setStep] = React.useState<Step>(() => (s.role ? 1 : "choose-team"));
   const [dir, setDir] = React.useState(1);
   const { toast } = useToast();
 
   const go = (n: Step) => {
-    const cur = step === "success" ? 5 : step;
-    const nxt = n === "success" ? 5 : n;
+    const cur = stepOrder[step];
+    const nxt = stepOrder[n];
     setDir(nxt >= cur ? 1 : -1);
     setStep(n);
     if (typeof window !== "undefined") window.scrollTo({ top: 0 });
@@ -59,11 +68,14 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
         description: `OTP codes sent to ${st.email} and +91 ${st.mobile}.`,
       });
     }
-     
   }, [step]);
 
   const stepLabel =
-    step === "success" ? "COMPLETE ✓" : `STEP 0${step} / 04`;
+    step === "choose-team"
+      ? "TEAM SELECTION"
+      : step === "success"
+      ? "COMPLETE ✓"
+      : `STEP 0${step} / 04`;
 
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
@@ -129,7 +141,7 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
               <button
                 onClick={() => {
                   s.resetAll();
-                  setStep(1);
+                  setStep("choose-team");
                   toast({
                     title: "STORE CLEARED",
                     description: "Saved registration reset. Ready for a new registration.",
@@ -153,9 +165,104 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
               animate="center"
               exit="exit"
             >
+              {step === "choose-team" && (
+                <SectionErrorBoundary name="Choose Team Step">
+                  <div className="py-2 md:py-6">
+                    <div className="text-center">
+                      <span className="font-mono text-[11px] font-bold uppercase tracking-[0.25em] text-fest-orange">
+                        SMJV YOUTH FESTIVAL 2026 · REGISTRATION
+                      </span>
+                      <h1 className="mt-2 font-display text-2xl uppercase tracking-wide text-fest-deep sm:text-4xl">
+                        SELECT YOUR PARTICIPATION TEAM
+                      </h1>
+                      <p className="mx-auto mt-2 max-w-xl text-xs sm:text-sm text-fest-label">
+                        Please select how you will participate in the festival. Choose either the Sports Team or Cultural Team to proceed.
+                      </p>
+                    </div>
+
+                    <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-8 max-w-3xl mx-auto">
+                      {/* Option 1: Sports Team */}
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          s.set("role", "sports");
+                          go(1);
+                        }}
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border-2 border-fest-orange/30 bg-white/80 p-6 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl transition hover:border-fest-orange hover:shadow-[0_20px_50px_rgba(217,119,6,0.2)]"
+                      >
+                        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-fest-yellow/20 to-fest-orange/20 blur-2xl transition group-hover:scale-125" />
+                        <div>
+                          <div className="mb-5 flex items-center justify-between">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-fest-yellow to-fest-orange text-2xl shadow-md shadow-fest-orange/30">
+                              ⚡
+                            </div>
+                            <span className="rounded-full border border-fest-orange/30 bg-fest-orange/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-fest-orange">
+                              ATHLETICS &amp; TIES
+                            </span>
+                          </div>
+                          <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-fest-orange transition-colors">
+                            REGISTER FOR SPORTS TEAM
+                          </h2>
+                          <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-fest-label">
+                            Participate as a competing athlete in outdoor and indoor tournament sports (Cricket, Football, Volleyball, Pickleball, Table Tennis, Chess, Badminton, Carrom, Throwball, Tug of War, Kho Kho).
+                          </p>
+                        </div>
+                        <div className="mt-6 flex items-center justify-between border-t border-fest-orange/15 pt-4">
+                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
+                            Continue as Sports Team
+                          </span>
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-bold text-fest-ink shadow-sm group-hover:translate-x-1 transition-transform">
+                            →
+                          </span>
+                        </div>
+                      </motion.button>
+
+                      {/* Option 2: Cultural Team */}
+                      <motion.button
+                        type="button"
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          s.set("role", "cultural");
+                          go(1);
+                        }}
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border-2 border-fest-orange/30 bg-white/80 p-6 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl transition hover:border-fest-orange hover:shadow-[0_20px_50px_rgba(217,119,6,0.2)]"
+                      >
+                        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-amber-400/20 to-rose-500/20 blur-2xl transition group-hover:scale-125" />
+                        <div>
+                          <div className="mb-5 flex items-center justify-between">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-2xl shadow-md shadow-rose-500/30">
+                              🎭
+                            </div>
+                            <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                              STAGE &amp; ARTS
+                            </span>
+                          </div>
+                          <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-fest-orange transition-colors">
+                            REGISTER FOR CULTURAL TEAM
+                          </h2>
+                          <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-fest-label">
+                            Represent your hostel branch in Garba, stage drama, music, dance performances, and traditional cultural events.
+                          </p>
+                        </div>
+                        <div className="mt-6 flex items-center justify-between border-t border-fest-orange/15 pt-4">
+                          <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
+                            Continue as Cultural Team
+                          </span>
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-bold text-fest-ink shadow-sm group-hover:translate-x-1 transition-transform">
+                            →
+                          </span>
+                        </div>
+                      </motion.button>
+                    </div>
+                  </div>
+                </SectionErrorBoundary>
+              )}
               {step === 1 && (
                 <SectionErrorBoundary name="Account Setup Form">
-                  <Step1Account onNext={() => go(2)} />
+                  <Step1Account onBack={() => go("choose-team")} onNext={() => go(2)} />
                 </SectionErrorBoundary>
               )}
               {step === 2 && (

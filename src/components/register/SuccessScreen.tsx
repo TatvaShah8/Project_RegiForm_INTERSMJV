@@ -4,7 +4,7 @@ import * as React from "react";
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useRegister, selectAge } from "@/lib/store";
-import { ROLE_META, fullName, OUTDOOR_SPORTS, INDOOR_SPORTS, formatDob } from "@/lib/fest";
+import { ROLE_META, fullName, BOYS_OUTDOOR_SPORTS, GIRLS_OUTDOOR_SPORTS, OUTDOOR_SPORTS, INDOOR_SPORTS, formatDob } from "@/lib/fest";
 import { useToast } from "@/hooks/use-toast";
 import { printPassCard } from "@/lib/print-pass";
 import { useFestQr, IdPass } from "./IdPass";
@@ -35,7 +35,7 @@ export function SuccessScreen() {
       year: s.year || "—",
       role: roleMeta?.passLabel ?? "PARTICIPANT",
       sports: sports.map((name) => {
-        const all = [...OUTDOOR_SPORTS, ...INDOOR_SPORTS];
+        const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
         const found = all.find((sp) => sp.name === name);
         return found ? `${found.emoji} ${found.name}` : name;
       }),
