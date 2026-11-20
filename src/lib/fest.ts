@@ -62,144 +62,103 @@ export interface TrackPantSizeInfo {
   size: string;
   waist: string;
   length: string;
+  rise?: string;
 }
 
-/** Standardized Girls Sports Jersey Size Chart */
-export const GIRLS_JERSEY_SIZE_CHART: readonly JerseySizeInfo[] = [
-  { size: "XS (34)", chest: "34", length: "24" },
-  { size: "S (36)", chest: "36", length: "25" },
-  { size: "M (38)", chest: "38", length: "26" },
-  { size: "L (40)", chest: "40", length: "27" },
-  { size: "XL (42)", chest: "42", length: "28" },
-  { size: "XXL (44)", chest: "44", length: "29" },
-  { size: "XXXL (46)", chest: "46", length: "30" },
+/** Official Standardized Jersey Size Chart (for both Boys and Girls) */
+export const JERSEY_SIZE_CHART: readonly JerseySizeInfo[] = [
+  { size: "XXS", chest: "32", length: "24" },
+  { size: "XS", chest: "34", length: "25" },
+  { size: "S", chest: "36", length: "26" },
+  { size: "M", chest: "38", length: "27" },
+  { size: "L", chest: "40", length: "28" },
+  { size: "XL", chest: "42", length: "29" },
+  { size: "XXL", chest: "44", length: "30" },
+  { size: "XXXL", chest: "46", length: "31" },
+  { size: "XXXXL", chest: "48", length: "32" },
 ] as const;
 
-export const GIRLS_JERSEY_SIZES = [
-  "XS (34)",
-  "S (36)",
-  "M (38)",
-  "L (40)",
-  "XL (42)",
-  "XXL (44)",
-  "XXXL (46)",
+export const JERSEY_SIZES = [
+  "XXS",
+  "XS",
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "XXXL",
+  "XXXXL",
 ] as const;
 
-/** STARTDESI – Men's Sports Jersey Size Chart */
-export const BOYS_JERSEY_SIZE_CHART: readonly JerseySizeInfo[] = [
-  { size: "36 (S)", chest: "36", length: "26" },
-  { size: "38 (M)", chest: "38", length: "27" },
-  { size: "40 (L)", chest: "40", length: "28" },
-  { size: "42 (XL)", chest: "42", length: "29" },
-  { size: "44 (XXL)", chest: "44", length: "30" },
+/** Official Standardized Pant Size Chart (for both Boys and Girls) */
+export const TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
+  { size: "S", waist: "28", length: "36", rise: "—" },
+  { size: "M", waist: "30", length: "37", rise: "—" },
+  { size: "L", waist: "32", length: "38", rise: "—" },
+  { size: "XL", waist: "34", length: "39", rise: "—" },
+  { size: "XXL", waist: "36", length: "40", rise: "—" },
+  { size: "3XL", waist: "44–46", length: "45", rise: "14 ½" },
+  { size: "4XL", waist: "48–50", length: "45", rise: "14 ½" },
+  { size: "5XL", waist: "52–54", length: "46", rise: "15" },
 ] as const;
 
-export const BOYS_JERSEY_SIZES = [
-  "36 (S)",
-  "38 (M)",
-  "40 (L)",
-  "42 (XL)",
-  "44 (XXL)",
+export const TRACK_PANT_SIZES = [
+  "S",
+  "M",
+  "L",
+  "XL",
+  "XXL",
+  "3XL",
+  "4XL",
+  "5XL",
 ] as const;
 
-export const TSHIRT_SIZES = BOYS_JERSEY_SIZES;
+// Backward-compatible aliases (unified for both genders)
+export const BOYS_JERSEY_SIZE_CHART = JERSEY_SIZE_CHART;
+export const GIRLS_JERSEY_SIZE_CHART = JERSEY_SIZE_CHART;
+export const BOYS_JERSEY_SIZES = JERSEY_SIZES;
+export const GIRLS_JERSEY_SIZES = JERSEY_SIZES;
+export const TSHIRT_SIZES = JERSEY_SIZES;
 
-/** Standardized Girls Track Pants Size Chart */
-export const GIRLS_TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
-  { size: "XS (34)", waist: "26–28", length: "36" },
-  { size: "S (36)", waist: "28–30", length: "37" },
-  { size: "M (38)", waist: "30–32", length: "38" },
-  { size: "L (40)", waist: "32–34", length: "39" },
-  { size: "XL (42)", waist: "34–36", length: "40" },
-  { size: "XXL (44)", waist: "36–38", length: "41" },
-  { size: "XXXL (46)", waist: "38–40", length: "42" },
-] as const;
+export const BOYS_TRACK_PANT_SIZE_CHART = TRACK_PANT_SIZE_CHART;
+export const GIRLS_TRACK_PANT_SIZE_CHART = TRACK_PANT_SIZE_CHART;
+export const BOYS_TRACK_PANT_SIZES = TRACK_PANT_SIZES;
+export const GIRLS_TRACK_PANT_SIZES = TRACK_PANT_SIZES;
+export const WAIST_SIZES = TRACK_PANT_SIZES;
 
-export const GIRLS_TRACK_PANT_SIZES = [
-  "XS (34)",
-  "S (36)",
-  "M (38)",
-  "L (40)",
-  "XL (42)",
-  "XXL (44)",
-  "XXXL (46)",
-] as const;
-
-/** Standardized Boys Track Pants Size Chart */
-export const BOYS_TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
-  { size: "36 (S)", waist: "28–30", length: "38" },
-  { size: "38 (M)", waist: "30–32", length: "39" },
-  { size: "40 (L)", waist: "32–34", length: "40" },
-  { size: "42 (XL)", waist: "34–36", length: "41" },
-  { size: "44 (XXL)", waist: "36–38", length: "42" },
-  { size: "46 (3XL)", waist: "38–40", length: "43" },
-] as const;
-
-export const BOYS_TRACK_PANT_SIZES = [
-  "36 (S)",
-  "38 (M)",
-  "40 (L)",
-  "42 (XL)",
-  "44 (XXL)",
-  "46 (3XL)",
-] as const;
-
-// Backward-compatible defaults
-export const TRACK_PANT_SIZE_CHART = BOYS_TRACK_PANT_SIZE_CHART;
-export const TRACK_PANT_SIZES = BOYS_TRACK_PANT_SIZES;
-export const WAIST_SIZES = BOYS_TRACK_PANT_SIZES;
-
-export function getTshirtSizesForGender(gender?: string | null): readonly string[] {
-  if (gender === "FEMALE") return GIRLS_JERSEY_SIZES;
-  return TSHIRT_SIZES;
+export function getTshirtSizesForGender(_gender?: string | null): readonly string[] {
+  return JERSEY_SIZES;
 }
 
-export function getTrackPantSizesForGender(gender?: string | null): readonly string[] {
-  if (gender === "FEMALE") return GIRLS_TRACK_PANT_SIZES;
-  return BOYS_TRACK_PANT_SIZES;
+export function getTrackPantSizesForGender(_gender?: string | null): readonly string[] {
+  return TRACK_PANT_SIZES;
 }
 
 export function getTrackPantSizeInfo(
   val?: string,
-  gender?: string | null
+  _gender?: string | null
 ): TrackPantSizeInfo | undefined {
   if (!val) return undefined;
   const clean = val.trim().toLowerCase();
-  const list = gender === "FEMALE" ? GIRLS_TRACK_PANT_SIZE_CHART : BOYS_TRACK_PANT_SIZE_CHART;
-  const foundInList =
-    list.find((item) => item.size.toLowerCase() === clean) ||
-    list.find((item) => item.size.toLowerCase().includes(clean)) ||
-    list.find((item) => item.waist.includes(clean));
-  if (foundInList) return foundInList;
-
-  const otherList = gender === "FEMALE" ? BOYS_TRACK_PANT_SIZE_CHART : GIRLS_TRACK_PANT_SIZE_CHART;
   return (
-    otherList.find((item) => item.size.toLowerCase() === clean) ||
-    otherList.find((item) => item.size.toLowerCase().includes(clean)) ||
-    otherList.find((item) => item.waist.includes(clean))
+    TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase() === clean) ||
+    TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase() === clean.replace(/[^a-z0-9]/g, "")) ||
+    TRACK_PANT_SIZE_CHART.find((item) => clean.includes(item.size.toLowerCase())) ||
+    TRACK_PANT_SIZE_CHART.find((item) => item.waist.includes(clean))
   );
 }
 
 export function getJerseySizeInfo(
   val?: string,
-  gender?: string | null
+  _gender?: string | null
 ): JerseySizeInfo | undefined {
   if (!val) return undefined;
   const clean = val.trim().toLowerCase();
-  const list = gender === "FEMALE" ? GIRLS_JERSEY_SIZE_CHART : BOYS_JERSEY_SIZE_CHART;
-  const foundInList =
-    list.find((item) => item.size.toLowerCase() === clean) ||
-    list.find((item) => item.size.toLowerCase().includes(`(${clean})`)) ||
-    list.find((item) => item.size.toLowerCase().includes(clean)) ||
-    list.find((item) => item.chest.includes(clean));
-  if (foundInList) return foundInList;
-
-  const otherList = gender === "FEMALE" ? BOYS_JERSEY_SIZE_CHART : GIRLS_JERSEY_SIZE_CHART;
   return (
-    otherList.find((item) => item.size.toLowerCase() === clean) ||
-    otherList.find((item) => item.size.toLowerCase().includes(`(${clean})`)) ||
-    otherList.find((item) => item.size.toLowerCase().includes(clean)) ||
-    otherList.find((item) => item.chest.includes(clean))
+    JERSEY_SIZE_CHART.find((item) => item.size.toLowerCase() === clean) ||
+    JERSEY_SIZE_CHART.find((item) => item.size.toLowerCase() === clean.replace(/[^a-z0-9]/g, "")) ||
+    JERSEY_SIZE_CHART.find((item) => clean.includes(item.size.toLowerCase())) ||
+    JERSEY_SIZE_CHART.find((item) => item.chest === clean)
   );
 }
 

@@ -10,10 +10,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import {
-  GIRLS_JERSEY_SIZE_CHART,
-  GIRLS_TRACK_PANT_SIZE_CHART,
-  BOYS_TRACK_PANT_SIZE_CHART,
-  BOYS_JERSEY_SIZE_CHART,
+  JERSEY_SIZE_CHART,
+  TRACK_PANT_SIZE_CHART,
   type JerseySizeInfo,
   type TrackPantSizeInfo,
 } from "@/lib/fest";
@@ -46,32 +44,22 @@ export function TrackPantSizeModal({
   onSelectSize,
 }: TrackPantSizeModalProps) {
   const [category, setCategory] = React.useState<"jersey" | "track-pants">(initialCategory);
-  const [activeGender, setActiveGender] = React.useState<"FEMALE" | "MALE">(
-    gender === "FEMALE" ? "FEMALE" : "MALE"
-  );
 
   // Sync state whenever modal opens or initial values change
   React.useEffect(() => {
     if (open) {
       setCategory(initialCategory);
-      setActiveGender(gender === "FEMALE" ? "FEMALE" : "MALE");
     }
-  }, [open, initialCategory, gender]);
+  }, [open, initialCategory]);
 
   const effectiveTrackPantSize = selectedTrackPantSize || selectedSize;
   const effectiveSelectTrackPant = onSelectTrackPantSize || onSelectSize;
 
-  const isGirls = activeGender === "FEMALE";
   const isJersey = category === "jersey";
 
-  // Determine current chart title matching the official documents
   const chartTitle = isJersey
-    ? isGirls
-      ? "Standardized Girls Sports Jersey Size Chart"
-      : "STARTDESI – Men's Sports Jersey Size Chart"
-    : isGirls
-    ? "Standardized Girls Track Pants Size Chart"
-    : "STARTDESI – Men's Track Pants Size Chart";
+    ? "Jersey Size Chart"
+    : "Pant Size Chart";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,15 +76,14 @@ export function TrackPantSizeModal({
                   {chartTitle}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-fest-label">
-                  SMJV Youth Festival 2026 Tournament Apparel Measurement Guide (Inches)
+                  SMJV Youth Festival 2026 · All measurements are in inches (Boys &amp; Girls)
                 </DialogDescription>
               </div>
             </div>
           </div>
 
-          {/* Dual Tabs: Category + Division */}
+          {/* Category Tabs: Jersey vs Track Pants */}
           <div className="mt-4 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
-            {/* Category Tabs: Jersey vs Track Pants */}
             <div className="flex rounded-lg bg-black/40 p-1 border border-white/10">
               <button
                 type="button"
@@ -122,36 +109,12 @@ export function TrackPantSizeModal({
                 )}
               >
                 <Ruler className="h-3.5 w-3.5" />
-                <span>Track Pants</span>
+                <span>Pant / Lower</span>
               </button>
             </div>
 
-            {/* Division Switcher: Girls vs Boys */}
-            <div className="flex rounded-lg bg-black/40 p-1 border border-white/10">
-              <button
-                type="button"
-                onClick={() => setActiveGender("FEMALE")}
-                className={cn(
-                  "rounded-md px-2.5 py-1 text-xs font-bold transition",
-                  isGirls
-                    ? "bg-purple-600 text-white shadow-sm"
-                    : "text-fest-label hover:text-white"
-                )}
-              >
-                👩 Girls Division
-              </button>
-              <button
-                type="button"
-                onClick={() => setActiveGender("MALE")}
-                className={cn(
-                  "rounded-md px-2.5 py-1 text-xs font-bold transition",
-                  !isGirls
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "text-fest-label hover:text-white"
-                )}
-              >
-                👨 Boys Division
-              </button>
+            <div className="inline-flex items-center gap-1.5 rounded-md border border-fest-orange/30 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange">
+              <span>👥 Both Boys &amp; Girls</span>
             </div>
           </div>
         </div>
@@ -171,51 +134,49 @@ export function TrackPantSizeModal({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10 font-mono">
-                  {(isGirls ? GIRLS_JERSEY_SIZE_CHART : BOYS_JERSEY_SIZE_CHART).map(
-                    (row: JerseySizeInfo) => {
-                      const isSelected =
-                        selectedJerseySize === row.size ||
-                        (selectedJerseySize &&
-                          row.size.toLowerCase().includes(selectedJerseySize.toLowerCase()));
+                  {JERSEY_SIZE_CHART.map((row: JerseySizeInfo) => {
+                    const isSelected =
+                      selectedJerseySize === row.size ||
+                      (selectedJerseySize &&
+                        row.size.toLowerCase() === selectedJerseySize.toLowerCase());
 
-                      return (
-                        <tr
-                          key={row.size}
-                          onClick={() => {
-                            if (onSelectJerseySize) {
-                              onSelectJerseySize(row.size);
-                              onOpenChange(false);
-                            }
-                          }}
-                          className={cn(
-                            "cursor-pointer transition-colors duration-150",
-                            isSelected
-                              ? "bg-fest-orange/20 text-white font-bold"
-                              : "hover:bg-white/10 text-white/90"
-                          )}
-                        >
-                          <td className="px-4 py-3 font-bold tracking-wide">
-                            <span className={cn(isSelected ? "text-fest-orange" : "text-white")}>
-                              {row.size}
+                    return (
+                      <tr
+                        key={row.size}
+                        onClick={() => {
+                          if (onSelectJerseySize) {
+                            onSelectJerseySize(row.size);
+                            onOpenChange(false);
+                          }
+                        }}
+                        className={cn(
+                          "cursor-pointer transition-colors duration-150",
+                          isSelected
+                            ? "bg-fest-orange/20 text-white font-bold"
+                            : "hover:bg-white/10 text-white/90"
+                        )}
+                      >
+                        <td className="px-4 py-2.5 font-bold tracking-wide">
+                          <span className={cn(isSelected ? "text-fest-orange" : "text-white")}>
+                            {row.size}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.chest}</td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.length}</td>
+                        <td className="px-3 py-2.5 text-right">
+                          {isSelected ? (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-fest-orange px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fest-ink shadow-xs">
+                              <Check className="h-3 w-3" /> Selected
                             </span>
-                          </td>
-                          <td className="px-4 py-3 font-medium text-white/90">{row.chest}</td>
-                          <td className="px-4 py-3 font-medium text-white/90">{row.length}</td>
-                          <td className="px-3 py-3 text-right">
-                            {isSelected ? (
-                              <span className="inline-flex items-center gap-1 rounded-md bg-fest-orange px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fest-ink shadow-xs">
-                                <Check className="h-3 w-3" /> Selected
-                              </span>
-                            ) : (
-                              <span className="text-[11px] text-fest-label/60 transition group-hover:text-fest-orange">
-                                Select →
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                          ) : (
+                            <span className="text-[11px] text-fest-label/60 transition hover:text-fest-orange">
+                              Select →
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             ) : (
@@ -226,61 +187,61 @@ export function TrackPantSizeModal({
                     <th className="px-4 py-3 font-bold">Size</th>
                     <th className="px-4 py-3 font-bold">Waist (inches)</th>
                     <th className="px-4 py-3 font-bold">Length (inches)</th>
+                    <th className="px-4 py-3 font-bold">Rise</th>
                     <th className="px-3 py-3 text-right font-bold">Action</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/10 font-mono">
-                  {(isGirls ? GIRLS_TRACK_PANT_SIZE_CHART : BOYS_TRACK_PANT_SIZE_CHART).map(
-                    (row: TrackPantSizeInfo) => {
-                      const isSelected =
-                        effectiveTrackPantSize === row.size ||
-                        (effectiveTrackPantSize &&
-                          row.size.toLowerCase().includes(effectiveTrackPantSize.toLowerCase()));
+                  {TRACK_PANT_SIZE_CHART.map((row: TrackPantSizeInfo) => {
+                    const isSelected =
+                      effectiveTrackPantSize === row.size ||
+                      (effectiveTrackPantSize &&
+                        row.size.toLowerCase() === effectiveTrackPantSize.toLowerCase());
 
-                      return (
-                        <tr
-                          key={row.size}
-                          onClick={() => {
-                            if (effectiveSelectTrackPant) {
-                              effectiveSelectTrackPant(row.size);
-                              onOpenChange(false);
-                            }
-                          }}
-                          className={cn(
-                            "cursor-pointer transition-colors duration-150",
-                            isSelected
-                              ? "bg-fest-orange/20 text-white font-bold"
-                              : "hover:bg-white/10 text-white/90"
-                          )}
-                        >
-                          <td className="px-4 py-3 font-bold tracking-wide">
-                            <span className={cn(isSelected ? "text-fest-orange" : "text-white")}>
-                              {row.size}
+                    return (
+                      <tr
+                        key={row.size}
+                        onClick={() => {
+                          if (effectiveSelectTrackPant) {
+                            effectiveSelectTrackPant(row.size);
+                            onOpenChange(false);
+                          }
+                        }}
+                        className={cn(
+                          "cursor-pointer transition-colors duration-150",
+                          isSelected
+                            ? "bg-fest-orange/20 text-white font-bold"
+                            : "hover:bg-white/10 text-white/90"
+                        )}
+                      >
+                        <td className="px-4 py-2.5 font-bold tracking-wide">
+                          <span className={cn(isSelected ? "text-fest-orange" : "text-white")}>
+                            {row.size}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.waist}</td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.length}</td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.rise || "—"}</td>
+                        <td className="px-3 py-2.5 text-right">
+                          {isSelected ? (
+                            <span className="inline-flex items-center gap-1 rounded-md bg-fest-orange px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fest-ink shadow-xs">
+                              <Check className="h-3 w-3" /> Selected
                             </span>
-                          </td>
-                          <td className="px-4 py-3 font-medium text-white/90">{row.waist}</td>
-                          <td className="px-4 py-3 font-medium text-white/90">{row.length}</td>
-                          <td className="px-3 py-3 text-right">
-                            {isSelected ? (
-                              <span className="inline-flex items-center gap-1 rounded-md bg-fest-orange px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fest-ink shadow-xs">
-                                <Check className="h-3 w-3" /> Selected
-                              </span>
-                            ) : (
-                              <span className="text-[11px] text-fest-label/60 transition group-hover:text-fest-orange">
-                                Select →
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                          ) : (
+                            <span className="text-[11px] text-fest-label/60 transition hover:text-fest-orange">
+                              Select →
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
           </div>
 
-          {/* Measuring Guide Footer */}
+          {/* Measuring Guide Footer matching image instructions */}
           <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3.5 text-xs leading-relaxed text-fest-label">
             <div className="flex items-start gap-2">
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-fest-orange" />
@@ -288,19 +249,22 @@ export function TrackPantSizeModal({
                 {isJersey ? (
                   <>
                     <p>
-                      <strong className="text-fest-white">Chest:</strong> Measured horizontally around the fullest part of the chest under arms.
+                      <strong className="text-fest-white">Chest:</strong> Measure around the fullest part of your chest for best fit.
                     </p>
                     <p>
-                      <strong className="text-fest-white">Length:</strong> Measured from the highest point of shoulder straight down to the bottom hem.
+                      <strong className="text-fest-white">Length:</strong> Length measured from shoulder seam straight down to hem.
                     </p>
                   </>
                 ) : (
                   <>
                     <p>
-                      <strong className="text-fest-white">Waist:</strong> Measured around natural waist circumference where the waistband rests comfortably.
+                      <strong className="text-fest-white">Waist:</strong> Measure at your natural waistline.
                     </p>
                     <p>
-                      <strong className="text-fest-white">Length:</strong> Total outer length measured from waistband down to bottom ankle cuff.
+                      <strong className="text-fest-white">Length:</strong> From top of waistband to hem (outseam).
+                    </p>
+                    <p>
+                      <strong className="text-fest-white">Rise:</strong> From crotch to top of waistband.
                     </p>
                   </>
                 )}

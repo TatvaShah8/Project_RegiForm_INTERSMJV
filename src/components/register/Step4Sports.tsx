@@ -211,6 +211,9 @@ export function Step4Sports({
               <span className="font-mono text-[11px] text-fest-label">
                 Waist: <b className="text-fest-white">{pantInfo.waist}&quot;</b> · Length:{" "}
                 <b className="text-fest-white">{pantInfo.length}&quot;</b>
+                {pantInfo.rise && pantInfo.rise !== "—" ? (
+                  <> · Rise: <b className="text-fest-white">{pantInfo.rise}&quot;</b></>
+                ) : null}
               </span>
             </div>
           ) : (
@@ -221,7 +224,7 @@ export function Step4Sports({
                 onClick={() => openSizeChart("track-pants")}
                 className="font-semibold text-fest-orange hover:underline"
               >
-                View Measurements (Waist &amp; Length) →
+                View Measurements (Waist, Length &amp; Rise) →
               </button>
             </div>
           )}
