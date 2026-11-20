@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Mail,
@@ -148,7 +147,7 @@ export function ContactView() {
                   </div>
 
                   <p className="mx-auto mt-4 max-w-md text-xs leading-relaxed text-fest-label">
-                    Your complaint has been registered in the <b>Admin Helpdesk Dashboard</b>. Our team will review the issue and respond directly to your email address.
+                    Your inquiry has been registered. Our team will review the issue and respond directly to your email address.
                   </p>
 
                   <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
@@ -249,51 +248,12 @@ export function ContactView() {
                       <span>{isSubmitting ? "LOGGING ISSUE..." : "SUBMIT ISSUE & SEND EMAIL"}</span>
                       <ArrowRight className="h-4 w-4" />
                     </button>
-                    <p className="mt-2 text-center font-mono text-[10px] text-fest-label">
-                      Ticket is recorded in the Admin Helpdesk and sent to the organizing committee.
-                    </p>
                   </div>
                 </motion.form>
               )}
             </AnimatePresence>
           </div>
         </div>
-
-        {/* ── Organizer Admin Access Link ── */}
-        <div className="mt-8 text-center">
-          <Link
-            href="/admin/support"
-            className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-white/60 px-4 py-1.5 font-mono text-xs font-bold text-fest-orange shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-white active:scale-95"
-          >
-            <span>ORGANIZER? OPEN ADMIN HELPDESK DASHBOARD</span>
-            <ArrowRight className="h-3 w-3" />
-          </Link>
-        </div>
-
-        {/* ── Direct Contact Info Strip ── */}
-        <section className="mt-12 rounded-3xl border border-white/80 bg-white/65 p-6 shadow-xs backdrop-blur-xl sm:p-7">
-          <div className="flex flex-col items-center justify-between gap-4 text-center sm:flex-row sm:text-left">
-            <div>
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-fest-orange">
-                DIRECT HELPLINE & VENUE
-              </span>
-              <h4 className="font-display text-lg uppercase tracking-wide text-fest-deep">
-                SMJV YOUTH FESTIVAL 2026 ORGANIZING COMMITTEE
-              </h4>
-              <p className="mt-0.5 font-mono text-xs text-fest-label">
-                Shri Mahavira Jaina Vidyalaya, Vadodara Branch · 24–27 Dec 2026
-              </p>
-            </div>
-
-            <a
-              href={`mailto:${ADMIN_SUPPORT_EMAIL}`}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-fest-deep/20 bg-white/90 px-3.5 py-2 font-mono text-xs font-bold text-fest-deep shadow-xs transition hover:bg-white"
-            >
-              <Mail className="h-3.5 w-3.5 text-fest-orange" />
-              <span>{ADMIN_SUPPORT_EMAIL}</span>
-            </a>
-          </div>
-        </section>
       </main>
     </div>
   );
