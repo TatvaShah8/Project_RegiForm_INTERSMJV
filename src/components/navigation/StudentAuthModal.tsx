@@ -95,7 +95,7 @@ export function StudentAuthModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md overflow-hidden border border-white/85 bg-white/95 p-0 shadow-[0_24px_64px_rgba(28,36,56,0.18)] backdrop-blur-2xl sm:rounded-3xl">
+      <DialogContent className="max-w-md sm:max-w-xl overflow-hidden border border-white/85 bg-white/95 p-0 shadow-[0_24px_64px_rgba(28,36,56,0.18)] backdrop-blur-2xl sm:rounded-3xl">
         <DialogHeader className="sr-only">
           <DialogTitle>Student Portal Login & Registration</DialogTitle>
           <DialogDescription>Log in to access your tournament pass or start a new student registration.</DialogDescription>
@@ -289,31 +289,21 @@ export function StudentAuthModal({
           ) : (
             /* Register tab */
             <div className="space-y-4">
-              <div>
-                <h3 className="font-display text-base uppercase tracking-wide text-fest-deep">
-                  New Student Registration
+              <div className="text-center">
+                <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-fest-orange">
+                  SMJV YOUTH FESTIVAL 2026 · REGISTRATION
+                </span>
+                <h3 className="mt-1 font-display text-xl uppercase tracking-wide text-fest-deep sm:text-2xl">
+                  Choose Your Participation Team
                 </h3>
-                <p className="mt-0.5 text-xs text-fest-label">
-                  Join SMJV Youth Festival 2026! Complete the simple 4-step registration to participate and get your tournament ID badge.
+                <p className="mt-1 text-xs text-fest-label">
+                  Select whether you want to participate in sports competition or cultural stage performances.
                 </p>
               </div>
 
-              <div className="space-y-2.5 rounded-2xl border border-white/80 bg-white/60 p-4 shadow-sm backdrop-blur-md">
-                <div className="flex items-start gap-2.5 text-xs text-fest-deep">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-fest-green" />
-                  <span><b>10 Sports & Events:</b> Boys and girls tournament competition across 7 SMJV branches.</span>
-                </div>
-                <div className="flex items-start gap-2.5 text-xs text-fest-deep">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-fest-green" />
-                  <span><b>Digital ID Pass:</b> Scannable QR code verification badge generated upon completion.</span>
-                </div>
-                <div className="flex items-start gap-2.5 text-xs text-fest-deep">
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-fest-green" />
-                  <span><b>Tournament Kit:</b> Official customized T-Shirt & Track Pant included.</span>
-                </div>
-              </div>
-
-              <div className="grid gap-2.5">
+              {/* Big, Proper Visible Buttons (Curved Rectangular Boxes) */}
+              <div className="grid gap-3.5 pt-1">
+                {/* ── Box 1: Sports Team ── */}
                 <button
                   type="button"
                   onClick={() => {
@@ -321,11 +311,35 @@ export function StudentAuthModal({
                     onOpenChange(false);
                     router.push("/register");
                   }}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95"
+                  className="group relative flex w-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-fest-orange/50 bg-gradient-to-br from-white/95 via-amber-50/50 to-fest-orange/15 p-4 sm:p-5 text-left shadow-[0_12px_32px_rgba(217,119,6,0.12),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-xl transition-all duration-200 hover:border-fest-orange hover:shadow-[0_16px_40px_rgba(217,119,6,0.25)] hover:-translate-y-0.5 active:scale-[0.99]"
                 >
-                  <span>⚡</span>
-                  <span>REGISTER FOR SPORTS TEAM →</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-fest-yellow to-fest-orange text-2xl sm:text-3xl shadow-md shadow-fest-orange/30 text-fest-ink font-bold">
+                        ⚡
+                      </div>
+                      <div>
+                        <span className="inline-block rounded-full border border-fest-orange/30 bg-fest-orange/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-fest-orange">
+                          ATHLETICS &amp; COMPETITION
+                        </span>
+                        <h4 className="mt-0.5 font-display text-base sm:text-lg uppercase tracking-wide text-fest-deep group-hover:text-fest-orange transition-colors">
+                          REGISTER FOR SPORTS TEAM
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="mt-2.5 text-xs text-fest-label leading-relaxed">
+                    Compete in 10+ outdoor &amp; indoor sports (Cricket, Football, Volleyball, Pickleball, Table Tennis, Badminton, Chess &amp; more). Includes custom official jersey with allocated number &amp; track pant.
+                  </p>
+
+                  <div className="mt-3.5 flex items-center justify-between rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-4 py-2.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-sm group-hover:brightness-105 transition">
+                    <span className="font-bold">PROCEED AS SPORTS PLAYER</span>
+                    <span className="text-base font-black transition-transform group-hover:translate-x-1">→</span>
+                  </div>
                 </button>
+
+                {/* ── Box 2: Cultural Team ── */}
                 <button
                   type="button"
                   onClick={() => {
@@ -333,10 +347,32 @@ export function StudentAuthModal({
                     onOpenChange(false);
                     router.push("/register");
                   }}
-                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border-2 border-fest-orange/40 bg-white/80 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs transition hover:border-fest-orange hover:bg-white active:scale-95"
+                  className="group relative flex w-full flex-col justify-between overflow-hidden rounded-2xl sm:rounded-3xl border-2 border-indigo-400/50 bg-gradient-to-br from-white/95 via-indigo-50/50 to-purple-100/30 p-4 sm:p-5 text-left shadow-[0_12px_32px_rgba(99,102,241,0.10),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-xl transition-all duration-200 hover:border-purple-600 hover:shadow-[0_16px_40px_rgba(147,51,234,0.22)] hover:-translate-y-0.5 active:scale-[0.99]"
                 >
-                  <span>🎭</span>
-                  <span>REGISTER FOR CULTURAL TEAM →</span>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-2xl sm:text-3xl shadow-md shadow-purple-500/30 text-white font-bold">
+                        🎭
+                      </div>
+                      <div>
+                        <span className="inline-block rounded-full border border-purple-400/30 bg-purple-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-purple-700">
+                          STAGE ARTS &amp; PERFORMANCES
+                        </span>
+                        <h4 className="mt-0.5 font-display text-base sm:text-lg uppercase tracking-wide text-fest-deep group-hover:text-purple-700 transition-colors">
+                          REGISTER FOR CULTURAL TEAM
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="mt-2.5 text-xs text-fest-label leading-relaxed">
+                    Represent your branch in Garba, Raas, Dance drama, Singing, Instrumental performances &amp; stage showcases. Fast 3-step registration (official customized jersey &amp; track pant included).
+                  </p>
+
+                  <div className="mt-3.5 flex items-center justify-between rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2.5 font-display text-xs uppercase tracking-wider text-white shadow-sm group-hover:brightness-105 transition">
+                    <span className="font-bold">PROCEED AS CULTURAL PERFORMER</span>
+                    <span className="text-base font-black transition-transform group-hover:translate-x-1">→</span>
+                  </div>
                 </button>
               </div>
 

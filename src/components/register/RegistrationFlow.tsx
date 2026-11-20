@@ -231,30 +231,30 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                           s.set("role", "cultural");
                           go(1);
                         }}
-                        className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border-2 border-fest-orange/30 bg-white/80 p-6 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl transition hover:border-fest-orange hover:shadow-[0_20px_50px_rgba(217,119,6,0.2)]"
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border-2 border-indigo-400/40 bg-white/80 p-6 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl transition hover:border-purple-600 hover:shadow-[0_20px_50px_rgba(147,51,234,0.2)]"
                       >
-                        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-amber-400/20 to-rose-500/20 blur-2xl transition group-hover:scale-125" />
+                        <div className="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400/20 to-purple-600/20 blur-2xl transition group-hover:scale-125" />
                         <div>
                           <div className="mb-5 flex items-center justify-between">
-                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-400 to-rose-500 text-2xl shadow-md shadow-rose-500/30">
+                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-2xl shadow-md shadow-purple-500/30 text-white">
                               🎭
                             </div>
-                            <span className="rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-rose-700">
+                            <span className="rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-purple-700">
                               STAGE &amp; ARTS
                             </span>
                           </div>
-                          <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-fest-orange transition-colors">
+                          <h2 className="font-display text-2xl uppercase tracking-wide text-fest-deep group-hover:text-purple-600 transition-colors">
                             REGISTER FOR CULTURAL TEAM
                           </h2>
                           <p className="mt-2.5 text-xs sm:text-sm leading-relaxed text-fest-label">
-                            Represent your hostel branch in Garba, stage drama, music, dance performances, and traditional cultural events.
+                            Represent your hostel branch in Garba, stage drama, music, dance performances, and traditional cultural events (fast 3-step registration with official kit).
                           </p>
                         </div>
-                        <div className="mt-6 flex items-center justify-between border-t border-fest-orange/15 pt-4">
+                        <div className="mt-6 flex items-center justify-between border-t border-purple-200/40 pt-4">
                           <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-deep">
                             Continue as Cultural Team
                           </span>
-                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange font-bold text-fest-ink shadow-sm group-hover:translate-x-1 transition-transform">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 font-bold text-white shadow-sm group-hover:translate-x-1 transition-transform">
                             →
                           </span>
                         </div>
