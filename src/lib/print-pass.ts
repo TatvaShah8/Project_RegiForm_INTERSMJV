@@ -368,11 +368,11 @@ export function printPassCard(data: PassPrintData) {
 
       <div class="sports-row">
         <div>
-          <span class="info-label" style="margin-right: 6px;">SPORTS:</span>
+          <span class="info-label" style="margin-right: 6px;">${data.sports.length > 0 ? "SPORTS:" : "TEAM:"}</span>
           ${sportsHtml}
         </div>
         <div class="kit-badge">
-          <span class="info-label">KIT:</span> ${data.kit} ${data.jerseyNumber ? `· <span style="color:#d97706;font-weight:800;">#${data.jerseyNumber}</span>` : ""}
+          <span class="info-label">${data.jerseyNumber ? "KIT:" : "JERSEY:"}</span> ${data.kit} ${data.jerseyNumber ? `· <span style="color:#d97706;font-weight:800;">#${data.jerseyNumber}</span>` : ""}
         </div>
       </div>
 

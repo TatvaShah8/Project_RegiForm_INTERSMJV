@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Camera, X, RefreshCw } from "lucide-react";
+import { Camera, X, RefreshCw, Shirt } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useRegister, selectAge } from "@/lib/store";
 import {
   getBranchesForGender,
@@ -11,7 +12,11 @@ import {
   RELATIONS,
   MONTHS,
   isPhone,
+  getTshirtSizesForGender,
+  getJerseySizeInfo,
+  AGREEMENT_TEXT,
 } from "@/lib/fest";
+import { TrackPantSizeModal } from "./TrackPantSizeModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
@@ -28,6 +33,7 @@ import {
   Field,
   FestInput,
   CTAButton,
+  PillGroup,
   selectTriggerCls,
   staggerParent,
   staggerChild,
@@ -68,6 +74,10 @@ export function Step3General({
   const [errs, setErrs] = React.useState<Record<string, string>>({});
   const [typed, setTyped] = React.useState("");
   const [calOpen, setCalOpen] = React.useState(false);
+  const [showSizeModal, setShowSizeModal] = React.useState(false);
+
+  const jerseySizes = React.useMemo(() => getTshirtSizesForGender(s.gender), [s.gender]);
+  const jerseyInfo = getJerseySizeInfo(s.tshirt, s.gender);
 
   const setErr = (k: string, v?: string) =>
     setErrs((e) => {
@@ -274,6 +284,12 @@ export function Step3General({
     if (!s.year) e.year = "Select your year";
     if (!isPhone(s.emergency)) e.emergency = "Enter a valid 10-digit guardian number";
     if (!s.relation) e.relation = "Select the relation";
+
+    if (s.role === "cultural") {
+      if (!s.tshirt) e.tshirt = "Select your tournament jersey size";
+      if (!s.agreement) e.agreement = "Please accept the tournament regulations";
+    }
+
     setErrs(e);
     return Object.keys(e).length === 0;
   };
@@ -287,6 +303,15 @@ export function Step3General({
       });
       return;
     }
+
+    if (s.role === "cultural") {
+      s.complete();
+      toast({
+        title: "REGISTRATION COMPLETE 🏅",
+        description: "Generating your official SMJV Youth Festival 2026 Cultural Pass…",
+      });
+    }
+
     onNext();
   };
 
@@ -295,8 +320,12 @@ export function Step3General({
       <motion.div variants={staggerChild}>
         <StepHeading
           num="03"
-          title="General Student Information"
-          subtitle="All details below appear on your official accreditation badge and tournament records."
+          title={s.role === "cultural" ? "Student Profile & Jersey Size" : "General Student Information"}
+          subtitle={
+            s.role === "cultural"
+              ? "Complete your profile details and select your tournament jersey size to finalize registration."
+              : "All details below appear on your official accreditation badge and tournament records."
+          }
         />
       </motion.div>
 
@@ -658,12 +687,108 @@ export function Step3General({
         </motion.div>
       </div>
 
-      <motion.div variants={staggerChild} className="mt-8 flex items-center justify-between gap-3">
+      {/* ── Cultural Team Specific: Jersey Size & Tournament Regulations ── */}
+      {s.role === "cultural" && (
+        <>
+          <motion.div
+            variants={staggerChild}
+            className="mt-6 rounded-2xl border border-white/80 bg-white/50 p-5 shadow-[0_8px_24px_rgba(28,36,56,0.04),inset_0_1px_2px_rgba(255,255,255,0.9)] backdrop-blur-xl"
+          >
+            <div className="mb-4">
+              <span className="font-mono text-xs font-bold uppercase tracking-wider text-fest-orange">
+                CULTURAL CONTINGENT APPAREL
+              </span>
+              <h3 className="font-display text-lg uppercase tracking-wide text-fest-deep">
+                Official Tournament Jersey Size
+              </h3>
+              <p className="mt-1 text-xs text-fest-label">
+                Select your tournament jersey size. All registered cultural team members receive an official customized festival jersey.
+              </p>
+            </div>
+
+            <Field
+              label="OFFICIAL TOURNAMENT JERSEY SIZE"
+              required
+              error={errs.tshirt}
+              right={
+                <button
+                  type="button"
+                  onClick={() => setShowSizeModal(true)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-fest-orange/40 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange hover:text-fest-ink"
+                >
+                  <Shirt className="h-3 w-3" />
+                  <span>Size Chart</span>
+                </button>
+              }
+            >
+              <PillGroup
+                ariaLabel="Jersey size"
+                options={jerseySizes}
+                value={s.tshirt}
+                onChange={(v) => {
+                  s.set("tshirt", v);
+                  setErr("tshirt");
+                }}
+              />
+
+              {jerseyInfo ? (
+                <div className="mt-2.5 flex items-center justify-between rounded-xl border border-fest-orange/30 bg-fest-orange/10 px-3 py-1.5 text-xs">
+                  <span className="font-semibold text-fest-deep">
+                    Selected: <span className="text-fest-orange font-bold">{jerseyInfo.size}</span>
+                  </span>
+                  <span className="font-mono text-[11px] text-fest-label">
+                    Chest: <b className="text-fest-deep">{jerseyInfo.chest}&quot;</b> · Length:{" "}
+                    <b className="text-fest-deep">{jerseyInfo.length}&quot;</b>
+                  </span>
+                </div>
+              ) : (
+                <div className="mt-2 flex items-center justify-between text-[11px] text-fest-label/70">
+                  <span>Standard athletic fit</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowSizeModal(true)}
+                    className="font-semibold text-fest-orange hover:underline"
+                  >
+                    View Measurements (Chest &amp; Length) →
+                  </button>
+                </div>
+              )}
+            </Field>
+          </motion.div>
+
+          <motion.div
+            variants={staggerChild}
+            className="mt-6 flex items-start gap-3 rounded-2xl border border-white/80 bg-white/60 p-5 shadow-sm backdrop-blur-md"
+          >
+            <Checkbox
+              id="cultural-agreement"
+              checked={s.agreement}
+              onCheckedChange={(v) => {
+                s.set("agreement", v === true);
+                setErr("agreement");
+              }}
+              className="mt-0.5 h-5 w-5 rounded-md border-fest-border data-[state=checked]:border-fest-orange data-[state=checked]:bg-fest-orange"
+            />
+            <label htmlFor="cultural-agreement" className="text-sm leading-relaxed text-fest-label">
+              {AGREEMENT_TEXT}
+              {errs.agreement && <span className="mt-1 block text-xs text-red-400">{errs.agreement}</span>}
+            </label>
+          </motion.div>
+        </>
+      )}
+
+      <motion.div variants={staggerChild} className="mt-8 flex flex-wrap items-center justify-between gap-3">
         <CTAButton variant="dark" onClick={onBack}>
           ← BACK
         </CTAButton>
-        <CTAButton variant="gradient" onClick={submit}>
-          NEXT: PARTICIPATION & SPORTS →
+        <CTAButton
+          variant="gradient"
+          onClick={submit}
+          className={s.role === "cultural" ? "px-7" : ""}
+        >
+          {s.role === "cultural"
+            ? "COMPLETE REGISTRATION & GENERATE ID PASS 🏅"
+            : "NEXT: APPAREL & SPORTS →"}
         </CTAButton>
       </motion.div>
 
@@ -737,6 +862,23 @@ export function Step3General({
             </div>
           </div>
         </div>
+      )}
+
+      {/* ── Jersey Size Modal for Cultural Team ── */}
+      {s.role === "cultural" && (
+        <TrackPantSizeModal
+          open={showSizeModal}
+          onOpenChange={setShowSizeModal}
+          initialCategory="jersey"
+          gender={s.gender}
+          selectedJerseySize={s.tshirt}
+          selectedTrackPantSize={s.waist}
+          onSelectJerseySize={(val) => {
+            s.set("tshirt", val);
+            setErr("tshirt");
+          }}
+          onSelectTrackPantSize={() => {}}
+        />
       )}
     </motion.div>
   );

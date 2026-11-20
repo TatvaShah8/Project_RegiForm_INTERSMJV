@@ -414,18 +414,6 @@ export function Step4Sports({
         </>
       )}
 
-      {s.role === "cultural" && (
-        <motion.div variants={staggerChild} className="mt-6 rounded-2xl border border-white/80 bg-white/60 p-5 shadow-sm backdrop-blur-md">
-          <span className="text-xs font-bold uppercase tracking-[0.14em] text-fest-yellow">
-            🎭 SPORTS SELECTION
-          </span>
-          <p className="mt-2 text-sm text-fest-label">
-            Not applicable — the sports quota applies to Sports Team athletes only. Your stage
-            events are coordinated by the cultural committee after registration.
-          </p>
-        </motion.div>
-      )}
-
       <motion.div variants={staggerChild} className="mt-7 flex items-start gap-3 rounded-2xl border border-white/80 bg-white/60 p-5 shadow-sm backdrop-blur-md">
         <Checkbox
           id="agreement"

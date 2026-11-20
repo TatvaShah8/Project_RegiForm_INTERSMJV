@@ -70,12 +70,15 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
     }
   }, [step]);
 
+  const isCultural = s.role === "cultural";
+  const totalSteps = isCultural ? 3 : 4;
+
   const stepLabel =
     step === "choose-team"
       ? "TEAM SELECTION"
       : step === "success"
       ? "COMPLETE ✓"
-      : `STEP 0${step} / 04`;
+      : `STEP 0${step} / 0${totalSteps}`;
 
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
@@ -272,7 +275,10 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
               )}
               {step === 3 && (
                 <SectionErrorBoundary name="Personal & Academic Profile">
-                  <Step3General onBack={() => go(2)} onNext={() => go(4)} />
+                  <Step3General
+                    onBack={() => go(2)}
+                    onNext={() => go(isCultural ? "success" : 4)}
+                  />
                 </SectionErrorBoundary>
               )}
               {step === 4 && (

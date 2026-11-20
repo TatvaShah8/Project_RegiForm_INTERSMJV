@@ -33,14 +33,14 @@ export function SuccessScreen() {
       college: s.college || "—",
       course: s.course || "—",
       year: s.year || "—",
-      role: roleMeta?.passLabel ?? "PARTICIPANT",
+      role: roleMeta?.passLabel ?? (s.role === "cultural" ? "CULTURAL TEAM" : "PARTICIPANT"),
       sports: sports.map((name) => {
         const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
         const found = all.find((sp) => sp.name === name);
         return found ? `${found.emoji} ${found.name}` : name;
       }),
-      kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
-      jerseyNumber: s.jerseyNumber,
+      kit: s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      jerseyNumber: s.role === "sports" ? s.jerseyNumber : undefined,
       photo: s.photo,
       qr,
     });
@@ -111,7 +111,7 @@ export function SuccessScreen() {
               </p>
               <p className="mt-0.5 font-mono text-xs text-fest-label">
                 GR: <span className="text-fest-gold">{s.grNo || "—"}</span> · {s.branch || "—"} ·{" "}
-                {age ?? "—"} yrs {s.jerseyNumber ? `· Jersey #${s.jerseyNumber}` : ""}
+                {age ?? "—"} yrs {s.role === "sports" && s.jerseyNumber ? `· Jersey #${s.jerseyNumber}` : ""}
               </p>
               <p className="mt-0.5 truncate font-mono text-xs text-fest-yellow">
                 {s.role === "sports" && sports.length > 0

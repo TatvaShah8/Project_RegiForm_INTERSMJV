@@ -107,8 +107,8 @@ export function IdPass({
       year: s.year || "—",
       role: roleMeta?.passLabel ?? "PARTICIPANT",
       sports: sports.map((name) => sportChip(name)),
-      kit: `${s.tshirt || "—"} / ${s.waist || "—"}`,
-      jerseyNumber: s.jerseyNumber,
+      kit: s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      jerseyNumber: s.role === "sports" ? s.jerseyNumber : undefined,
       photo: s.photo,
       qr,
     });
@@ -239,11 +239,13 @@ export function IdPass({
                 )}
               </div>
               <div className="shrink-0 flex items-center gap-1 rounded-md border border-fest-border/50 bg-white/60 px-2 py-0.5">
-                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-wider text-fest-label">KIT:</span>
-                <span className="font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-gold">
-                  {s.tshirt || "—"} / {s.waist || "—"}
+                <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-wider text-fest-label">
+                  {s.role === "cultural" ? "JERSEY:" : "KIT:"}
                 </span>
-                {s.jerseyNumber && (
+                <span className="font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-gold">
+                  {s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`}
+                </span>
+                {s.role === "sports" && s.jerseyNumber && (
                   <span className="ml-1 rounded bg-fest-orange/15 px-1.5 py-0.2 font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-orange">
                     #{s.jerseyNumber}
                   </span>
