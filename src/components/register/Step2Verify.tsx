@@ -17,6 +17,12 @@ import {
   staggerParent,
   staggerChild,
 } from "./ui-bits";
+import {
+  registerWithEmailPassword,
+  resendVerificationEmail,
+  checkEmailVerified,
+  signInWithGoogle,
+} from "@/lib/auth-service";
 
 function VerifyCard({
   channel,
@@ -36,6 +42,72 @@ function VerifyCard({
   const successMsg = isEmail
     ? "Email verified and linked to student account."
     : "Mobile number verified successfully!";
+
+  const [sendingEmail, setSendingEmail] = React.useState(false);
+  const [checkingEmail, setCheckingEmail] = React.useState(false);
+
+  const handleSendFirebaseLink = async () => {
+    setSendingEmail(true);
+    try {
+      const res = await registerWithEmailPassword(s.email, s.password || "SMJV2026!pass");
+      if (res.ok) {
+        toast({
+          title: "VERIFICATION EMAIL DISPATCHED",
+          description: `An official verification email was sent to ${s.email}. Please check your inbox and click the link.`,
+        });
+      } else {
+        const resendRes = await resendVerificationEmail();
+        if (resendRes.ok) {
+          toast({
+            title: "VERIFICATION EMAIL RESENT",
+            description: `Check your inbox at ${s.email}.`,
+          });
+        } else {
+          toast({
+            title: "FIREBASE NOTICE",
+            description: res.error || "Could not dispatch verification email. You can verify using the code or Google.",
+            variant: "destructive",
+          });
+        }
+      }
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
+  const handleCheckStatus = async () => {
+    setCheckingEmail(true);
+    try {
+      const isVerified = await checkEmailVerified();
+      if (isVerified) {
+        s.set("emailVerified", true);
+        toast({
+          title: "EMAIL VERIFIED ✓",
+          description: "Your email address has been verified successfully via Firebase!",
+        });
+      } else {
+        toast({
+          title: "NOT YET VERIFIED",
+          description: "Verification link was not clicked yet. Please check your email inbox (and Spam folder).",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setCheckingEmail(false);
+    }
+  };
+
+  const handleGoogleVerify = async () => {
+    const res = await signInWithGoogle();
+    if (res.ok && res.email) {
+      s.set("email", res.email);
+      s.set("emailVerified", true);
+      toast({
+        title: "AUTHENTICATED VIA GOOGLE ✓",
+        description: `Email ${res.email} verified!`,
+      });
+    }
+  };
 
   const tryVerify = () => {
     const ok = s.verifyOtp(channel, otp);
@@ -119,6 +191,41 @@ function VerifyCard({
               Fill sample code ({code})
             </button>
           </div>
+
+          {isEmail && (
+            <div className="mt-4 border-t border-fest-border/50 pt-3">
+              <span className="block font-mono text-[10px] font-bold uppercase tracking-wider text-fest-label">
+                Firebase Real Email Verification Options:
+              </span>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  disabled={sendingEmail}
+                  onClick={handleSendFirebaseLink}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-fest-orange/50 bg-fest-orange/15 px-3 py-1.5 font-mono text-[11px] font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange hover:text-fest-ink disabled:opacity-60"
+                >
+                  <span>{sendingEmail ? "Sending…" : "📧 Send Firebase Email Link"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  disabled={checkingEmail}
+                  onClick={handleCheckStatus}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/80 bg-white/70 px-3 py-1.5 font-mono text-[11px] font-bold text-fest-deep shadow-xs transition hover:bg-white active:scale-95 disabled:opacity-60"
+                >
+                  <span>{checkingEmail ? "Checking…" : "Check Status ↻"}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleGoogleVerify}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/90 bg-white/90 px-3 py-1.5 font-mono text-[11px] font-bold text-fest-deep shadow-xs transition hover:border-fest-orange active:scale-95"
+                >
+                  <span>⚡ Link Google (Pre-Verify)</span>
+                </button>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
