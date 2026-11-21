@@ -48,11 +48,18 @@ export function Step1Account({
           description: `Email ${res.email} verified! Please write your official name and details manually below.`,
         });
       } else if (res.error) {
-        toast({
-          title: "GOOGLE SIGN-IN CANCELLED",
-          description: res.error,
-          variant: "destructive",
-        });
+        if (res.code === "auth/popup-closed-by-user" || res.code === "auth/cancelled-popup-request") {
+          toast({
+            title: "SIGN-IN CANCELLED",
+            description: "The Google sign-in window was closed.",
+          });
+        } else {
+          toast({
+            title: "GOOGLE SIGN-IN FAILED",
+            description: res.error,
+            variant: "destructive",
+          });
+        }
       }
     } finally {
       setLoadingGoogle(false);

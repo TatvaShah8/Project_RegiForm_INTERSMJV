@@ -3,6 +3,8 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { useRegister } from "@/lib/store";
+import { auth } from "@/lib/firebase";
+import { registrationRequest } from "@/lib/registration-api";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import {
@@ -32,6 +34,7 @@ export function Step2Verify({
   const [checkingEmail, setCheckingEmail] = React.useState(false);
   const [emailSentNotice, setEmailSentNotice] = React.useState(false);
   const [loadingGoogle, setLoadingGoogle] = React.useState(false);
+  const [savingSignup, setSavingSignup] = React.useState(false);
 
   const isCultural = s.role === "cultural";
   // Only email verification is required to proceed!
@@ -105,20 +108,49 @@ export function Step2Verify({
           description: `Email ${res.email} verified!`,
         });
       } else if (res.error) {
-        toast({
-          title: "GOOGLE AUTH CANCELLED",
-          description: res.error,
-          variant: "destructive",
-        });
+        if (res.code === "auth/popup-closed-by-user" || res.code === "auth/cancelled-popup-request") {
+          toast({
+            title: "VERIFICATION CANCELLED",
+            description: "The Google sign-in window was closed.",
+          });
+        } else {
+          toast({
+            title: "GOOGLE AUTH FAILED",
+            description: res.error,
+            variant: "destructive",
+          });
+        }
       }
     } finally {
       setLoadingGoogle(false);
     }
   };
 
-  const handleProceed = () => {
-    s.set("mobileVerified", true);
-    onNext();
+  const handleProceed = async () => {
+    setSavingSignup(true);
+    try {
+      const firebaseUser = auth.currentUser;
+      if (!firebaseUser) throw new Error("Please sign in with Firebase first");
+      await firebaseUser.reload();
+      if (!firebaseUser.emailVerified) throw new Error("Verify your email first");
+      if (firebaseUser.email?.trim().toLowerCase() !== s.email.trim().toLowerCase()) {
+        throw new Error("The verified Firebase email differs from the email in your form");
+      }
+      await registrationRequest("signup", "POST", {
+        firstName: s.firstName,
+        middleName: s.middleName,
+        surname: s.surname,
+        mobile: s.mobile,
+        grNo: s.grNo,
+        gender: s.gender,
+      });
+      // 'mobileVerified' should only be set by a real phone verification service.
+      onNext();
+    } catch (error) {
+      toast({ title: "SIGNUP NOT SAVED", description: error instanceof Error ? error.message : "Please try again", variant: "destructive" });
+    } finally {
+      setSavingSignup(false);
+    }
   };
 
   return (
@@ -287,7 +319,7 @@ export function Step2Verify({
         <CTAButton variant="dark" onClick={onBack}>
           ← BACK TO STEP 1
         </CTAButton>
-        <CTAButton variant="gradient" disabled={!canProceed} onClick={handleProceed}>
+        <CTAButton variant="gradient" disabled={!canProceed || savingSignup} onClick={handleProceed}>
           {isCultural
             ? "PROCEED TO STEP 3 (PROFILE & APPAREL) →"
             : "PROCEED TO STEP 3 (GENERAL PROFILE) →"}

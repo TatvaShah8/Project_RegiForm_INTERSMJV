@@ -13,6 +13,7 @@ export interface AuthResult {
   user?: User;
   email?: string;
   error?: string;
+  code?: string;
 }
 
 /**
@@ -35,14 +36,22 @@ export async function signInWithGoogle(): Promise<AuthResult> {
       email: cred.user.email || undefined,
     };
   } catch (err: any) {
+    const code = err?.code || "";
+    if (code === "auth/popup-closed-by-user" || code === "auth/cancelled-popup-request") {
+      // Normal user action (user closed the popup or clicked away) — avoid logging console.error
+      console.warn("Google sign-in popup was closed by user.");
+      return {
+        ok: false,
+        code,
+        error: "Sign-in popup was closed before completion.",
+      };
+    }
     console.error("Google sign-in error:", err);
     let msg = err.message || "Failed to sign in with Google";
-    if (err.code === "auth/popup-closed-by-user") {
-      msg = "Sign-in popup was closed before completion.";
-    } else if (err.code === "auth/popup-blocked") {
+    if (code === "auth/popup-blocked") {
       msg = "Popup was blocked by your browser. Please allow popups for this site.";
     }
-    return { ok: false, error: msg };
+    return { ok: false, code, error: msg };
   }
 }
 

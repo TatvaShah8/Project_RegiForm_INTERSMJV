@@ -56,7 +56,11 @@ export function StudentAuthModal({
     try {
       const res = await signInWithGoogle();
       if (!res.ok || !res.user) {
-        setError(res.error || "Google sign-in was cancelled or could not be completed.");
+        if (res.code === "auth/popup-closed-by-user" || res.code === "auth/cancelled-popup-request") {
+          setError("Google sign-in window was closed.");
+        } else {
+          setError(res.error || "Google sign-in was cancelled or could not be completed.");
+        }
         return;
       }
       const userEmail = res.user.email;
