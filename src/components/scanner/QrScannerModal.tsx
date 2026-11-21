@@ -159,33 +159,11 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
   const [connections, setConnections] = React.useState<ScannedStudent[]>([]);
   const [isProcessingImage, setIsProcessingImage] = React.useState(false);
 
-  // Reload connections whenever modal opens
-  React.useEffect(() => {
-    if (open && isLoggedIn) {
-      setConnections(getScannedConnections());
-      setScannedResult(null);
-      setIsSaved(false);
-      setCameraError(null);
-    } else {
-      stopCamera();
-    }
-  }, [open, isLoggedIn]);
-
-  // Start camera stream when in scanner tab with no active result
-  React.useEffect(() => {
-    if (open && isLoggedIn && activeTab === "scanner" && !scannedResult) {
-      startCamera();
-    } else {
-      stopCamera();
-    }
-    return () => {
-      stopCamera();
-    };
-  }, [open, isLoggedIn, activeTab, facingMode, scannedResult]);
-
+  const cameraGeneration = React.useRef(0);
   const startCamera = async () => {
     setCameraError(null);
     stopCamera();
+    const generation = cameraGeneration.current;
 
     try {
       if (!navigator?.mediaDevices?.getUserMedia) {
@@ -201,6 +179,10 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
         },
       });
 
+      if (generation !== cameraGeneration.current) {
+        stream.getTracks().forEach(track => track.stop());
+        return;
+      }
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -221,6 +203,7 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
   };
 
   const stopCamera = () => {
+    cameraGeneration.current++;
     setIsScanning(false);
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((track) => track.stop());
@@ -411,6 +394,30 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
   };
 
   // If user is not registered or logged in, show authentication required screen
+  // Reload connections whenever modal opens
+  React.useEffect(() => {
+    if (open && isLoggedIn) {
+      setConnections(getScannedConnections());
+      setScannedResult(null);
+      setIsSaved(false);
+      setCameraError(null);
+    } else {
+      stopCamera();
+    }
+  }, [open, isLoggedIn]);
+
+  // Start camera stream when in scanner tab with no active result
+  React.useEffect(() => {
+    if (open && isLoggedIn && activeTab === "scanner" && !scannedResult) {
+      startCamera();
+    } else {
+      stopCamera();
+    }
+    return () => {
+      stopCamera();
+    };
+  }, [open, isLoggedIn, activeTab, facingMode, scannedResult]);
+
   if (!isLoggedIn) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>

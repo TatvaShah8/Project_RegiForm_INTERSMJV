@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, LogIn, LogOut, QrCode } from "lucide-react";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
+import { logoutFirebase } from "@/lib/auth-service";
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
@@ -41,7 +42,8 @@ export function TournamentNav({
   const displayName = [s.firstName, s.surname].filter(Boolean).join(" ") || "Student";
   const initials = `${s.firstName?.charAt(0) || ""}${s.surname?.charAt(0) || ""}`.toUpperCase() || "S";
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logoutFirebase();
     s.logout();
     setIdPassOpen(false);
     toast({

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Anton, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthSession } from "@/components/navigation/AuthSession";
 import { Toaster } from "@/components/ui/toaster";
 
 const anton = Anton({
@@ -89,6 +90,7 @@ export default function RootLayout({
         <div className="relative z-10 min-h-[100dvh]">
           {children}
         </div>
+        <AuthSession />
         <Toaster />
       </body>
     </html>

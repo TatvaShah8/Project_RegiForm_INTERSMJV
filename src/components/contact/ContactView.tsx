@@ -34,7 +34,7 @@ export function ContactView() {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [submittedTicket, setSubmittedTicket] = React.useState<SupportTicket | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!name.trim()) {
@@ -54,7 +54,7 @@ export function ContactView() {
 
     try {
       // 1. Create and save ticket to built-in Admin Helpdesk Dashboard
-      const newTicket = createTicket(name, email, issue);
+      const newTicket = await createTicket(name, email, issue);
       setSubmittedTicket(newTicket);
 
       toast({

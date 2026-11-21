@@ -35,3 +35,7 @@ yarn-error.log*
 next-env.d.ts
 
 skills/
+
+*-credentials.env
+*service-account*.json
+/download/updated-project.zip

@@ -41,7 +41,7 @@ export function Step1Account({
       const res = await signInWithGoogle();
       if (res.ok && res.email) {
         s.set("email", res.email);
-        s.set("emailVerified", true);
+        s.set("emailVerified", !!res.user?.emailVerified);
         setErr("email");
         toast({
           title: "GOOGLE ACCOUNT LINKED ✓",
@@ -79,7 +79,7 @@ export function Step1Account({
     if (!s.firstName.trim()) e.firstName = "First name is required";
     if (!s.surname.trim()) e.surname = "Surname is required";
     if (!isEmail(s.email)) e.email = "Enter a valid email address";
-    if (s.password.length < 6) e.password = "Minimum 6 characters";
+    if (!s.emailVerified && s.password.length < 6) e.password = "Minimum 6 characters";
     if (!isPhone(s.mobile)) e.mobile = "Enter a valid 10-digit mobile number";
     if (!s.grNo.trim()) e.grNo = "G.R. No. is required";
     if (!s.gender) e.gender = "Select a category";
@@ -120,7 +120,7 @@ export function Step1Account({
         <StepHeading
           num="01"
           title="Account Setup & Personal Identity"
-          subtitle="Please provide your fundamental details. We will verify your email and phone number in the next step."
+          subtitle="Please provide your fundamental details. We will verify your email in the next step."
         />
 
         {s.emailVerified ? (
@@ -219,6 +219,7 @@ export function Step1Account({
               value={s.email}
               onChange={(e) => {
                 s.set("email", e.target.value);
+                s.set("emailVerified", false);
                 setErr("email");
               }}
             />
@@ -227,7 +228,7 @@ export function Step1Account({
 
         <motion.div variants={staggerChild}>
           <Field
-            label="PASSWORD (STORED FOR AUTO-LOGIN)"
+            label="PASSWORD (EMAIL SIGN-IN)"
             required
             error={errs.password}
             right={
@@ -256,7 +257,7 @@ export function Step1Account({
         </motion.div>
 
         <motion.div variants={staggerChild}>
-          <Field label="MOBILE NUMBER (FOR VERIFICATION SMS)" required error={errs.mobile}>
+          <Field label="MOBILE NUMBER (CONTACT)" required error={errs.mobile}>
             <div className="relative">
               <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-sm font-bold text-fest-yellow">
                 +91

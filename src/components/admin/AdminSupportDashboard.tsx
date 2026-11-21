@@ -42,53 +42,31 @@ export function AdminSupportDashboard() {
   const [adminNoteInput, setAdminNoteInput] = React.useState("");
   const [mounted, setMounted] = React.useState(false);
 
-  // Simple passkey lock for privacy (can be unlocked instantly)
-  const [isAuthenticated, setIsAuthenticated] = React.useState(true);
-  const [enteredPasskey, setEnteredPasskey] = React.useState("");
-  const [passkeyError, setPasskeyError] = React.useState(false);
-
+  const reportError = (error: unknown) => toast({ title: "HELPDESK REQUEST FAILED", description: error instanceof Error ? error.message : "Please retry", variant: "destructive" });
   React.useEffect(() => {
-    setMounted(true);
-    setTickets(getClientTickets());
+    getClientTickets().then(setTickets).catch(reportError).finally(() => setMounted(true));
   }, []);
-
-  const refreshTickets = () => {
-    const list = getClientTickets();
-    setTickets(list);
-    if (selectedTicket) {
-      const refreshedSelected = list.find((t) => t.id === selectedTicket.id) || null;
-      setSelectedTicket(refreshedSelected);
-    }
-    toast({
-      title: "INBOX REFRESHED",
-      description: "Fetched the latest support complaints.",
-    });
+  const refreshTickets = async () => {
+    try {
+      const list = await getClientTickets();
+      setTickets(list);
+      if (selectedTicket) setSelectedTicket(list.find(t => t.id === selectedTicket.id) ?? null);
+    } catch (error) { reportError(error); }
   };
-
-  const handleStatusChange = (ticketId: string, newStatus: "OPEN" | "IN_PROGRESS" | "RESOLVED") => {
-    const updated = updateTicketStatus(ticketId, newStatus, adminNoteInput || undefined);
-    setTickets(updated);
-    if (selectedTicket?.id === ticketId) {
-      setSelectedTicket(updated.find((t) => t.id === ticketId) || null);
-    }
-    toast({
-      title: "STATUS UPDATED",
-      description: `Ticket ${ticketId} marked as ${newStatus.replace("_", " ")}.`,
-    });
-  };
-
-  const handleDelete = (ticketId: string) => {
-    if (confirm(`Are you sure you want to delete ticket ${ticketId}?`)) {
-      const updated = deleteTicket(ticketId);
+  const handleStatusChange = async (ticketId: string, newStatus: SupportTicket["status"]) => {
+    try {
+      const updated = await updateTicketStatus(ticketId, newStatus, adminNoteInput || undefined);
       setTickets(updated);
-      if (selectedTicket?.id === ticketId) {
-        setSelectedTicket(null);
-      }
-      toast({
-        title: "TICKET REMOVED",
-        description: `Ticket ${ticketId} has been deleted.`,
-      });
-    }
+      if (selectedTicket?.id === ticketId) setSelectedTicket(updated.find(t => t.id === ticketId) ?? null);
+      toast({ title: "STATUS UPDATED", description: `Ticket ${ticketId} updated.` });
+    } catch (error) { reportError(error); }
+  };
+  const handleDelete = async (ticketId: string) => {
+    if (!confirm(`Delete ticket ${ticketId}?`)) return;
+    try {
+      setTickets(await deleteTicket(ticketId));
+      if (selectedTicket?.id === ticketId) setSelectedTicket(null);
+    } catch (error) { reportError(error); }
   };
 
   const filteredTickets = tickets.filter((t) => {

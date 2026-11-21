@@ -2,8 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { calcAge, randomOtp, type Role } from "@/lib/fest";
-import { saveAccount, DEFAULT_AVATAR } from "@/lib/auth-storage";
+import { calcAge, type Role } from "@/lib/fest";
 
 export type { Role } from "@/lib/fest";
 export type Gender = "MALE" | "FEMALE";
@@ -61,8 +60,6 @@ export interface RegisterState {
   isVerified: boolean;
 
   set: <K extends keyof RegisterState>(key: K, value: RegisterState[K]) => void;
-  issueOtps: () => void;
-  verifyOtp: (channel: "email" | "mobile", code: string) => boolean;
   toggleSport: (kind: "outdoor" | "indoor", name: string) => { ok: boolean; reason?: string };
   quotaStatus: () => {
     total: number;
@@ -76,12 +73,9 @@ export interface RegisterState {
     maxOutdoor: number;
     maxIndoor: number;
   };
-  complete: () => void;
   loginAccount: (account: Partial<RegisterState>) => void;
   logout: () => void;
   resetAll: () => void;
-  fillTestData: () => void;
-  completeTestData: () => void;
 }
 
 const initial = {
@@ -143,24 +137,6 @@ export const useRegister = create<RegisterState>()(
       setHasHydrated: (v) => set({ _hasHydrated: v }),
 
       set: (key, value) => set({ [key]: value } as Partial<RegisterState>),
-
-      issueOtps: () => {
-        const { emailCode, mobileCode, otpIssued } = get();
-        if (otpIssued && emailCode && mobileCode) return;
-        set({
-          emailCode: emailCode || randomOtp(),
-          mobileCode: mobileCode || randomOtp(),
-          otpIssued: true,
-        });
-      },
-
-      verifyOtp: (channel, code) => {
-        const s = get();
-        const target = channel === "email" ? s.emailCode : s.mobileCode;
-        const ok = code.trim() === target;
-        if (ok) set(channel === "email" ? { emailVerified: true } : { mobileVerified: true });
-        return ok;
-      },
 
       toggleSport: (kind, name) => {
         const s = get();
@@ -255,35 +231,12 @@ export const useRegister = create<RegisterState>()(
         };
       },
 
-      complete: () => {
-        const s = get();
-        const digits = s.grNo.replace(/\D/g, "") || "000142";
-        const passNo = s.passNo || `#${digits}`;
-        set({ completed: true, passNo });
-        const updated = { ...s, completed: true, passNo, isVerified: !!s.isVerified };
-        try {
-          window.localStorage.setItem(
-            "smjv_auto_login",
-            JSON.stringify({
-              name: [s.firstName, s.surname].filter(Boolean).join(" "),
-              email: s.email,
-              gr: s.grNo,
-              fest: "SMJV Youth Festival 2026",
-              savedAt: new Date().toISOString(),
-            })
-          );
-          saveAccount(updated);
-        } catch {
-          /* storage unavailable — ignore in demo */
-        }
-      },
-
       loginAccount: (account) => {
         set({
           ...initial,
           ...account,
           isVerified: !!account.isVerified,
-          completed: true,
+          completed: !!account.completed,
           _hasHydrated: true,
         });
         if (typeof window !== "undefined") {
@@ -321,52 +274,20 @@ export const useRegister = create<RegisterState>()(
         }
       },
 
-      fillTestData: () => {
-        set({
-          firstName: "Aarav",
-          middleName: "Rajeshbhai",
-          surname: "Mehta",
-          email: "aarav.mehta@smjv.edu",
-          password: "password123",
-          mobile: "9825040142",
-          grNo: "SMJV26-0142",
-          gender: "MALE",
-          emailVerified: true,
-          mobileVerified: true,
-          otpIssued: true,
-          emailCode: "4201",
-          mobileCode: "8841",
-          emailOtp: "4201",
-          mobileOtp: "8841",
-          branch: "Vadodara",
-          homeTown: "Vadodara",
-          college: "Faculty of Technology & Engineering, MSU",
-          course: "B.Tech Computer Science",
-          year: "3rd Year",
-          bloodGroup: "B+",
-          dob: new Date("2003-08-14"),
-          emergency: "9825011111",
-          relation: "Father",
-          role: "sports",
-          jerseyNumber: "10",
-          tshirt: "40 (L)",
-          waist: "40 (L)",
-          outdoor: ["Cricket", "Volleyball"],
-          indoor: ["Table Tennis"],
-          agreement: true,
-          completed: false,
-          photo: DEFAULT_AVATAR,
-        });
-      },
-
-      completeTestData: () => {
-        get().fillTestData();
-        get().complete();
-      },
     }),
     {
       name: "smjv_registration_storage",
       storage: createJSONStorage(() => (typeof window !== "undefined" ? window.localStorage : dummyStorage)),
+      // Do not persist plaintext passwords, OTPs or uploaded photo data.
+      partialize: (state) => {
+        const { password, emailCode, mobileCode, emailOtp, mobileOtp, photo, completed, emailVerified, mobileVerified, isVerified, ...safe } = state;
+        return safe;
+      },
+      version: 2,
+      migrate: (persisted) => {
+        const value = persisted as Partial<RegisterState>;
+        return { ...value, password: "", emailCode: "", mobileCode: "", emailOtp: "", mobileOtp: "", photo: null, completed: false, emailVerified: false, mobileVerified: false, isVerified: false };
+      },
       onRehydrateStorage: () => (state) => {
         if (state) {
           if (state.dob && typeof state.dob === "string") {

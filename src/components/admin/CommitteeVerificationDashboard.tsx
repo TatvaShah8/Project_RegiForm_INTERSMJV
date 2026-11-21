@@ -17,7 +17,7 @@ import {
   Check,
 } from "lucide-react";
 import {
-  getSavedAccounts,
+  fetchSavedAccounts,
   setStudentVerification,
 } from "@/lib/auth-storage";
 import { useRegister, type RegisterState, selectAge } from "@/lib/store";
@@ -37,21 +37,26 @@ export function CommitteeVerificationDashboard() {
   const [branchFilter, setBranchFilter] = React.useState<string>("ALL");
   const [mounted, setMounted] = React.useState(false);
 
-  const refreshAccounts = React.useCallback(() => {
-    setAccounts(getSavedAccounts());
-  }, []);
+  const refreshAccounts = React.useCallback(async () => {
+    try { setAccounts(await fetchSavedAccounts()); }
+    catch (error) { toast({ title: "ROSTER UNAVAILABLE", description: error instanceof Error ? error.message : "Please sign in as a committee member", variant: "destructive" }); }
+  }, [toast]);
 
   React.useEffect(() => {
     setMounted(true);
     refreshAccounts();
   }, [refreshAccounts]);
 
-  const handleToggleVerification = (account: Partial<RegisterState>) => {
+  const handleToggleVerification = async (account: Partial<RegisterState>) => {
     const grOrEmail = account.grNo || account.email;
     if (!grOrEmail) return;
 
     const nextState = !account.isVerified;
-    setStudentVerification(grOrEmail, nextState);
+    try { await setStudentVerification(grOrEmail, nextState); }
+    catch (error) {
+      toast({ title: "VERIFICATION NOT SAVED", description: error instanceof Error ? error.message : "Please retry", variant: "destructive" });
+      return;
+    }
 
     // If currently logged-in student in store matches, update live store too!
     if (

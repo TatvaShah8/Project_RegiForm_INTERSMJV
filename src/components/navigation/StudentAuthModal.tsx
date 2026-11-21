@@ -5,11 +5,7 @@ import { useRouter } from "next/navigation";
 import { X, LogIn, UserPlus, Eye, EyeOff, Sparkles, CheckCircle2, User } from "lucide-react";
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
-import {
-  getSavedAccounts,
-  findAccount,
-  DEMO_STUDENT,
-} from "@/lib/auth-storage";
+import { loadRegistration } from "@/lib/registration-api";
 import { signInWithGoogle, loginWithEmailPassword } from "@/lib/auth-service";
 import {
   Dialog,
@@ -39,14 +35,12 @@ export function StudentAuthModal({
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
-  const [savedAccounts, setSavedAccounts] = React.useState<any[]>([]);
   const [loadingGoogle, setLoadingGoogle] = React.useState(false);
 
   React.useEffect(() => {
     if (open) {
       setTab(defaultTab);
       setError(null);
-      setSavedAccounts(getSavedAccounts());
     }
   }, [open, defaultTab]);
 
@@ -70,8 +64,8 @@ export function StudentAuthModal({
       }
 
       // 1. Check if user already completed registration
-      const account = findAccount(userEmail);
-      if (account && account.firstName) {
+      const account = await loadRegistration();
+      if (account?.completed) {
         s.loginAccount(account);
         toast({
           title: "LOGGED IN WITH GOOGLE ✓",
@@ -83,7 +77,7 @@ export function StudentAuthModal({
 
       // 2. New student registration with pre-verified Google email
       s.set("email", userEmail);
-      s.set("emailVerified", true);
+      s.set("emailVerified", res.user.emailVerified);
       toast({
         title: "GOOGLE ACCOUNT AUTHENTICATED ✓",
         description: `Verified ${userEmail}. Please fill your official details manually for certificates.`,
@@ -103,58 +97,28 @@ export function StudentAuthModal({
 
     const id = identifier.trim();
     if (!id) {
-      setError("Please enter your registered Email ID or GR Number");
+      setError("Please enter your registered Email ID");
       return;
     }
 
-    const account = findAccount(id);
-    if (account) {
-      if (account.password && password && account.password !== password) {
-        setError("Incorrect password. Please try again.");
-        return;
+    if (!id.includes("@") || !password) {
+      setError("Enter your Firebase email address and password, or sign in with Google.");
+      return;
+    }
+    try {
+      const result = await loginWithEmailPassword(id, password);
+      if (!result.ok || !result.user) throw new Error(result.error || "Sign-in failed");
+      const account = await loadRegistration();
+      if (account) s.loginAccount(account);
+      else {
+        s.set("email", result.user.email ?? id);
+        s.set("emailVerified", result.user.emailVerified);
       }
-      s.loginAccount(account);
-      toast({
-        title: "LOGGED IN SUCCESSFULLY",
-        description: `Welcome back, ${[account.firstName, account.surname].filter(Boolean).join(" ")}! Your official ID pass is ready.`,
-      });
       onOpenChange(false);
-      return;
+      if (!account?.completed) router.push("/register");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Could not load your registration");
     }
-
-    // Try Firebase Email / Password if it's an email
-    if (id.includes("@") && password) {
-      const fbRes = await loginWithEmailPassword(id, password);
-      if (fbRes.ok && fbRes.user) {
-        const acc = findAccount(id);
-        if (acc) {
-          s.loginAccount(acc);
-        } else {
-          s.set("email", id);
-          s.set("emailVerified", fbRes.user.emailVerified);
-        }
-        toast({
-          title: "LOGGED IN SUCCESSFULLY",
-          description: `Welcome back! Authenticated with Firebase.`,
-        });
-        onOpenChange(false);
-        return;
-      } else if (fbRes.error) {
-        setError(fbRes.error);
-        return;
-      }
-    }
-
-    setError("No registered student found with this Email or GR Number. You can register as a new student or use the quick demo account below.");
-  };
-
-  const handleQuickLogin = (acc: any) => {
-    s.loginAccount(acc);
-    toast({
-      title: "LOGGED IN AS " + [acc.firstName, acc.surname].filter(Boolean).join(" ").toUpperCase(),
-      description: "Loaded accreditation profile and generated tournament ID pass.",
-    });
-    onOpenChange(false);
   };
 
   const handleGoRegister = () => {
@@ -243,7 +207,7 @@ export function StudentAuthModal({
                   Student Sign In
                 </h3>
                 <p className="mt-0.5 text-xs sm:text-sm font-medium text-fest-deep">
-                  Enter your registered Email or GR Number to view your official tournament ID pass.
+                  Enter your registered Email to view your official tournament ID pass.
                 </p>
               </div>
 
@@ -281,7 +245,7 @@ export function StudentAuthModal({
               <form onSubmit={handleLogin} className="space-y-3.5">
                 <div>
                   <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-fest-label">
-                    Email ID or GR Number
+                    Email ID
                   </label>
                   <input
                     type="text"
@@ -322,50 +286,6 @@ export function StudentAuthModal({
                   LOG IN TO ID PASS
                 </button>
               </form>
-
-              {/* Quick Login / Localhost Dev Persistence */}
-              <div className="mt-5 rounded-2xl border border-fest-orange/25 bg-amber-50/60 p-4 shadow-sm backdrop-blur-md">
-                <div className="flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wide text-fest-orange">
-                  <Sparkles className="h-3.5 w-3.5 text-fest-orange" />
-                  <span>ONE-CLICK QUICK LOGIN (SAVED / DEMO)</span>
-                </div>
-                <p className="mt-1 text-[11px] leading-relaxed text-fest-label">
-                  Click any profile below to log in instantly without typing:
-                </p>
-
-                <div className="mt-3 space-y-2">
-                  {savedAccounts.map((acc, idx) => {
-                    const name = [acc.firstName, acc.surname].filter(Boolean).join(" ") || "Student";
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleQuickLogin(acc)}
-                        className="flex w-full items-center justify-between gap-3 rounded-xl border border-fest-border/80 bg-white/90 p-2.5 text-left shadow-xs transition hover:border-fest-orange/70 hover:bg-white active:scale-[0.99]"
-                      >
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-fest-orange/15 font-mono text-xs font-bold text-fest-orange">
-                            {acc.photo ? (
-                              <img src={acc.photo} alt={name} className="h-full w-full rounded-full object-cover" />
-                            ) : (
-                              name.charAt(0)
-                            )}
-                          </div>
-                          <div>
-                            <p className="font-display text-xs uppercase text-fest-deep">{name}</p>
-                            <p className="font-mono text-[10px] text-fest-label">
-                              {acc.branch || "Vadodara"} · GR: {acc.grNo || "SMJV26-0142"}
-                            </p>
-                          </div>
-                        </div>
-                        <span className="rounded-lg bg-fest-orange/15 px-2.5 py-1 font-mono text-[10px] font-bold text-fest-orange">
-                          Log In →
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
 
               <div className="text-center pt-2">
                 <p className="font-mono text-xs text-fest-label">

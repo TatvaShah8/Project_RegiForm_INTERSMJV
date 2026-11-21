@@ -44,7 +44,7 @@ export function Step2Verify({
   const handleSendFirebaseLink = async () => {
     setSendingEmail(true);
     try {
-      const res = await registerWithEmailPassword(s.email, s.password || "SMJV2026!pass");
+      const res = await registerWithEmailPassword(s.email, s.password);
       if (res.ok) {
         setEmailSentNotice(true);
         toast({
@@ -52,20 +52,7 @@ export function Step2Verify({
           description: `An official verification email was sent to ${s.email}. Please check your inbox and click the link.`,
         });
       } else {
-        const resendRes = await resendVerificationEmail();
-        if (resendRes.ok) {
-          setEmailSentNotice(true);
-          toast({
-            title: "VERIFICATION EMAIL RESENT",
-            description: `Check your inbox at ${s.email}.`,
-          });
-        } else {
-          toast({
-            title: "NOTICE",
-            description: res.error || "Could not dispatch verification email. You can verify using Google.",
-            variant: "destructive",
-          });
-        }
+        toast({ title: "VERIFICATION FAILED", description: res.error, variant: "destructive" });
       }
     } finally {
       setSendingEmail(false);
@@ -76,7 +63,7 @@ export function Step2Verify({
   const handleCheckStatus = async () => {
     setCheckingEmail(true);
     try {
-      const isVerified = await checkEmailVerified();
+      const isVerified = auth?.currentUser?.email?.toLowerCase() === s.email.trim().toLowerCase() && await checkEmailVerified();
       if (isVerified) {
         s.set("emailVerified", true);
         toast({
@@ -102,7 +89,7 @@ export function Step2Verify({
       const res = await signInWithGoogle();
       if (res.ok && res.email) {
         s.set("email", res.email);
-        s.set("emailVerified", true);
+        s.set("emailVerified", !!res.user?.emailVerified);
         toast({
           title: "AUTHENTICATED VIA GOOGLE ✓",
           description: `Email ${res.email} verified!`,
@@ -129,7 +116,7 @@ export function Step2Verify({
   const handleProceed = async () => {
     setSavingSignup(true);
     try {
-      const firebaseUser = auth.currentUser;
+      const firebaseUser = auth?.currentUser;
       if (!firebaseUser) throw new Error("Please sign in with Firebase first");
       await firebaseUser.reload();
       if (!firebaseUser.emailVerified) throw new Error("Verify your email first");

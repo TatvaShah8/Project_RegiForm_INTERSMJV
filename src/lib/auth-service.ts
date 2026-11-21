@@ -22,7 +22,7 @@ export interface AuthResult {
  * Leaves tournament fields (name, surname, photo, branch) for manual entry for certificates.
  */
 export async function signInWithGoogle(): Promise<AuthResult> {
-  if (!isFirebaseConfigured) {
+  if (!isFirebaseConfigured || !auth) {
     return {
       ok: false,
       error: "Firebase keys not yet configured in .env.local",
@@ -48,7 +48,11 @@ export async function signInWithGoogle(): Promise<AuthResult> {
     }
     console.error("Google sign-in error:", err);
     let msg = err.message || "Failed to sign in with Google";
-    if (code === "auth/popup-blocked") {
+    if (code === "auth/unauthorized-domain") {
+      msg = "Add localhost to Firebase Authentication > Settings > Authorized domains.";
+    } else if (code === "auth/operation-not-allowed") {
+      msg = "Enable the Google sign-in provider in Firebase Authentication.";
+    } else if (code === "auth/popup-blocked") {
       msg = "Popup was blocked by your browser. Please allow popups for this site.";
     }
     return { ok: false, code, error: msg };
@@ -62,14 +66,21 @@ export async function registerWithEmailPassword(
   email: string,
   pass: string
 ): Promise<AuthResult> {
-  if (!isFirebaseConfigured) {
+  if (!isFirebaseConfigured || !auth) {
     return {
       ok: false,
       error: "Firebase keys not yet configured in .env.local",
     };
   }
   try {
-    const cred = await createUserWithEmailAndPassword(auth, email, pass);
+    if (pass.length < 6) return { ok: false, error: "Enter your account password (at least 6 characters)." };
+    let cred;
+    try {
+      cred = await createUserWithEmailAndPassword(auth, email.trim(), pass);
+    } catch (error) {
+      if ((error as { code?: string }).code !== "auth/email-already-in-use") throw error;
+      cred = await signInWithEmailAndPassword(auth, email.trim(), pass);
+    }
     if (cred.user) {
       await sendEmailVerification(cred.user);
     }
@@ -99,7 +110,7 @@ export async function loginWithEmailPassword(
   email: string,
   pass: string
 ): Promise<AuthResult> {
-  if (!isFirebaseConfigured) {
+  if (!isFirebaseConfigured || !auth) {
     return {
       ok: false,
       error: "Firebase keys not yet configured in .env.local",
@@ -126,7 +137,7 @@ export async function loginWithEmailPassword(
  * Resends the official verification email to the currently signed in user.
  */
 export async function resendVerificationEmail(): Promise<AuthResult> {
-  const current = auth.currentUser;
+  const current = auth?.currentUser;
   if (!current) {
     return { ok: false, error: "No student account currently active." };
   }
@@ -142,10 +153,11 @@ export async function resendVerificationEmail(): Promise<AuthResult> {
  * Reloads the user and returns whether their email is verified.
  */
 export async function checkEmailVerified(): Promise<boolean> {
-  const current = auth.currentUser;
+  const current = auth?.currentUser;
   if (!current) return false;
   try {
     await current.reload();
+    await current.getIdToken(true);
     return current.emailVerified;
   } catch {
     return false;
@@ -157,6 +169,6 @@ export async function checkEmailVerified(): Promise<boolean> {
  */
 export async function logoutFirebase(): Promise<void> {
   try {
-    await signOut(auth);
+    if (auth) await signOut(auth);
   } catch {}
 }

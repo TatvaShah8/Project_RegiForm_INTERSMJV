@@ -1,0 +1,32 @@
+import "server-only";
+import { MongoClient } from "mongodb";
+const cache = globalThis as typeof globalThis & {
+  smjvMongo?: Promise<MongoClient>; smjvIndexes?: Promise<unknown>;
+};
+export async function database() {
+  const uri = process.env.MONGODB_URI;
+  const name = process.env.MONGODB_DB;
+  if (!uri || !name) throw new Error("MONGODB_URI and MONGODB_DB are required");
+  if (!cache.smjvMongo) {
+    const client = new MongoClient(uri, { serverSelectionTimeoutMS: 10000 });
+    cache.smjvMongo = client.connect().catch(async error => {
+      cache.smjvMongo = undefined;
+      await client.close();
+      throw error;
+    });
+  }
+  return (await cache.smjvMongo).db(name);
+}
+export async function registrations() {
+  const collection = (await database()).collection("registrations");
+  // Database constraints arbitrate concurrent requests.
+  cache.smjvIndexes ??= collection.createIndexes([
+    ...["firebaseUid", "email", "phone", "grnumber"].map(field => ({
+      key: { [field]: 1 as const }, unique: true,
+    })),
+    { key: { branch: 1, gender: 1, jerseyNumber: 1 }, unique: true,
+      partialFilterExpression: { jerseyNumber: { $type: "number" } } },
+  ]).catch(error => { cache.smjvIndexes = undefined; throw error; });
+  await cache.smjvIndexes;
+  return collection;
+}

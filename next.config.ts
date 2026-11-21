@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   reactStrictMode: false,
   /* Hide the floating Next.js dev-tools launcher and build-activity dot.
      End users viewing the preview link should not see dev chrome. */

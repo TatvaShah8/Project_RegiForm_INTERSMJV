@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Camera, X, RefreshCw, Shirt, Ruler } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRegister, selectAge } from "@/lib/store";
+import { loadRegistration, registrationRequest, finalRegistrationForm, addPhotoToForm } from "@/lib/registration-api";
 import {
   getBranchesForGender,
   BLOOD_GROUPS,
@@ -56,6 +57,7 @@ export function Step3General({
   const s = useRegister();
   const { toast } = useToast();
   const [errs, setErrs] = React.useState<Record<string, string>>({});
+  const [savingRegistration, setSavingRegistration] = React.useState(false);
   const [typed, setTyped] = React.useState("");
   const [calOpen, setCalOpen] = React.useState(false);
   const [showSizeModal, setShowSizeModal] = React.useState(false);
@@ -333,25 +335,39 @@ export function Step3General({
     return Object.keys(e).length === 0;
   };
 
-  const submit = () => {
-    if (!validate()) {
-      toast({
-        title: "MISSING REQUIRED FIELDS",
-        description: "Please complete the highlighted fields to proceed.",
-        variant: "destructive",
-      });
+  const submit = async () => {
+    if (!validate() || savingRegistration) {
+      if (!savingRegistration) toast({ title: "MISSING REQUIRED FIELDS", description: "Please complete the highlighted fields to proceed.", variant: "destructive" });
       return;
     }
-
-    if (s.role === "cultural") {
-      s.complete();
-      toast({
-        title: "REGISTRATION COMPLETE 🏅",
-        description: "Generating your official SMJV Youth Festival 2026 Cultural Pass…",
+    setSavingRegistration(true);
+    try {
+      await registrationRequest("general", "PATCH", {
+        branch: s.branch,
+        bloodGroup: s.bloodGroup,
+        dob: s.dob?.toISOString(),
+        homeTown: s.homeTown,
+        college: s.college,
+        course: s.course,
+        year: s.year,
+        emergency: s.emergency,
+        relation: s.relation,
       });
+      if (s.role === "cultural") {
+        const form = finalRegistrationForm(s);
+        await addPhotoToForm(form, s.photo);
+        await registrationRequest("finish", "POST", form);
+        const account = await loadRegistration();
+        if (!account?.completed) throw new Error("Saved registration could not be confirmed. Please retry.");
+        s.loginAccount(account);
+        toast({ title: "REGISTRATION SAVED", description: "Your data has been saved to MongoDB and your photo uploaded to Supabase." });
+      }
+      onNext();
+    } catch (error) {
+      toast({ title: "COULD NOT SAVE", description: error instanceof Error ? error.message : "Try again", variant: "destructive" });
+    } finally {
+      setSavingRegistration(false);
     }
-
-    onNext();
   };
 
   return (
@@ -913,6 +929,7 @@ export function Step3General({
         <CTAButton
           variant="gradient"
           onClick={submit}
+          disabled={savingRegistration}
           className={s.role === "cultural" ? "px-7" : ""}
         >
           {s.role === "cultural"

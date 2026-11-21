@@ -19,7 +19,7 @@ import {
 import { TrackPantSizeModal } from "./TrackPantSizeModal";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { checkJerseyAvailability } from "@/lib/auth-storage";
+import { loadRegistration, registrationRequest, finalRegistrationForm, addPhotoToForm } from "@/lib/registration-api";
 import {
   StepHeading,
   Field,
@@ -40,6 +40,7 @@ export function Step4Sports({
   const s = useRegister();
   const { toast } = useToast();
   const [errs, setErrs] = React.useState<Record<string, string>>({});
+  const [savingRegistration, setSavingRegistration] = React.useState(false);
   const [showSizeModal, setShowSizeModal] = React.useState(false);
   const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("track-pants");
   const [showQuotaInfo, setShowQuotaInfo] = React.useState(false);
@@ -72,21 +73,16 @@ export function Step4Sports({
       toast({ title: "SPORTS QUOTA", description: res.reason, variant: "destructive" });
   };
 
-  const submit = () => {
+  const submit = async () => {
+    if (savingRegistration) return;
     const e: Record<string, string> = {};
     if (!s.role) {
       s.set("role", "sports");
     }
     if (!s.jerseyNumber?.trim()) {
       e.jerseyNumber = "Please enter your desired jersey number (e.g. 7, 10, 18, 99)";
-    } else {
-      const check = checkJerseyAvailability(s.jerseyNumber, s.branch, s.gender, {
-        email: s.email,
-        grNo: s.grNo,
-      });
-      if (!check.available) {
-        e.jerseyNumber = check.reason || "This jersey number is already taken.";
-      }
+    } else if (!/^\d{1,3}$/.test(s.jerseyNumber)) {
+      e.jerseyNumber = "Enter a jersey number from 0 to 999";
     }
     if (!s.tshirt) e.tshirt = "Select your T-shirt size";
     if (!s.waist) e.waist = "Select your track pant size";
@@ -107,12 +103,27 @@ export function Step4Sports({
       });
       return;
     }
-    s.complete();
-    toast({
-      title: "REGISTRATION COMPLETE 🏅",
-      description: "Generating your official SMJV Youth Festival 2026 ID pass…",
-    });
-    onComplete();
+    setSavingRegistration(true);
+    try {
+      // Advisory check. The MongoDB compound unique index handles races.
+      const availability = await registrationRequest(
+        `jersey-availability?jerseyNumber=${encodeURIComponent(s.jerseyNumber)}`,
+        "GET",
+      );
+      if (!availability.available) throw new Error("This jersey is already taken in your branch and gender");
+      const form = finalRegistrationForm({ ...s, role: "sports" });
+      await addPhotoToForm(form, s.photo);
+      await registrationRequest("finish", "POST", form);
+      const account = await loadRegistration();
+        if (!account?.completed) throw new Error("Saved registration could not be confirmed. Please retry.");
+        s.loginAccount(account);
+      toast({ title: "REGISTRATION SAVED 🏅", description: "MongoDB saved your details and Supabase received your image." });
+      onComplete();
+    } catch (error) {
+      toast({ title: "REGISTRATION NOT SAVED", description: error instanceof Error ? error.message : "Please retry", variant: "destructive" });
+    } finally {
+      setSavingRegistration(false);
+    }
   };
 
   return (
@@ -437,7 +448,7 @@ export function Step4Sports({
         <CTAButton variant="dark" onClick={onBack}>
           ← BACK
         </CTAButton>
-        <CTAButton variant="gradient" onClick={submit} className="px-7">
+        <CTAButton variant="gradient" onClick={submit} disabled={savingRegistration} className="px-7">
           COMPLETE REGISTRATION & GENERATE ID PASS 🏅
         </CTAButton>
       </motion.div>

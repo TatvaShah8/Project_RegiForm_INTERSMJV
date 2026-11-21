@@ -11,7 +11,9 @@
     "db:push": "prisma db push --accept-data-loss",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
-    "db:reset": "prisma migrate reset"
+    "db:reset": "prisma migrate reset",
+    "test": "node --test tests/registration.test.cjs",
+    "check:services": "node scripts/check-services.cjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -48,6 +50,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@reactuses/core": "^6.0.5",
+    "@supabase/supabase-js": "^2.119.2",
     "@tanstack/react-query": "^5.82.0",
     "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "^0.7.1",
@@ -56,10 +59,13 @@
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
     "firebase": "^13.4.0",
+    "firebase-admin": "^14.5.1",
     "framer-motion": "^12.23.2",
     "input-otp": "^1.4.2",
     "jsqr": "^1.4.0",
+    "libphonenumber-js": "^1.13.17",
     "lucide-react": "^0.525.0",
+    "mongodb": "^7.9.1",
     "next": "^16.1.1",
     "next-auth": "^4.24.11",
     "next-intl": "^4.3.4",
@@ -74,6 +80,7 @@
     "react-resizable-panels": "^3.0.3",
     "react-syntax-highlighter": "^15.6.1",
     "recharts": "^2.15.4",
+    "server-only": "^0.0.1",
     "sharp": "^0.34.3",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
@@ -95,5 +102,8 @@
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.5",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=22.0.0"
   }
 }
