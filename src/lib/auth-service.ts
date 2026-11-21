@@ -49,7 +49,7 @@ export async function signInWithGoogle(): Promise<AuthResult> {
     console.error("Google sign-in error:", err);
     let msg = err.message || "Failed to sign in with Google";
     if (code === "auth/unauthorized-domain") {
-      msg = "Add localhost to Firebase Authentication > Settings > Authorized domains.";
+      msg = `Add ${typeof window !== "undefined" ? window.location.hostname : "this domain"} to Firebase Authentication > Settings > Authorized domains.`;
     } else if (code === "auth/operation-not-allowed") {
       msg = "Enable the Google sign-in provider in Firebase Authentication.";
     } else if (code === "auth/popup-blocked") {
