@@ -40,16 +40,48 @@ export function Step2Verify({
   // Only email verification is required to proceed!
   const canProceed = s.emailVerified;
 
+  // Auto-detect if user is already verified on mount
+  React.useEffect(() => {
+    const checkCurrent = async () => {
+      const current = auth?.currentUser;
+      if (current && current.email?.trim().toLowerCase() === s.email.trim().toLowerCase()) {
+        try {
+          await current.reload();
+          if (current.emailVerified) {
+            s.set("emailVerified", true);
+          }
+        } catch {}
+      }
+    };
+    checkCurrent();
+  }, [s.email]);
+
   // Handle Firebase Email Link Dispatch
   const handleSendFirebaseLink = async () => {
+    if (!s.password || s.password.length < 8) {
+      toast({
+        title: "PASSWORD NEEDED",
+        description: "Your session password is empty. Please click '← Back to Step 1' to enter your password, or use 1-Click 'Verify with Google'.",
+        variant: "destructive",
+      });
+      return;
+    }
     setSendingEmail(true);
     try {
       const res = await registerWithEmailPassword(s.email, s.password);
       if (res.ok) {
+        if (res.user?.emailVerified) {
+          s.set("emailVerified", true);
+          toast({
+            title: "EMAIL ALREADY VERIFIED ✓",
+            description: `Your email (${s.email}) is officially verified and linked! You can now proceed.`,
+          });
+          return;
+        }
         setEmailSentNotice(true);
         toast({
           title: "VERIFICATION EMAIL DISPATCHED",
-          description: `An official verification email was sent to ${s.email}. Please check your inbox and click the link.`,
+          description: `An official verification email was sent to ${s.email}. Please check your Inbox and SPAM folder.`,
         });
       } else {
         toast({ title: "VERIFICATION FAILED", description: res.error, variant: "destructive" });
@@ -286,12 +318,17 @@ export function Step2Verify({
                     )}
                   </div>
                   {emailSentNotice ? (
-                    <p className="mt-3 font-mono text-[11px] text-fest-green">
-                      ✓ Verification email sent to <b>{s.email}</b>! Click the link in your email inbox, then click <b>Check Status ↻</b>.
-                    </p>
+                    <div className="mt-3 space-y-1 font-mono text-[11px]">
+                      <p className="text-fest-green">
+                        ✓ Verification email sent to <b>{s.email}</b>! Click the link inside, then click <b>Check Status ↻</b>.
+                      </p>
+                      <p className="text-fest-orange font-semibold">
+                        ⚠️ Please check your <u>Spam / Junk</u> folder or search &quot;noreply@intersmjv&quot; if not in your primary inbox.
+                      </p>
+                    </div>
                   ) : (
                     <p className="mt-2 text-[11px] text-fest-label leading-relaxed">
-                      Click to receive an official verification email link in your inbox.
+                      Click to receive an official verification email link in your inbox. (Be sure to check your Spam folder if it doesn&apos;t arrive within 1 minute).
                     </p>
                   )}
                 </div>

@@ -73,31 +73,58 @@ export async function registerWithEmailPassword(
     };
   }
   try {
-    if (pass.length < 8) return { ok: false, error: "Password must be at least 8 characters long." };
+    const trimmedEmail = email.trim().toLowerCase();
+    
+    // Check if the current user session is already this email
+    const current = auth.currentUser;
+    if (current && current.email?.trim().toLowerCase() === trimmedEmail) {
+      try {
+        await current.reload();
+        if (current.emailVerified) {
+          return { ok: true, user: current, email: current.email };
+        }
+        await sendEmailVerification(current);
+        return { ok: true, user: current, email: current.email };
+      } catch (err: any) {
+        // If reloading fails, continue with credentials below
+      }
+    }
+
+    if (!pass || pass.length < 8) return { ok: false, error: "Password must be at least 8 characters long. If you refreshed the page, please go back to Step 1 to re-enter your password." };
     if (!/[a-z]/.test(pass)) return { ok: false, error: "Password must include at least one lowercase letter (a-z)." };
     if (!/[A-Z]/.test(pass)) return { ok: false, error: "Password must include at least one uppercase letter (A-Z)." };
     if (!/\d/.test(pass)) return { ok: false, error: "Password must include at least one number (0-9)." };
     if (!/[^a-zA-Z0-9]/.test(pass)) return { ok: false, error: "Password must include at least one special character (!@#...)." };
+
     let cred;
     try {
-      cred = await createUserWithEmailAndPassword(auth, email.trim(), pass);
-    } catch (error) {
-      if ((error as { code?: string }).code !== "auth/email-already-in-use") throw error;
-      cred = await signInWithEmailAndPassword(auth, email.trim(), pass);
+      cred = await createUserWithEmailAndPassword(auth, trimmedEmail, pass);
+    } catch (error: any) {
+      if (error?.code !== "auth/email-already-in-use") throw error;
+      cred = await signInWithEmailAndPassword(auth, trimmedEmail, pass);
     }
+
     if (cred.user) {
+      if (cred.user.emailVerified) {
+        return { ok: true, user: cred.user, email: cred.user.email || trimmedEmail };
+      }
       await sendEmailVerification(cred.user);
     }
+
     return {
       ok: true,
       user: cred.user,
-      email: cred.user.email || email,
+      email: cred.user.email || trimmedEmail,
     };
   } catch (err: any) {
     console.error("Email registration error:", err);
     let msg = err.message || "Failed to register account";
     if (err.code === "auth/email-already-in-use") {
-      msg = "This email is already registered. Please sign in instead.";
+      msg = "This email is already registered. Please sign in with your original password, or use 'Verify with Google'.";
+    } else if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+      msg = "This email was previously registered with a different password. Please enter the password you used previously, or use 1-Click 'Verify with Google'.";
+    } else if (err.code === "auth/too-many-requests") {
+      msg = "Too many email requests sent. Please check your Spam/Junk folder, wait 5 minutes, or use 'Verify with Google'.";
     } else if (err.code === "auth/weak-password") {
       msg = "Password does not meet Firebase requirements (min 8 characters, with uppercase, lowercase, number, and special character).";
     } else if (err.code === "auth/invalid-email") {
