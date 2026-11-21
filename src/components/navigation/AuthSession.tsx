@@ -15,22 +15,27 @@ export function AuthSession() {
       const current = ++generation;
       const state = useRegister.getState();
       if (!user) {
-        state.set("completed", false);
-        state.set("emailVerified", false);
-        state.set("isVerified", false);
+        state.logout();
         return;
       }
-      if (state.email && state.email.toLowerCase() !== user.email?.toLowerCase()) state.logout();
+      if (state.email && state.email.toLowerCase() !== user.email?.toLowerCase()) {
+        state.logout();
+      }
       try {
         const account = await loadRegistration();
         if (current !== generation) return;
-        if (account) useRegister.getState().loginAccount(account);
-        else {
+        if (account) {
+          useRegister.getState().loginAccount(account);
+        } else {
+          // Brand new student session: ensure all previous user's sports, jersey & apparel are wiped clean
+          state.logout();
           useRegister.getState().set("email", user.email ?? "");
           useRegister.getState().set("emailVerified", user.emailVerified);
         }
       } catch (error) {
-        if (current === generation) toast({ title: "PROFILE UNAVAILABLE", description: error instanceof Error ? error.message : "Please sign in again", variant: "destructive" });
+        if (current === generation) {
+          console.warn("Registration load not ready or unavailable:", error);
+        }
       }
     });
     const refresh = setInterval(async () => {

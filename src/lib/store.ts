@@ -260,6 +260,7 @@ export const useRegister = create<RegisterState>()(
         if (typeof window !== "undefined") {
           try {
             window.localStorage.removeItem("smjv_auto_login");
+            window.localStorage.removeItem("smjv_registration_storage");
           } catch {}
         }
       },

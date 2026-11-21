@@ -128,12 +128,16 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                 View Stored Pass →
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
+                  try {
+                    const { logoutFirebase } = await import("@/lib/auth-service");
+                    await logoutFirebase();
+                  } catch {}
                   s.resetAll();
                   setStep("choose-team");
                   toast({
-                    title: "STORE CLEARED",
-                    description: "Saved registration reset. Ready for a new registration.",
+                    title: "READY FOR NEW REGISTRATION",
+                    description: "Previous session and sports cleared. Ready for a new registration.",
                   });
                 }}
                 className="rounded-xl border border-fest-border/80 bg-white/70 px-3 py-2 font-mono text-xs text-fest-label hover:border-fest-orange/40 hover:text-fest-deep active:scale-95"
@@ -176,6 +180,11 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
+                          if (!s.completed) {
+                            s.set("outdoor", []);
+                            s.set("indoor", []);
+                            s.set("jerseyNumber", "");
+                          }
                           s.set("role", "sports");
                           go(1);
                         }}
@@ -214,6 +223,9 @@ export function RegistrationFlow({ showHeader = true }: { showHeader?: boolean }
                         whileHover={{ scale: 1.02, y: -2 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => {
+                          s.set("outdoor", []);
+                          s.set("indoor", []);
+                          s.set("jerseyNumber", "");
                           s.set("role", "cultural");
                           go(1);
                         }}

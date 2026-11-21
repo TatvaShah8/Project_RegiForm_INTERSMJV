@@ -277,20 +277,38 @@ export function Step4Sports({
                   : `OUTDOOR SPORTS (${q.outdoor}/2 SELECTED)`
               }
               right={
-                <button
-                  type="button"
-                  onClick={() => setShowQuotaInfo((v) => !v)}
-                  className="flex items-center gap-1.5 rounded-full border border-fest-orange/50 bg-white/75 px-2.5 py-1 text-xs font-bold text-fest-deep shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-white active:scale-95"
-                  title="Click to view Sports Quota Rules & Current Status"
-                  aria-label="View Sports Quota Rules"
-                >
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-fest-orange font-mono text-[10px] font-black text-fest-ink shadow-xs">
-                    i
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-wider text-fest-label hover:text-fest-deep">
-                    Quota Rules
-                  </span>
-                </button>
+                <div className="flex items-center gap-2">
+                  {q.total > 0 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        s.set("outdoor", []);
+                        s.set("indoor", []);
+                        toast({
+                          title: "SPORTS SELECTION RESET",
+                          description: "All selected sports cleared. You can now select your desired sports.",
+                        });
+                      }}
+                      className="rounded-full border border-red-300 bg-red-50/80 px-2.5 py-1 font-mono text-[10px] font-bold text-red-600 hover:bg-red-100 transition active:scale-95"
+                    >
+                      ✕ Reset Sports ({q.total})
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowQuotaInfo((v) => !v)}
+                    className="flex items-center gap-1.5 rounded-full border border-fest-orange/50 bg-white/75 px-2.5 py-1 text-xs font-bold text-fest-deep shadow-xs backdrop-blur-md transition hover:border-fest-orange hover:bg-white active:scale-95"
+                    title="Click to view Sports Quota Rules & Current Status"
+                    aria-label="View Sports Quota Rules"
+                  >
+                    <span className="flex h-4 w-4 items-center justify-center rounded-full bg-fest-orange font-mono text-[10px] font-black text-fest-ink shadow-xs">
+                      i
+                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-wider text-fest-label hover:text-fest-deep">
+                      Quota Rules
+                    </span>
+                  </button>
+                </div>
               }
             />
 

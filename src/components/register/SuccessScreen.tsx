@@ -7,6 +7,7 @@ import { useRegister, selectAge } from "@/lib/store";
 import { ROLE_META, fullName, BOYS_OUTDOOR_SPORTS, GIRLS_OUTDOOR_SPORTS, OUTDOOR_SPORTS, INDOOR_SPORTS, formatDob } from "@/lib/fest";
 import { useToast } from "@/hooks/use-toast";
 import { printPassCard } from "@/lib/print-pass";
+import { logoutFirebase } from "@/lib/auth-service";
 import { useFestQr, IdPass } from "./IdPass";
 import { CTAButton } from "./ui-bits";
 import { cn } from "@/lib/utils";
@@ -158,6 +159,19 @@ export function SuccessScreen() {
             🖨 PRINT PASS
           </CTAButton>
           <CTAButton
+            variant="dark"
+            className="border-fest-orange/50 text-fest-orange hover:bg-fest-orange/10 font-display"
+            onClick={async () => {
+              try {
+                await logoutFirebase();
+              } catch {}
+              s.resetAll();
+              window.location.href = "/register";
+            }}
+          >
+            + REGISTER ANOTHER STUDENT
+          </CTAButton>
+          <CTAButton
             variant="ghost"
             className="font-display text-fest-white"
             onClick={() =>
@@ -172,7 +186,19 @@ export function SuccessScreen() {
         </div>
       </motion.div>
 
-      <IdPass open={passOpen} onOpenChange={setPassOpen} qr={qr} />
+      <IdPass
+        open={passOpen}
+        onOpenChange={setPassOpen}
+        qr={qr}
+        onLogout={async () => {
+          setPassOpen(false);
+          try {
+            await logoutFirebase();
+          } catch {}
+          s.resetAll();
+          window.location.href = "/";
+        }}
+      />
     </section>
   );
 }
