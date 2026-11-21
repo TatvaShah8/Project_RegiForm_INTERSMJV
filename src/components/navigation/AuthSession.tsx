@@ -4,7 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRegister } from "@/lib/store";
 import { loadRegistration } from "@/lib/registration-api";
-import { toast } from "@/hooks/use-toast";
+
 export function AuthSession() {
   useEffect(() => {
     // Remove the obsolete demo account cache, which could contain plaintext passwords.
@@ -15,10 +15,14 @@ export function AuthSession() {
       const current = ++generation;
       const state = useRegister.getState();
       if (!user) {
-        state.logout();
+        if (state.completed) {
+          state.logout();
+        } else {
+          state.set("emailVerified", false);
+        }
         return;
       }
-      if (state.email && state.email.toLowerCase() !== user.email?.toLowerCase()) {
+      if (state.completed && state.email && state.email.toLowerCase() !== user.email?.toLowerCase()) {
         state.logout();
       }
       try {
@@ -27,10 +31,16 @@ export function AuthSession() {
         if (account) {
           useRegister.getState().loginAccount(account);
         } else {
-          // Brand new student session: ensure all previous user's sports, jersey & apparel are wiped clean
-          state.logout();
-          useRegister.getState().set("email", user.email ?? "");
-          useRegister.getState().set("emailVerified", user.emailVerified);
+          // In-progress registration: preserve Step 1 identity fields (name, grNo, gender, mobile)
+          const s = useRegister.getState();
+          if (s.completed) {
+            s.set("completed", false);
+            s.set("outdoor", []);
+            s.set("indoor", []);
+            s.set("jerseyNumber", "");
+          }
+          s.set("email", user.email ?? s.email);
+          s.set("emailVerified", !!user.emailVerified);
         }
       } catch (error) {
         if (current === generation) {

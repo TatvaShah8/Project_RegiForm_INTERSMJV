@@ -155,6 +155,9 @@ export function Step2Verify({
       if (firebaseUser.email?.trim().toLowerCase() !== s.email.trim().toLowerCase()) {
         throw new Error("The verified Firebase email differs from the email in your form");
       }
+      if (!s.firstName?.trim() || !s.surname?.trim() || !s.grNo?.trim() || !s.gender) {
+        throw new Error("Your identity details from Step 1 are missing. Please click '← Back to Step 1' and confirm your details.");
+      }
       await registrationRequest("signup", "POST", {
         firstName: s.firstName,
         middleName: s.middleName,
