@@ -16,8 +16,8 @@ export async function database() {
   }
   if (!cache.smjvMongo) {
     const client = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 8000,
-      connectTimeoutMS: 8000,
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000,
     });
     cache.smjvMongo = client.connect().catch(async error => {
       cache.smjvMongo = undefined;
@@ -41,20 +41,17 @@ export async function database() {
 export async function registrations() {
   const collection = (await database()).collection("registrations");
   // Database constraints arbitrate concurrent requests.
-  cache.smjvIndexes ??= collection.createIndexes([
-    ...["firebaseUid", "email", "phone", "grnumber"].map(field => ({
-      key: { [field]: 1 as const }, unique: true,
-    })),
-    { key: { branch: 1, gender: 1, jerseyNumber: 1 }, unique: true,
-      partialFilterExpression: { jerseyNumber: { $type: "number" } } },
-  ]).catch(error => {
-    cache.smjvIndexes = undefined;
-    console.error("MongoDB index warning:", error);
-    if ((error as any)?.codeName === "IndexOptionsConflict" || (error as any)?.code === 85) {
+  if (!cache.smjvIndexes) {
+    cache.smjvIndexes = collection.createIndexes([
+      ...["firebaseUid", "email", "phone", "grnumber"].map(field => ({
+        key: { [field]: 1 as const }, unique: true,
+      })),
+      { key: { branch: 1, gender: 1, jerseyNumber: 1 }, unique: true,
+        partialFilterExpression: { jerseyNumber: { $type: "number" } } },
+    ]).catch(error => {
+      console.warn("MongoDB index notice (non-fatal):", (error as any)?.message || error);
       return null;
-    }
-    throw error;
-  });
-  await cache.smjvIndexes;
+    });
+  }
   return collection;
 }

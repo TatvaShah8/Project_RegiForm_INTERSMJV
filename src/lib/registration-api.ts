@@ -21,8 +21,19 @@ export async function registrationRequest(
     headers,
     body: data === undefined ? undefined : form ? data : JSON.stringify(data),
   });
-  const result = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(result.error || `Request failed (${response.status})`);
+  const rawText = await response.text();
+  let result: any = {};
+  try {
+    result = JSON.parse(rawText);
+  } catch {
+    // If response is HTML or text, strip tags and extract message
+    const clean = rawText.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+    result = { error: clean.slice(0, 200) || `Request failed (${response.status})` };
+  }
+  if (!response.ok) {
+    const errorMsg = result?.error || result?.message || `Request failed (${response.status})`;
+    throw new Error(errorMsg);
+  }
   return result;
 }
 
