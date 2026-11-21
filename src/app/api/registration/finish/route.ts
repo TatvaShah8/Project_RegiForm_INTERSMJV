@@ -77,6 +77,7 @@ export async function POST(request: Request) {
     if (duplicate) return Response.json({ error: duplicate }, { status: 409 });
     if (validationError(error)) return badInput(error);
     console.error("Finish registration failed", error);
-    return Response.json({ error: "Could not finalize registration" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : "Could not finalize registration";
+    return Response.json({ error: msg }, { status: 500 });
   }
 }

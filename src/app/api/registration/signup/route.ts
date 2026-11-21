@@ -38,6 +38,7 @@ export async function POST(request: Request) {
     if (duplicate) return Response.json({ error: duplicate }, { status: 409 });
     if (validationError(error)) return badInput(error);
     console.error("Signup failed", error);
-    return Response.json({ error: "Registration temporarily unavailable" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : "Registration temporarily unavailable";
+    return Response.json({ error: msg }, { status: 500 });
   }
 }

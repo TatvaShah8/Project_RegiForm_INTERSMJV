@@ -10,6 +10,7 @@ export async function GET(request: Request) {
     return Response.json({ account: record ? { ...await registrationProfile(record), emailVerified: user.emailVerified } : null }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Profile load failed", error);
-    return Response.json({ error: "Could not load your saved registration" }, { status: 503 });
+    const msg = error instanceof Error ? error.message : "Could not load your saved registration";
+    return Response.json({ error: msg }, { status: 503 });
   }
 }

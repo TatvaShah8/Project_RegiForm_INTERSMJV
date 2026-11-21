@@ -34,6 +34,7 @@ export async function PATCH(request: Request) {
   } catch (error) {
     if (validationError(error)) return badInput(error);
     console.error("General update failed", error);
-    return Response.json({ error: "Unable to save general information" }, { status: 500 });
+    const msg = error instanceof Error ? error.message : "Unable to save general information";
+    return Response.json({ error: msg }, { status: 500 });
   }
 }
