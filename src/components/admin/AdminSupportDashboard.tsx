@@ -15,6 +15,7 @@ import {
   Send,
   ArrowLeft,
   ShieldAlert,
+  ShieldCheck,
   Sparkles,
   RefreshCw,
   FileText,
@@ -141,7 +142,14 @@ export function AdminSupportDashboard() {
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/admin/verification"
+              className="flex items-center gap-1.5 rounded-xl border border-fest-orange/40 bg-fest-orange/10 px-3.5 py-1.5 font-mono text-xs font-bold text-fest-orange shadow-xs transition hover:bg-fest-orange/20 active:scale-95"
+            >
+              <ShieldCheck className="h-3.5 w-3.5 text-fest-orange" />
+              <span>ACCREDITATION ROSTER</span>
+            </Link>
             <button
               type="button"
               onClick={refreshTickets}

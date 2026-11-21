@@ -58,6 +58,7 @@ export interface RegisterState {
   /* outcome */
   passNo: string;
   completed: boolean;
+  isVerified: boolean;
 
   set: <K extends keyof RegisterState>(key: K, value: RegisterState[K]) => void;
   issueOtps: () => void;
@@ -125,6 +126,7 @@ const initial = {
 
   passNo: "",
   completed: false,
+  isVerified: false,
 };
 
 const dummyStorage = {
@@ -258,7 +260,7 @@ export const useRegister = create<RegisterState>()(
         const digits = s.grNo.replace(/\D/g, "") || "000142";
         const passNo = s.passNo || `#${digits}`;
         set({ completed: true, passNo });
-        const updated = { ...s, completed: true, passNo };
+        const updated = { ...s, completed: true, passNo, isVerified: !!s.isVerified };
         try {
           window.localStorage.setItem(
             "smjv_auto_login",
@@ -280,6 +282,7 @@ export const useRegister = create<RegisterState>()(
         set({
           ...initial,
           ...account,
+          isVerified: !!account.isVerified,
           completed: true,
           _hasHydrated: true,
         });

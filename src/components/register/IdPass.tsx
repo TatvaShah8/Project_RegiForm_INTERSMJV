@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import QRCode from "qrcode";
-import { X, QrCode } from "lucide-react";
+import { X, QrCode, ShieldCheck, ShieldAlert } from "lucide-react";
 import { useRegister, selectAge } from "@/lib/store";
 import {
   FEST_NAME,
@@ -17,6 +17,9 @@ import {
 } from "@/lib/fest";
 import { cn } from "@/lib/utils";
 import { printPassCard } from "@/lib/print-pass";
+import { setStudentVerification } from "@/lib/auth-storage";
+import { useToast } from "@/hooks/use-toast";
+import { CommitteeVerificationModal } from "@/components/admin/CommitteeVerificationModal";
 import {
   Dialog,
   DialogContent,
@@ -87,9 +90,24 @@ export function IdPass({
   onOpenScanner?: () => void;
 }) {
   const s = useRegister();
+  const { toast } = useToast();
+  const [rosterOpen, setRosterOpen] = React.useState(false);
+
   const age = selectAge(s.dob);
   const sports = [...s.outdoor, ...s.indoor];
   const roleMeta = s.role ? ROLE_META[s.role] : null;
+
+  const handleToggleVerification = () => {
+    const nextStatus = !s.isVerified;
+    s.set("isVerified", nextStatus);
+    setStudentVerification(s.grNo || s.email, nextStatus);
+    toast({
+      title: nextStatus ? "OFFICIALLY VERIFIED ✓" : "STATUS REVERTED",
+      description: nextStatus
+        ? `${fullName(s) || "Student"} (GR: ${s.grNo || "—"}) is officially accredited against hostel master list.`
+        : `${fullName(s) || "Student"} marked as pending verification (Unverified).`,
+    });
+  };
 
   const handlePrint = () => {
     printPassCard({
@@ -105,7 +123,8 @@ export function IdPass({
       college: s.college || "—",
       course: s.course || "—",
       year: s.year || "—",
-      role: roleMeta?.passLabel ?? "PARTICIPANT",
+      role: s.role === "cultural" ? "CULTURAL" : "PLAYER",
+      isVerified: !!s.isVerified,
       sports: sports.map((name) => sportChip(name)),
       kit: s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`,
       jerseyNumber: s.role === "sports" ? s.jerseyNumber : undefined,
@@ -146,7 +165,7 @@ export function IdPass({
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="whitespace-nowrap rounded-full bg-black/85 px-2 py-0.5 sm:px-3 sm:py-1 font-mono text-[8.5px] sm:text-[10px] font-bold tracking-widest text-white shadow-xs">
-                {roleMeta?.passLabel ?? "PARTICIPANT"}
+                {s.role === "cultural" ? "🎭 CULTURAL" : "⚡ PLAYER"}
               </span>
               <button
                 type="button"
@@ -175,13 +194,40 @@ export function IdPass({
                     PHOTO
                   </div>
                 )}
-                <span className="absolute bottom-0.5 left-0.5 rounded-full bg-purple-600/95 px-1 py-0.2 text-[6.5px] sm:text-[7.5px] font-bold tracking-wider text-white shadow">
-                  PROVISIONAL
-                </span>
+                {s.isVerified ? (
+                  <span className="absolute bottom-0.5 left-0.5 rounded-full bg-emerald-600 px-1 py-0.2 text-[6.5px] sm:text-[7.5px] font-bold tracking-wider text-white shadow">
+                    ✓ VERIFIED
+                  </span>
+                ) : (
+                  <span className="absolute bottom-0.5 left-0.5 rounded-full bg-amber-600 px-1 py-0.2 text-[6.5px] sm:text-[7.5px] font-bold tracking-wider text-white shadow">
+                    ⚠ UNVERIFIED
+                  </span>
+                )}
               </div>
 
               <div className="min-w-0 flex-1 space-y-0.5 sm:space-y-1">
                 <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                  <span
+                    className={cn(
+                      "rounded-md border px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider uppercase",
+                      s.role === "cultural"
+                        ? "border-purple-400/50 bg-purple-500/15 text-purple-700"
+                        : "border-blue-500/40 bg-blue-500/15 text-blue-700"
+                    )}
+                  >
+                    {s.role === "cultural" ? "🎭 CULTURAL" : "⚡ PLAYER"}
+                  </span>
+
+                  {s.isVerified ? (
+                    <span className="rounded-md border border-emerald-500/50 bg-emerald-500/15 px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-emerald-700 shadow-xs">
+                      ✓ VERIFIED
+                    </span>
+                  ) : (
+                    <span className="rounded-md border border-amber-500/50 bg-amber-500/15 px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-amber-700 shadow-xs">
+                      ⚠ UNVERIFIED
+                    </span>
+                  )}
+
                   <span className="rounded-md border border-fest-yellow/40 bg-fest-yellow/10 px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-yellow">
                     {s.branch.toUpperCase() || "SMJV"}
                   </span>
@@ -278,6 +324,51 @@ export function IdPass({
                 )}
               </div>
             )}
+            {/* Committee Accreditation Verification Action */}
+            <div className="rounded-xl border border-fest-orange/30 bg-gradient-to-r from-fest-yellow/10 via-white/80 to-fest-orange/10 p-2 sm:p-2.5 shadow-xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    {s.isVerified ? (
+                      <ShieldCheck className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                    ) : (
+                      <ShieldAlert className="h-3.5 w-3.5 text-amber-600 shrink-0" />
+                    )}
+                    <span className="font-mono text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-fest-deep">
+                      {s.isVerified ? "STATUS: ACCREDITED ✓" : "STATUS: UNVERIFIED"}
+                    </span>
+                  </div>
+                  <p className="font-mono text-[9px] sm:text-[10px] text-fest-deep/80">
+                    {s.isVerified
+                      ? "Cross-checked with GR No. & Name roster."
+                      : "Verify with GR No. and Name from official list."}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleToggleVerification}
+                    className={cn(
+                      "rounded-lg px-2.5 py-1 font-display text-[9px] sm:text-[10px] uppercase tracking-wider transition active:scale-95 shadow-xs",
+                      s.isVerified
+                        ? "border border-red-300 bg-red-50 text-red-600 hover:bg-red-100"
+                        : "bg-emerald-600 text-white hover:bg-emerald-700"
+                    )}
+                  >
+                    {s.isVerified ? "REVERT" : "VERIFY PASS ✓"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setRosterOpen(true)}
+                    className="rounded-lg border border-fest-orange/40 bg-white/90 px-2 py-1 font-display text-[9px] sm:text-[10px] uppercase tracking-wider text-fest-orange hover:bg-white active:scale-95 shadow-xs"
+                    title="Open Full Committee Master Roster"
+                  >
+                    ROSTER
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -309,6 +400,11 @@ export function IdPass({
           </button>
         </div>
       </DialogContent>
+
+      <CommitteeVerificationModal
+        open={rosterOpen}
+        onOpenChange={setRosterOpen}
+      />
     </Dialog>
   );
 }

@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { printPassCard } from "@/lib/print-pass";
 import { useFestQr, IdPass } from "./IdPass";
 import { CTAButton } from "./ui-bits";
+import { cn } from "@/lib/utils";
 
 export function SuccessScreen() {
   const s = useRegister();
@@ -33,7 +34,8 @@ export function SuccessScreen() {
       college: s.college || "—",
       course: s.course || "—",
       year: s.year || "—",
-      role: roleMeta?.passLabel ?? (s.role === "cultural" ? "CULTURAL TEAM" : "PARTICIPANT"),
+      role: s.role === "cultural" ? "CULTURAL" : "PLAYER",
+      isVerified: !!s.isVerified,
       sports: sports.map((name) => {
         const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
         const found = all.find((sp) => sp.name === name);
@@ -89,9 +91,28 @@ export function SuccessScreen() {
             <span className="font-display text-lg uppercase tracking-wide text-fest-white">
               SMJV YOUTH FESTIVAL 2026
             </span>
-            <span className="rounded-full border border-fest-orange/50 bg-fest-orange/15 px-3 py-1 font-mono text-[10px] font-bold tracking-widest text-fest-orange">
-              {roleMeta?.passLabel ?? "PARTICIPANT"}
-            </span>
+            <div className="flex items-center gap-1.5">
+              <span
+                className={cn(
+                  "rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-widest uppercase",
+                  s.role === "cultural"
+                    ? "border-purple-400/50 bg-purple-500/15 text-purple-700"
+                    : "border-fest-orange/50 bg-fest-orange/15 text-fest-orange"
+                )}
+              >
+                {s.role === "cultural" ? "🎭 CULTURAL" : "⚡ PLAYER"}
+              </span>
+              <span
+                className={cn(
+                  "rounded-full border px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider",
+                  s.isVerified
+                    ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-700"
+                    : "border-amber-500/40 bg-amber-500/15 text-amber-700"
+                )}
+              >
+                {s.isVerified ? "✓ VERIFIED" : "⚠ UNVERIFIED"}
+              </span>
+            </div>
           </div>
           <div className="mt-4 flex items-center gap-4">
             {s.photo ? (

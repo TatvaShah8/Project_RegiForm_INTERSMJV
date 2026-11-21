@@ -111,9 +111,23 @@ export function TournamentNav({
                   </div>
 
                   {/* Name beside circle (No id pass number) */}
-                  <span className="max-w-[70px] sm:max-w-[120px] md:max-w-[180px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange md:text-sm">
+                  <span className="max-w-[70px] sm:max-w-[120px] md:max-w-[160px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange md:text-sm">
                     {displayName}
                   </span>
+
+                  {/* Role & Verification chips */}
+                  <span className="hidden md:inline rounded-md border border-fest-border bg-fest-bg/80 px-1.5 py-0.2 font-mono text-[9px] font-bold tracking-wider text-fest-deep">
+                    {s.role === "cultural" ? "CULTURAL" : "PLAYER"}
+                  </span>
+                  {s.isVerified ? (
+                    <span className="hidden sm:inline rounded-md border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.2 font-mono text-[8.5px] font-bold text-emerald-800">
+                      VERIFIED ✓
+                    </span>
+                  ) : (
+                    <span className="hidden sm:inline rounded-md border border-amber-500/40 bg-amber-500/15 px-1.5 py-0.2 font-mono text-[8.5px] font-bold text-amber-800">
+                      UNVERIFIED
+                    </span>
+                  )}
                 </button>
 
                 {/* Quick Logout button */}

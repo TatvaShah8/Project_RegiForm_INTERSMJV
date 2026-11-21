@@ -37,6 +37,7 @@ export const DEMO_STUDENT: Partial<RegisterState> = {
   completed: true,
   passNo: "#000142",
   photo: DEFAULT_AVATAR,
+  isVerified: false,
 };
 
 export const INITIAL_ACCOUNTS: Partial<RegisterState>[] = [
@@ -69,6 +70,7 @@ export const INITIAL_ACCOUNTS: Partial<RegisterState>[] = [
     completed: true,
     passNo: "#000707",
     photo: DEFAULT_AVATAR,
+    isVerified: false,
   },
   {
     firstName: "Priya",
@@ -98,6 +100,35 @@ export const INITIAL_ACCOUNTS: Partial<RegisterState>[] = [
     completed: true,
     passNo: "#000524",
     photo: DEFAULT_AVATAR,
+    isVerified: true,
+  },
+  {
+    firstName: "Aanvi",
+    middleName: "Pareshbhai",
+    surname: "Doshi",
+    email: "aanvi.doshi@smjv.edu",
+    password: "password123",
+    mobile: "9824155555",
+    grNo: "SMJV26-0318",
+    gender: "FEMALE",
+    branch: "Vadodara",
+    homeTown: "Vadodara",
+    college: "Faculty of Performing Arts, MSU",
+    course: "BPA Classical Dance",
+    year: "2nd Year",
+    bloodGroup: "B+",
+    dob: new Date("2004-03-22"),
+    emergency: "9824166666",
+    relation: "Father",
+    role: "cultural",
+    tshirt: "38 (M)",
+    outdoor: [],
+    indoor: [],
+    agreement: true,
+    completed: true,
+    passNo: "#000318",
+    photo: DEFAULT_AVATAR,
+    isVerified: false,
   },
 ];
 
@@ -167,6 +198,73 @@ export function findAccount(identifier: string): Partial<RegisterState> | null {
     return DEMO_STUDENT;
   }
   return null;
+}
+
+/**
+ * Toggles or sets the accreditation verification status of a student by GR number or email.
+ * Updates the localStorage saved accounts list and returns the new status.
+ */
+export function setStudentVerification(grNoOrEmail: string, isVerified: boolean): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const accounts = getSavedAccounts();
+    const q = grNoOrEmail.toLowerCase().trim();
+    let found = false;
+
+    const updated = accounts.map((a) => {
+      const email = a.email?.toLowerCase().trim();
+      const gr = a.grNo?.toLowerCase().trim();
+      if ((email && email === q) || (gr && gr === q)) {
+        found = true;
+        return { ...a, isVerified };
+      }
+      return a;
+    });
+
+    if (found) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return isVerified;
+    }
+    return false;
+  } catch (err) {
+    console.error("Could not set student verification:", err);
+    return false;
+  }
+}
+
+export function toggleStudentVerification(grNoOrEmail: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const accounts = getSavedAccounts();
+    const q = grNoOrEmail.toLowerCase().trim();
+    let newStatus = false;
+    let found = false;
+
+    const updated = accounts.map((a) => {
+      const email = a.email?.toLowerCase().trim();
+      const gr = a.grNo?.toLowerCase().trim();
+      if ((email && email === q) || (gr && gr === q)) {
+        found = true;
+        newStatus = !a.isVerified;
+        return { ...a, isVerified: newStatus };
+      }
+      return a;
+    });
+
+    if (found) {
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      return newStatus;
+    }
+    return false;
+  } catch (err) {
+    console.error("Could not toggle student verification:", err);
+    return false;
+  }
+}
+
+export function getStudentVerification(grNoOrEmail: string): boolean {
+  const account = findAccount(grNoOrEmail);
+  return !!account?.isVerified;
 }
 
 /**

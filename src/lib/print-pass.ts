@@ -18,6 +18,7 @@ export interface PassPrintData {
   course: string;
   year: string;
   role: string;
+  isVerified?: boolean;
   sports: string[];
   kit: string;
   jerseyNumber?: string;
@@ -175,14 +176,19 @@ export function printPassCard(data: PassPrintData) {
       bottom: 2px;
       left: 2px;
       right: 2px;
-      background: rgba(147, 51, 234, 0.95);
       color: #ffffff;
       font-size: 7px;
       font-weight: 800;
       text-align: center;
       border-radius: 4px;
-      padding: 1px 0;
+      padding: 1.5px 0;
       letter-spacing: 0.5px;
+    }
+    .prov-badge.verified {
+      background: #059669;
+    }
+    .prov-badge.unverified {
+      background: #d97706;
     }
     .identity-details {
       flex: 1;
@@ -201,6 +207,26 @@ export function printPassCard(data: PassPrintData) {
       padding: 2px 7px;
       border-radius: 6px;
       text-transform: uppercase;
+    }
+    .tag-player {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+    .tag-cultural {
+      background: #faf5ff;
+      color: #7e22ce;
+      border: 1px solid #e9d5ff;
+    }
+    .tag-verified {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+    .tag-unverified {
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
     }
     .tag-branch {
       background: #fef3c7;
@@ -340,10 +366,18 @@ export function printPassCard(data: PassPrintData) {
               ? `<img src="${data.photo}" alt="Portrait" class="photo-img" />`
               : `<div class="photo-placeholder">PHOTO</div>`
           }
-          <div class="prov-badge">PROVISIONAL</div>
+          <div class="prov-badge ${data.isVerified ? "verified" : "unverified"}">
+            ${data.isVerified ? "✓ VERIFIED" : "⚠ UNVERIFIED"}
+          </div>
         </div>
         <div class="identity-details">
           <div class="tag-row">
+            <span class="tag ${data.role === "CULTURAL" ? "tag-cultural" : "tag-player"}">${data.role === "CULTURAL" ? "🎭 CULTURAL" : "⚡ PLAYER"}</span>
+            ${
+              data.isVerified
+                ? `<span class="tag tag-verified">✓ VERIFIED</span>`
+                : `<span class="tag tag-unverified">⚠ UNVERIFIED</span>`
+            }
             <span class="tag tag-branch">${data.branch}</span>
             <span class="tag tag-blood">🩸 ${data.bloodGroup}</span>
             <span class="tag tag-gr">GR: ${data.grNo}</span>

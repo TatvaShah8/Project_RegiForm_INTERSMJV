@@ -202,13 +202,13 @@ export const ROLE_META: Record<Role, { emoji: string; title: string; sub: string
     emoji: "⚡",
     title: "Sports Team",
     sub: "Competing athlete in athletic & indoor ties",
-    passLabel: "SPORTS TEAM",
+    passLabel: "PLAYER",
   },
   cultural: {
     emoji: "🎭",
     title: "Cultural Team",
     sub: "Garba, music, drama & stage performances",
-    passLabel: "CULTURAL TEAM",
+    passLabel: "CULTURAL",
   },
   visitor: {
     emoji: "🎟",
