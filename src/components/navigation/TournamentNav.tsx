@@ -94,10 +94,10 @@ export function TournamentNav({
                 <button
                   type="button"
                   onClick={() => setIdPassOpen(true)}
-                  className="group flex items-center gap-1.5 sm:gap-2.5 rounded-full border border-white/90 bg-white/75 py-0.5 sm:py-1 pl-0.5 sm:pl-1 pr-2 sm:pr-3.5 shadow-[0_4px_16px_rgba(28,36,56,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-xl transition hover:border-fest-orange/60 hover:bg-white active:scale-95"
+                  className="group flex items-center gap-1.5 sm:gap-2.5 rounded-full border border-white/90 bg-white/75 py-0.5 sm:py-1 pl-0.5 sm:pl-1 pr-2.5 sm:pr-3.5 shadow-[0_4px_16px_rgba(28,36,56,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] backdrop-blur-xl transition hover:border-fest-orange/60 hover:bg-white active:scale-95"
                   title="Click to view Official Student ID Pass"
                 >
-                  {/* Circle Photo (No green dot) */}
+                  {/* Circle Photo */}
                   <div className="relative h-7 w-7 sm:h-8 sm:w-8 shrink-0 overflow-hidden rounded-full border-2 border-fest-orange bg-white shadow-sm md:h-9 md:w-9">
                     {s.photo ? (
                       <img
@@ -112,24 +112,10 @@ export function TournamentNav({
                     )}
                   </div>
 
-                  {/* Name beside circle (No id pass number) */}
-                  <span className="max-w-[70px] sm:max-w-[120px] md:max-w-[160px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange md:text-sm">
+                  {/* Name beside circle */}
+                  <span className="max-w-[100px] sm:max-w-[150px] md:max-w-[200px] truncate font-display text-xs uppercase tracking-wide text-fest-deep group-hover:text-fest-orange md:text-sm">
                     {displayName}
                   </span>
-
-                  {/* Role & Verification chips */}
-                  <span className="hidden md:inline rounded-md border border-fest-border bg-fest-bg/80 px-1.5 py-0.2 font-mono text-[9px] font-bold tracking-wider text-fest-deep">
-                    {s.role === "cultural" ? "CULTURAL" : "PLAYER"}
-                  </span>
-                  {s.isVerified ? (
-                    <span className="hidden sm:inline rounded-md border border-emerald-500/40 bg-emerald-500/15 px-1.5 py-0.2 font-mono text-[8.5px] font-bold text-emerald-800">
-                      VERIFIED ✓
-                    </span>
-                  ) : (
-                    <span className="hidden sm:inline rounded-md border border-amber-500/40 bg-amber-500/15 px-1.5 py-0.2 font-mono text-[8.5px] font-bold text-amber-800">
-                      UNVERIFIED
-                    </span>
-                  )}
                 </button>
 
                 {/* Quick Logout button */}
