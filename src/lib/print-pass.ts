@@ -188,7 +188,7 @@ export function printPassCard(data: PassPrintData) {
       background: #059669;
     }
     .prov-badge.unverified {
-      background: #d97706;
+      background: #dc2626;
     }
     .identity-details {
       flex: 1;
@@ -367,23 +367,16 @@ export function printPassCard(data: PassPrintData) {
               : `<div class="photo-placeholder">PHOTO</div>`
           }
           <div class="prov-badge ${data.isVerified ? "verified" : "unverified"}">
-            ${data.isVerified ? "✓ VERIFIED" : "⚠ UNVERIFIED"}
+            ${data.isVerified ? "✓ VERIFIED" : "UNVERIFIED"}
           </div>
         </div>
         <div class="identity-details">
           <div class="tag-row">
-            <span class="tag ${data.role === "CULTURAL" ? "tag-cultural" : "tag-player"}">${data.role === "CULTURAL" ? "🎭 CULTURAL" : "⚡ PLAYER"}</span>
-            ${
-              data.isVerified
-                ? `<span class="tag tag-verified">✓ VERIFIED</span>`
-                : `<span class="tag tag-unverified">⚠ UNVERIFIED</span>`
-            }
             <span class="tag tag-branch">${data.branch}</span>
             <span class="tag tag-blood">🩸 ${data.bloodGroup}</span>
-            <span class="tag tag-gr">GR: ${data.grNo}</span>
           </div>
           <h2 class="student-name">${data.name}</h2>
-          <p class="meta-line">Age: ${data.age} · ${data.gender} · DOB: ${data.dob}</p>
+          <p class="meta-line">Age: ${data.age} · ${data.gender} · DOB: ${data.dob} · GR: <b style="color: #b45309;">${data.grNo}</b></p>
         </div>
       </div>
 

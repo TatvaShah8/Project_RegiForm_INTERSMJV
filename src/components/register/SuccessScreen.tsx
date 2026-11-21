@@ -100,17 +100,17 @@ export function SuccessScreen() {
                     : "border-fest-orange/50 bg-fest-orange/15 text-fest-orange"
                 )}
               >
-                {s.role === "cultural" ? "🎭 CULTURAL" : "⚡ PLAYER"}
+                {s.role === "cultural" ? "CULTURAL" : "PLAYER"}
               </span>
               <span
                 className={cn(
                   "rounded-full border px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider",
                   s.isVerified
                     ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-700"
-                    : "border-amber-500/40 bg-amber-500/15 text-amber-700"
+                    : "border-red-500/40 bg-red-500/15 text-red-700"
                 )}
               >
-                {s.isVerified ? "✓ VERIFIED" : "⚠ UNVERIFIED"}
+                {s.isVerified ? "✓ VERIFIED" : "UNVERIFIED"}
               </span>
             </div>
           </div>
@@ -131,8 +131,7 @@ export function SuccessScreen() {
                 {fullName(s) || "SMJVIAN"}
               </p>
               <p className="mt-0.5 font-mono text-xs text-fest-label">
-                GR: <span className="text-fest-gold">{s.grNo || "—"}</span> · {s.branch || "—"} ·{" "}
-                {age ?? "—"} yrs {s.role === "sports" && s.jerseyNumber ? `· Jersey #${s.jerseyNumber}` : ""}
+                Age: {age ?? "—"} yrs · DOB: {formatDob(s.dob)} · GR: <span className="text-fest-gold">{s.grNo || "—"}</span> · {s.branch || "—"} {s.role === "sports" && s.jerseyNumber ? `· Jersey #${s.jerseyNumber}` : ""}
               </p>
               <p className="mt-0.5 truncate font-mono text-xs text-fest-yellow">
                 {s.role === "sports" && sports.length > 0
