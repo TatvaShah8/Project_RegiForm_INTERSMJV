@@ -33,6 +33,18 @@ export function Step1Account({
   const [errs, setErrs] = React.useState<Record<string, string>>({});
   const [showPw, setShowPw] = React.useState(false);
 
+  const pw = s.password || "";
+  const pwRules = React.useMemo(
+    () => [
+      { label: "8+ characters", met: pw.length >= 8 },
+      { label: "1 number (0-9)", met: /\d/.test(pw) },
+      { label: "1 lowercase (a-z)", met: /[a-z]/.test(pw) },
+      { label: "1 uppercase (A-Z)", met: /[A-Z]/.test(pw) },
+      { label: "1 special char (!@#...)", met: /[^a-zA-Z0-9]/.test(pw) },
+    ],
+    [pw]
+  );
+
   const setErr = (k: string, v?: string) =>
     setErrs((e) => {
       const n = { ...e };
@@ -46,7 +58,21 @@ export function Step1Account({
     if (!s.firstName.trim()) e.firstName = "First name is required";
     if (!s.surname.trim()) e.surname = "Surname is required";
     if (!isEmail(s.email)) e.email = "Enter a valid email address";
-    if (!s.emailVerified && s.password.length < 6) e.password = "Minimum 6 characters";
+    if (!s.emailVerified) {
+      if (!s.password) {
+        e.password = "Password is required";
+      } else if (s.password.length < 8) {
+        e.password = "Password must be at least 8 characters";
+      } else if (!/[a-z]/.test(s.password)) {
+        e.password = "Include at least one lowercase letter (a-z)";
+      } else if (!/[A-Z]/.test(s.password)) {
+        e.password = "Include at least one uppercase letter (A-Z)";
+      } else if (!/\d/.test(s.password)) {
+        e.password = "Include at least one number (0-9)";
+      } else if (!/[^a-zA-Z0-9]/.test(s.password)) {
+        e.password = "Include at least one special character (!@#...)";
+      }
+    }
     if (!isPhone(s.mobile)) e.mobile = "Enter a valid 10-digit mobile number";
     if (!s.grNo.trim()) e.grNo = "G.R. No. is required";
     if (!s.gender) e.gender = "Select a category";
@@ -188,13 +214,40 @@ export function Step1Account({
             <FestInput
               error={!!errs.password}
               type={showPw ? "text" : "password"}
-              placeholder="Minimum 6 characters"
+              placeholder="Min. 8 chars (e.g. Pass@123)"
               value={s.password}
               onChange={(e) => {
                 s.set("password", e.target.value);
                 setErr("password");
               }}
             />
+
+            {/* Password requirements checklist with tickmarks */}
+            <div className="mt-2.5 flex flex-wrap gap-1.5 font-mono text-[10.5px]">
+              {pwRules.map((rule) => (
+                <span
+                  key={rule.label}
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5 transition-all duration-150",
+                    rule.met
+                      ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-700 font-bold shadow-xs"
+                      : "border-white/80 bg-white/50 text-fest-label/70"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full text-[9px] font-bold transition-colors",
+                      rule.met
+                        ? "bg-emerald-600 text-white shadow-xs"
+                        : "border border-fest-label/40 text-transparent"
+                    )}
+                  >
+                    ✓
+                  </span>
+                  <span>{rule.label}</span>
+                </span>
+              ))}
+            </div>
           </Field>
         </motion.div>
 

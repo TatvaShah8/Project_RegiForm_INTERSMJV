@@ -73,7 +73,11 @@ export async function registerWithEmailPassword(
     };
   }
   try {
-    if (pass.length < 6) return { ok: false, error: "Enter your account password (at least 6 characters)." };
+    if (pass.length < 8) return { ok: false, error: "Password must be at least 8 characters long." };
+    if (!/[a-z]/.test(pass)) return { ok: false, error: "Password must include at least one lowercase letter (a-z)." };
+    if (!/[A-Z]/.test(pass)) return { ok: false, error: "Password must include at least one uppercase letter (A-Z)." };
+    if (!/\d/.test(pass)) return { ok: false, error: "Password must include at least one number (0-9)." };
+    if (!/[^a-zA-Z0-9]/.test(pass)) return { ok: false, error: "Password must include at least one special character (!@#...)." };
     let cred;
     try {
       cred = await createUserWithEmailAndPassword(auth, email.trim(), pass);
@@ -95,7 +99,7 @@ export async function registerWithEmailPassword(
     if (err.code === "auth/email-already-in-use") {
       msg = "This email is already registered. Please sign in instead.";
     } else if (err.code === "auth/weak-password") {
-      msg = "Password should be at least 6 characters.";
+      msg = "Password does not meet Firebase requirements (min 8 characters, with uppercase, lowercase, number, and special character).";
     } else if (err.code === "auth/invalid-email") {
       msg = "Please enter a valid email address.";
     }
