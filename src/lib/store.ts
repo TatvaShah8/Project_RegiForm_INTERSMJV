@@ -144,13 +144,15 @@ export const useRegister = create<RegisterState>()(
         const other = kind === "outdoor" ? s.indoor : s.outdoor;
         const has = list.includes(name);
         const isBhavnagar = (s.branch || "").trim().toLowerCase() === "bhavnagar";
+        const isFemale = s.gender === "FEMALE";
 
         if (!has) {
           if (!isBhavnagar) {
-            if (list.length >= 2)
+            // For boys: at most 2 per category. For girls: any 3 allowed (all can be indoor or outdoor).
+            if (!isFemale && list.length >= 2)
               return {
                 ok: false,
-                reason: `Quota limit: at most 2 ${kind} sports allowed (choose 1 or 2 ${kind} sports, max 3 total).`,
+                reason: `Quota limit: at most 2 ${kind} sports allowed for boys (choose 1 or 2 ${kind} sports, max 3 total).`,
               };
             if (list.length + other.length >= 3)
               return {
@@ -172,9 +174,10 @@ export const useRegister = create<RegisterState>()(
 
       quotaStatus: () => {
         const s = get();
-        const { outdoor, indoor, branch } = s;
+        const { outdoor, indoor, branch, gender } = s;
         const total = outdoor.length + indoor.length;
         const isBhavnagar = (branch || "").trim().toLowerCase() === "bhavnagar";
+        const isFemale = gender === "FEMALE";
 
         if (isBhavnagar) {
           const valid = total >= 1;
@@ -198,6 +201,35 @@ export const useRegister = create<RegisterState>()(
             maxTotal: Infinity,
             maxOutdoor: Infinity,
             maxIndoor: Infinity,
+          };
+        }
+
+        if (isFemale) {
+          const valid = total >= 1 && total <= 3;
+          let message: string;
+          let tone: "ok" | "pending";
+          if (valid) {
+            if (total === 3) {
+              message = `Valid selection confirmed: 3 sports selected (${outdoor.length} Outdoor + ${indoor.length} Indoor).`;
+            } else {
+              message = `Valid selection: ${total} sport(s) selected (${outdoor.length} Outdoor + ${indoor.length} Indoor). You can select up to 3 sports total.`;
+            }
+            tone = "ok";
+          } else {
+            message = "Girls Quota: Select any 1, 2, or 3 sports (all can be indoor, all can be outdoor, or any combination).";
+            tone = "pending";
+          }
+          return {
+            total,
+            outdoor: outdoor.length,
+            indoor: indoor.length,
+            valid,
+            message,
+            tone,
+            isBhavnagar: false,
+            maxTotal: 3,
+            maxOutdoor: 3,
+            maxIndoor: 3,
           };
         }
 

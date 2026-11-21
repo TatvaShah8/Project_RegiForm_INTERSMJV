@@ -274,7 +274,7 @@ export function Step4Sports({
               title={
                 q.isBhavnagar
                   ? `OUTDOOR SPORTS (${q.outdoor} SELECTED · NO LIMIT)`
-                  : `OUTDOOR SPORTS (${q.outdoor}/2 SELECTED)`
+                  : `OUTDOOR SPORTS (${q.outdoor}/${q.maxOutdoor} SELECTED)`
               }
               right={
                 <div className="flex items-center gap-2">
@@ -364,6 +364,10 @@ export function Step4Sports({
                       Students of <b className="text-fest-deep">Bhavnagar SMJV Branch</b> have{" "}
                       <b className="text-fest-orange">no limit on sports selection</b>! You can register for as many indoor and outdoor sports as you wish (minimum 1 sport).
                     </span>
+                  ) : s.gender === "FEMALE" ? (
+                    <span>
+                      Girls Sports Quota: You can choose <b className="text-fest-deep">1, 2, or 3 sports</b>. All 3 can be outdoor sports, all 3 can be indoor sports, or any combination!
+                    </span>
                   ) : (
                     <span>
                       A player can choose <b className="text-fest-deep">1, 2, or 3 sports</b>. If choosing 3 sports:{" "}
@@ -415,7 +419,7 @@ export function Step4Sports({
               title={
                 q.isBhavnagar
                   ? `INDOOR SPORTS (${q.indoor} SELECTED · NO LIMIT)`
-                  : `INDOOR SPORTS (${q.indoor}/2 SELECTED)`
+                  : `INDOOR SPORTS (${q.indoor}/${q.maxIndoor} SELECTED)`
               }
             />
             <div className="grid grid-cols-2 gap-2 md:grid-cols-4">

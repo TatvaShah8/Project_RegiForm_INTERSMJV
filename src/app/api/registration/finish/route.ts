@@ -34,7 +34,13 @@ export async function POST(request: Request) {
     if (role === "sports") {
       const count = outdoor.length + indoor.length;
       const bhavnagar = record.branch === "bhavnagar";
-      if (count < 1 || (!bhavnagar && (count > 3 || outdoor.length > 2 || indoor.length > 2))) throw new Error("INVALID_SPORTS_QUOTA");
+      const isFemale = record.gender === "FEMALE";
+      if (
+        count < 1 ||
+        (!bhavnagar && (count > 3 || (!isFemale && (outdoor.length > 2 || indoor.length > 2))))
+      ) {
+        throw new Error("INVALID_SPORTS_QUOTA");
+      }
       const taken = await collection.findOne({ branch: record.branch, gender: record.gender, jerseyNumber, firebaseUid: { $ne: user.uid } });
       if (taken) return Response.json({ error: "Jersey number already taken in your branch and gender" }, { status: 409 });
     }

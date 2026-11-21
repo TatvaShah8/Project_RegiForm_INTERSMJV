@@ -38,6 +38,8 @@ test("rejects duplicate, wrong-category and cultural sport selections", () => {
   assert.throws(() => helper.validateSports(["FOOTBALL"], [], "FEMALE", "sports"));
   assert.throws(() => helper.validateSports([], ["CHESS"], "MALE", "cultural"));
   helper.validateSports(["CRICKET"], ["CHESS"], "MALE", "sports");
+  helper.validateSports(["CRICKET", "THROWBALL", "KHO KHO"], [], "FEMALE", "sports");
+  helper.validateSports([], ["CHESS", "CARROM", "BADMINTON"], "FEMALE", "sports");
 });
 function finish(overrides = {}) {
   const state = { uploaded: [], removed: [], fields: null };
