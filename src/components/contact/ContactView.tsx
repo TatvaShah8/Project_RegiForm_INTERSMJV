@@ -11,7 +11,6 @@ import {
   Clock,
   ShieldAlert,
   ArrowRight,
-  ExternalLink,
   Sparkles,
   LifeBuoy,
   FileQuestion,
@@ -21,7 +20,6 @@ import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 import {
   createTicket,
   type SupportTicket,
-  ADMIN_SUPPORT_EMAIL,
 } from "@/lib/support-tickets";
 import { useToast } from "@/hooks/use-toast";
 
@@ -75,14 +73,6 @@ export function ContactView() {
       setIsSubmitting(false);
     }
   };
-
-  const mailtoAdminUrl = submittedTicket
-    ? `mailto:${ADMIN_SUPPORT_EMAIL}?subject=${encodeURIComponent(
-        `[SMJV Youth Festival 2026 Issue #${submittedTicket.id}] from ${submittedTicket.name}`
-      )}&body=${encodeURIComponent(
-        `Hello Organizing Committee,\n\nI have submitted a support issue on the portal:\n\n• Ticket ID: ${submittedTicket.id}\n• Student Name: ${submittedTicket.name}\n• Reply Email: ${submittedTicket.email}\n\n• Issue Description:\n"${submittedTicket.issue}"\n\nPlease review and reply back to my email.\n\nThank you!`
-      )}`
-    : "";
 
   return (
     <div className="flex min-h-[100dvh] w-full flex-col" suppressHydrationWarning>
@@ -150,21 +140,11 @@ export function ContactView() {
                     Your inquiry has been registered. Our team will review the issue and respond directly to your email address.
                   </p>
 
-                  <div className="mt-6 flex flex-col gap-2.5 sm:flex-row sm:justify-center">
-                    {/* Optional Send Direct Email Backup */}
-                    <a
-                      href={mailtoAdminUrl}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-fest-deep px-4 py-2.5 font-display text-xs uppercase tracking-wider text-fest-yellow shadow-md transition hover:bg-fest-deep/90 active:scale-95"
-                    >
-                      <Mail className="h-4 w-4" />
-                      <span>OPEN EMAIL CLIENT AS BACKUP</span>
-                      <ExternalLink className="h-3 w-3" />
-                    </a>
-
+                  <div className="mt-6 flex justify-center">
                     <button
                       type="button"
                       onClick={() => setSubmittedTicket(null)}
-                      className="inline-flex items-center justify-center rounded-xl border border-fest-deep/20 bg-white/80 px-4 py-2.5 font-display text-xs uppercase tracking-wider text-fest-deep shadow-xs transition hover:bg-white active:scale-95"
+                      className="inline-flex items-center justify-center rounded-xl bg-fest-deep px-6 py-2.5 font-display text-xs uppercase tracking-wider text-fest-yellow shadow-md transition hover:bg-fest-deep/90 active:scale-95"
                     >
                       SUBMIT ANOTHER ISSUE
                     </button>
