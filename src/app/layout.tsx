@@ -51,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${anton.variable} ${inter.variable} ${jetMono.variable} font-sans antialiased bg-fest-bg text-fest-white min-h-[100dvh] relative overflow-x-hidden`}
       >
         {/* ── Persistent cinematic video background & glassmorphic atmospheric layers ── */}
