@@ -922,19 +922,29 @@ export function Step3General({
         </>
       )}
 
-      <motion.div variants={staggerChild} className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <CTAButton variant="dark" onClick={onBack}>
+      <motion.div variants={staggerChild} className="mt-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+        <CTAButton variant="dark" onClick={onBack} className="w-full sm:w-auto justify-center text-center">
           ← BACK
         </CTAButton>
         <CTAButton
           variant="gradient"
           onClick={submit}
           disabled={savingRegistration}
-          className={s.role === "cultural" ? "px-7" : ""}
+          className={cn(
+            "w-full sm:w-auto justify-center text-center",
+            s.role === "cultural" ? "px-4 sm:px-7" : ""
+          )}
         >
-          {s.role === "cultural"
-            ? "COMPLETE REGISTRATION & GENERATE ID PASS 🏅"
-            : "NEXT: APPAREL & SPORTS →"}
+          {savingRegistration ? (
+            "SAVING..."
+          ) : s.role === "cultural" ? (
+            <>
+              <span className="sm:hidden">COMPLETE REGISTRATION 🏅</span>
+              <span className="hidden sm:inline">COMPLETE REGISTRATION & GENERATE ID PASS 🏅</span>
+            </>
+          ) : (
+            "NEXT: APPAREL & SPORTS →"
+          )}
         </CTAButton>
       </motion.div>
 

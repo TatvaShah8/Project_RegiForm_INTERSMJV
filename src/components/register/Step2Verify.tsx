@@ -186,7 +186,7 @@ export function Step2Verify({
         >
           ← Back to Step 1
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-fest-orange/10 px-3 py-1 font-mono text-xs font-bold uppercase text-fest-orange">
             {isCultural ? "🎭 Cultural Team · Step 02 / 03" : "⚡ Sports Team · Step 02 / 04"}
           </span>
@@ -342,14 +342,33 @@ export function Step2Verify({
       </div>
 
       {/* Bottom Actions */}
-      <motion.div variants={staggerChild} className="mt-8 flex items-center justify-between gap-3">
-        <CTAButton variant="dark" onClick={onBack}>
-          ← BACK TO STEP 1
+      <motion.div variants={staggerChild} className="mt-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+        <CTAButton
+          variant="dark"
+          onClick={onBack}
+          className="w-full sm:w-auto justify-center text-center"
+        >
+          <span className="sm:hidden">← BACK</span>
+          <span className="hidden sm:inline">← BACK TO STEP 1</span>
         </CTAButton>
-        <CTAButton variant="gradient" disabled={!canProceed || savingSignup} onClick={handleProceed}>
-          {isCultural
-            ? "PROCEED TO STEP 3 (PROFILE & APPAREL) →"
-            : "PROCEED TO STEP 3 (GENERAL PROFILE) →"}
+        <CTAButton
+          variant="gradient"
+          disabled={!canProceed || savingSignup}
+          onClick={handleProceed}
+          className="w-full sm:w-auto justify-center text-center px-4 sm:px-6"
+        >
+          {savingSignup ? (
+            "SAVING..."
+          ) : (
+            <>
+              <span className="sm:hidden">PROCEED TO STEP 3 →</span>
+              <span className="hidden sm:inline">
+                {isCultural
+                  ? "PROCEED TO STEP 3 (PROFILE & APPAREL) →"
+                  : "PROCEED TO STEP 3 (GENERAL PROFILE) →"}
+              </span>
+            </>
+          )}
         </CTAButton>
       </motion.div>
     </motion.div>

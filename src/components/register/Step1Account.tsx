@@ -325,7 +325,7 @@ export function Step1Account({
       </motion.div>
 
       <motion.div variants={staggerChild} className="mt-8 flex justify-end">
-        <CTAButton variant="gradient" onClick={submit}>
+        <CTAButton variant="gradient" onClick={submit} className="w-full sm:w-auto justify-center text-center">
           PROCEED TO VERIFICATION →
         </CTAButton>
       </motion.div>

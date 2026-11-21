@@ -466,12 +466,24 @@ export function Step4Sports({
         </label>
       </motion.div>
 
-      <motion.div variants={staggerChild} className="mt-8 flex flex-wrap items-center justify-between gap-3">
-        <CTAButton variant="dark" onClick={onBack}>
+      <motion.div variants={staggerChild} className="mt-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+        <CTAButton variant="dark" onClick={onBack} className="w-full sm:w-auto justify-center text-center">
           ← BACK
         </CTAButton>
-        <CTAButton variant="gradient" onClick={submit} disabled={savingRegistration} className="px-7">
-          COMPLETE REGISTRATION & GENERATE ID PASS 🏅
+        <CTAButton
+          variant="gradient"
+          onClick={submit}
+          disabled={savingRegistration}
+          className="w-full sm:w-auto justify-center text-center px-4 sm:px-7"
+        >
+          {savingRegistration ? (
+            "ISSUING PASS..."
+          ) : (
+            <>
+              <span className="sm:hidden">COMPLETE REGISTRATION 🏅</span>
+              <span className="hidden sm:inline">COMPLETE REGISTRATION & GENERATE ID PASS 🏅</span>
+            </>
+          )}
         </CTAButton>
       </motion.div>
 
