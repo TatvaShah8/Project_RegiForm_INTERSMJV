@@ -50,9 +50,20 @@ export async function POST(request: Request) {
     const photos = form.getAll("images");
     if (photos.length < 1 || photos.length > 5 || photos.some(p => !(p instanceof File) || !types[p.type] || p.size > 5*1024*1024 || p.size === 0)) throw new Error("INVALID_IMAGES");
     const { storage } = imageStorage();
+    // Use the saved registration name, never a client-supplied upload filename.
+    const nameSlug = [record.firstName, record.middleName, record.surname]
+      .filter((name): name is string => typeof name === "string")
+      .join(" ")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 100)
+      .replace(/-+$/g, "") || "participant";
     for (const p of photos) {
       const file = p as File;
-      const path = `${user.uid}/${randomUUID()}.jpg`;
+      const path = `registrations/${nameSlug}-${randomUUID()}.jpg`;
       let bytes: Buffer;
       try {
         const input = Buffer.from(await file.arrayBuffer());

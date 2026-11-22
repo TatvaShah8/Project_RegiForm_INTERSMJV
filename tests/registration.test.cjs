@@ -183,3 +183,28 @@ test("cultural-only registration does not inherit the sports cultural toggle", a
   assert.equal((await route.POST(await request(await jpeg(), { role: "cultural", outdoor: '[]', indoor: '[]', alsoParticipatesInCultural: "true" }))).status, 200);
   assert.equal(state.fields.alsoParticipatesInCultural, false);
 });
+
+test("shared registrations folder keeps named portraits unique and MongoDB links aligned", async () => {
+  const { route, state, record } = finish();
+  Object.assign(record, { firstName: "Heet", middleName: "Dharmesh", surname: "Shah" });
+  assert.equal((await route.POST(await request(await jpeg(), { firstName: "Untrusted" }))).status, 200);
+  assert.match(state.uploaded[0], /^registrations\/heet-dharmesh-shah-[0-9a-f-]{36}\.jpg$/);
+  assert.equal(state.fields.imagePaths[0], state.uploaded[0]);
+  assert.equal(state.fields.imageUrls[0], `https://storage.example/${state.uploaded[0]}`);
+  const other = finish();
+  Object.assign(other.record, { firstName: "Heet", middleName: "Dharmesh", surname: "Shah" });
+  assert.equal((await other.route.POST(await request(await jpeg()))).status, 200);
+  assert.notEqual(other.state.uploaded[0], state.uploaded[0]);
+});
+test("portrait filenames sanitize punctuation, accents and path separators", async () => {
+  const { route, state, record } = finish();
+  Object.assign(record, { firstName: " José / ../ ", middleName: "", surname: "O'Neil" });
+  assert.equal((await route.POST(await request(await jpeg()))).status, 200);
+  assert.match(state.uploaded[0], /^registrations\/jose-o-neil-[0-9a-f-]{36}\.jpg$/);
+});
+test("portrait filenames have a safe fallback for names with no ASCII characters", async () => {
+  const { route, state, record } = finish();
+  Object.assign(record, { firstName: "!!!", middleName: "", surname: "..." });
+  assert.equal((await route.POST(await request(await jpeg()))).status, 200);
+  assert.match(state.uploaded[0], /^registrations\/participant-[0-9a-f-]{36}\.jpg$/);
+});
