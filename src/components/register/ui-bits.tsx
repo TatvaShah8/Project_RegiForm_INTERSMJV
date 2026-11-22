@@ -34,6 +34,7 @@ export function StepHeading({
 
 export function Field({
   label,
+  htmlFor,
   required,
   hint,
   error,
@@ -42,6 +43,7 @@ export function Field({
   className,
 }: {
   label: string;
+  htmlFor?: string;
   required?: boolean;
   hint?: string;
   error?: string;
@@ -52,7 +54,7 @@ export function Field({
   return (
     <div className={cn("min-w-0", className)}>
       <div className="mb-1.5 flex items-start justify-between gap-3">
-        <label className="text-[11px] font-bold uppercase leading-snug tracking-[0.1em] text-fest-deep">
+        <label htmlFor={htmlFor} className="text-[11px] font-bold uppercase leading-snug tracking-[0.1em] text-fest-deep">
           {label}
           {required && <span className="ml-1 text-fest-orange">*</span>}
           {hint && <span className="mt-0.5 block text-[11px] font-medium normal-case tracking-normal text-fest-deep/85">{hint}</span>}

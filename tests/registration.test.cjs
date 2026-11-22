@@ -98,3 +98,88 @@ test("unauthenticated requests fail before database access", async () => {
   const response=await route.POST(new Request("http://localhost/signup",{method:"POST",body:"{}"}));
   assert.equal(response.status,401);
 });
+
+for (const existing of [null, { registrationStatus: "incomplete" }]) {
+  test(`signup preserves separate name fields on ${existing ? "update" : "insert"}`, async () => {
+    let saved;
+    const route = load("src/app/api/registration/signup/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => ({ uid: "name-test", email: "names@example.com" }), authError: () => Response.json({}, { status: 401 }) },
+      "@/lib/mongodb": { registrations: async () => ({
+        findOne: async () => existing,
+        insertOne: async document => { saved = document; },
+        updateOne: async (_, update) => { saved = update.$set; return { matchedCount: 1 }; },
+      }) },
+    });
+    const response = await route.POST(new Request("http://localhost/signup", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName: " Aarav ", middleName: " Rajeshbhai ", surname: " Mehta ", grNo: "TEST-001", mobile: "9825040142", gender: "MALE" }),
+    }));
+    assert.equal(response.status, existing ? 200 : 201);
+    assert.equal(saved.firstName, "Aarav");
+    assert.equal(saved.middleName, "Rajeshbhai");
+    assert.equal(saved.surname, "Mehta");
+    const { registrationProfile } = load("src/lib/registration-profile.ts", {
+      "./supabase": { imageUrls: async () => [] },
+    });
+    const profile = await registrationProfile(saved);
+    assert.equal(profile.middleName, "Rajeshbhai");
+    assert.equal(profile.surname, "Mehta");
+  });
+}
+test("finish stores sport names separately from portrait object paths", async () => {
+  const { route, state } = finish();
+  const response = await route.POST(await request(await jpeg(), { outdoor: '["CRICKET"]', indoor: '["CHESS"]' }));
+  assert.equal(response.status, 200);
+  assert.deepEqual(state.fields.outdoor, ["CRICKET"]);
+  assert.deepEqual(state.fields.indoor, ["CHESS"]);
+  assert.ok(state.fields.imagePaths[0].endsWith(".jpg"));
+});
+test("sport image filenames are rejected before uploads or database writes", async () => {
+  const { route, state } = finish();
+  const response = await route.POST(await request(await jpeg(), { outdoor: '["cricket.png"]' }));
+  assert.equal(response.status, 400);
+  assert.equal(state.uploaded.length, 0);
+  assert.equal(state.fields, null);
+});
+
+test("MongoDB table columns display multiple sport names as text", async () => {
+  const { route, state } = finish();
+  const response = await route.POST(await request(await jpeg(), { outdoor: '["CRICKET", "VOLLEYBALL"]', indoor: '["BADMINTON"]' }));
+  assert.equal(response.status, 200);
+  assert.equal(state.fields.outdoorSports, "CRICKET, VOLLEYBALL");
+  assert.equal(state.fields.indoorSports, "BADMINTON");
+  assert.deepEqual(state.fields.outdoor, ["CRICKET", "VOLLEYBALL"]);
+});
+test("MongoDB table columns display None for unselected categories", async () => {
+  const { route, state } = finish();
+  const response = await route.POST(await request(await jpeg(), { role: "cultural", outdoor: '[]', indoor: '[]' }));
+  assert.equal(response.status, 200);
+  assert.equal(state.fields.outdoorSports, "None");
+  assert.equal(state.fields.indoorSports, "None");
+});
+
+for (const choice of ["true", "false"]) {
+  test(`sports cultural toggle ${choice} persists and reloads as a boolean`, async () => {
+    const { route, state } = finish();
+    const response = await route.POST(await request(await jpeg(), { alsoParticipatesInCultural: choice }));
+    assert.equal(response.status, 200);
+    assert.equal(state.fields.alsoParticipatesInCultural, choice === "true");
+    assert.equal(state.fields.role, "sports");
+    const { registrationProfile } = load("src/lib/registration-profile.ts", { "./supabase": { imageUrls: async () => [] } });
+    const profile = await registrationProfile(state.fields);
+    assert.equal(profile.alsoParticipatesInCultural, choice === "true");
+  });
+}
+test("older clients default cultural toggle to false; invalid values are rejected", async () => {
+  const { route, state } = finish();
+  assert.equal((await route.POST(await request(await jpeg()))).status, 200);
+  assert.equal(state.fields.alsoParticipatesInCultural, false);
+  const invalid = finish();
+  assert.equal((await invalid.route.POST(await request(await jpeg(), { alsoParticipatesInCultural: "yes-please" }))).status, 400);
+  assert.equal(invalid.state.uploaded.length, 0);
+});
+test("cultural-only registration does not inherit the sports cultural toggle", async () => {
+  const { route, state } = finish();
+  assert.equal((await route.POST(await request(await jpeg(), { role: "cultural", outdoor: '[]', indoor: '[]', alsoParticipatesInCultural: "true" }))).status, 200);
+  assert.equal(state.fields.alsoParticipatesInCultural, false);
+});

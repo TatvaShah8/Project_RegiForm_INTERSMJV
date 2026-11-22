@@ -54,6 +54,7 @@ export async function addPhotoToForm(form: FormData, photo: string | null) {
 export function finalRegistrationForm(s: {
   role: string; jerseyNumber: string; tshirt: string; waist: string;
   agreement: boolean; outdoor: string[]; indoor: string[];
+  alsoParticipatesInCultural?: boolean;
 }) {
   const form = new FormData();
   form.set("role", s.role);
@@ -61,6 +62,7 @@ export function finalRegistrationForm(s: {
   form.set("tshirt", s.tshirt);
   form.set("waist", s.waist);
   form.set("agreement", String(s.agreement));
+  form.set("alsoParticipatesInCultural", String(s.role === "sports" && s.alsoParticipatesInCultural === true));
   form.set("outdoor", JSON.stringify(s.outdoor));
   form.set("indoor", JSON.stringify(s.indoor));
   return form;

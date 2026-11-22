@@ -53,6 +53,7 @@ export interface RegisterState {
   outdoor: string[];
   indoor: string[];
   agreement: boolean;
+  alsoParticipatesInCultural: boolean;
 
   /* outcome */
   passNo: string;
@@ -117,6 +118,7 @@ const initial = {
   outdoor: [] as string[],
   indoor: [] as string[],
   agreement: false,
+  alsoParticipatesInCultural: false,
 
   passNo: "",
   completed: false,

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { motion } from "framer-motion";
 import { Ruler, Shirt } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRegister } from "@/lib/store";
 import {
@@ -396,6 +397,8 @@ export function Step4Sports({
                     key={sp.name}
                     type="button"
                     aria-pressed={active}
+                    aria-label={sp.name}
+                    value={sp.name}
                     whileTap={{ scale: 0.96 }}
                     onClick={() => onSport("outdoor", sp.name)}
                     className={cn(
@@ -405,7 +408,7 @@ export function Step4Sports({
                         : "border border-white/80 bg-white/40 text-fest-label shadow-sm backdrop-blur-md hover:border-fest-orange/60 hover:bg-white/70 hover:text-fest-deep"
                     )}
                   >
-                    {sp.emoji} {sp.name}
+                    <span aria-hidden="true">{sp.emoji}</span> {sp.name}
                     <span className="ml-1.5">{active ? "✓" : "+"}</span>
                   </motion.button>
                 );
@@ -430,6 +433,8 @@ export function Step4Sports({
                     key={sp.name}
                     type="button"
                     aria-pressed={active}
+                    aria-label={sp.name}
+                    value={sp.name}
                     whileTap={{ scale: 0.96 }}
                     onClick={() => onSport("indoor", sp.name)}
                     className={cn(
@@ -439,7 +444,7 @@ export function Step4Sports({
                         : "border border-white/80 bg-white/40 text-fest-label shadow-sm backdrop-blur-md hover:border-fest-orange/60 hover:bg-white/70 hover:text-fest-deep"
                     )}
                   >
-                    {sp.emoji} {sp.name}
+                    <span aria-hidden="true">{sp.emoji}</span> {sp.name}
                     <span className="ml-1.5">{active ? "✓" : "+"}</span>
                   </motion.button>
                 );
@@ -448,6 +453,33 @@ export function Step4Sports({
             {errs.sports && <p className="mt-2 text-xs font-medium text-red-400">{errs.sports}</p>}
           </motion.div>
         </>
+      )}
+
+      {s.role === "sports" && (
+        <motion.div variants={staggerChild} className="mt-7 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/80 bg-white/60 p-5 shadow-sm backdrop-blur-md">
+          <div className="min-w-0 flex-1">
+            <label htmlFor="alsoParticipatesInCultural" className="font-display text-sm uppercase tracking-wide text-fest-deep">
+              Will you also participate in cultural events?
+            </label>
+            <p id="cultural-participation-help" className="mt-1 text-sm leading-relaxed text-fest-label">
+              Select Yes if you plan to take part in cultural events in addition to your selected sports.
+            </p>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="font-mono text-sm font-bold text-fest-deep" aria-hidden="true">
+              {s.alsoParticipatesInCultural ? "Yes" : "No"}
+            </span>
+            <Switch
+              id="alsoParticipatesInCultural"
+              name="alsoParticipatesInCultural"
+              checked={s.alsoParticipatesInCultural === true}
+              onCheckedChange={(checked) => s.set("alsoParticipatesInCultural", checked)}
+              aria-describedby="cultural-participation-help"
+              disabled={savingRegistration}
+              className="data-[state=checked]:bg-fest-orange data-[state=unchecked]:bg-slate-300"
+            />
+          </div>
+        </motion.div>
       )}
 
       <motion.div variants={staggerChild} className="mt-7 flex items-start gap-3 rounded-2xl border border-white/80 bg-white/60 p-5 shadow-sm backdrop-blur-md">

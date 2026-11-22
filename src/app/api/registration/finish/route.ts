@@ -29,7 +29,10 @@ export async function POST(request: Request) {
     const outdoor = JSON.parse(String(form.get("outdoor") ?? "[]"));
     const indoor = JSON.parse(String(form.get("indoor") ?? "[]"));
     if (!Array.isArray(outdoor) || !Array.isArray(indoor) || [...outdoor, ...indoor].some(s => typeof s !== "string")) throw new Error("INVALID_SPORTS");
-    kitSchema.parse({ role, tshirt, waist, agreement: form.get("agreement"), outdoor, indoor });
+    const kit = kitSchema.parse({ role, tshirt, waist, agreement: form.get("agreement"), outdoor, indoor,
+      alsoParticipatesInCultural: form.get("alsoParticipatesInCultural") ?? undefined,
+    });
+    const alsoParticipatesInCultural = role === "sports" && kit.alsoParticipatesInCultural === "true";
     validateSports(outdoor, indoor, record.gender, role);
     if (role === "sports") {
       const count = outdoor.length + indoor.length;
@@ -63,7 +66,7 @@ export async function POST(request: Request) {
 
     }
     const imageUrls = await resolveImageUrls(uploaded);
-    const fields: Record<string, unknown> = { role, tshirt, waist, outdoor, indoor, agreement: true, passNo: `#${record._id.toString()}`, imagePaths: uploaded, imageUrls, registrationStatus: "completed", completedAt: new Date(), updatedAt: new Date() };
+    const fields: Record<string, unknown> = { role, tshirt, waist, outdoor, indoor, alsoParticipatesInCultural, outdoorSports: outdoor.join(", ") || "None", indoorSports: indoor.join(", ") || "None", agreement: true, passNo: `#${record._id.toString()}`, imagePaths: uploaded, imageUrls, registrationStatus: "completed", completedAt: new Date(), updatedAt: new Date() };
     if (jerseyNumber !== undefined) fields.jerseyNumber = jerseyNumber;
     const update = await collection.updateOne({ firebaseUid: user.uid, registrationStatus: { $ne: "completed" }, updatedAt: record.updatedAt }, { $set: fields });
     if (!update.matchedCount) throw new Error("REGISTRATION_CHANGED");

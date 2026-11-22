@@ -140,10 +140,13 @@ export function Step1Account({
 
       <div className="grid gap-5 md:grid-cols-3">
         <motion.div variants={staggerChild}>
-          <Field label="FIRST NAME" required error={errs.firstName}>
+          <Field label="FIRST NAME" htmlFor="firstName" required error={errs.firstName}>
             <FestInput
               error={!!errs.firstName}
               placeholder="e.g. Aarav"
+              id="firstName"
+              name="firstName"
+              autoComplete="given-name"
               value={s.firstName}
               onChange={(e) => {
                 s.set("firstName", e.target.value);
@@ -153,19 +156,25 @@ export function Step1Account({
           </Field>
         </motion.div>
         <motion.div variants={staggerChild}>
-          <Field label="MIDDLE NAME">
+          <Field label="MIDDLE NAME" htmlFor="middleName">
             <FestInput
               placeholder="e.g. Rajeshbhai"
+              id="middleName"
+              name="middleName"
+              autoComplete="additional-name"
               value={s.middleName}
               onChange={(e) => s.set("middleName", e.target.value)}
             />
           </Field>
         </motion.div>
         <motion.div variants={staggerChild}>
-          <Field label="SURNAME" required error={errs.surname}>
+          <Field label="SURNAME / LAST NAME" htmlFor="surname" required error={errs.surname}>
             <FestInput
               error={!!errs.surname}
               placeholder="e.g. Mehta"
+              id="surname"
+              name="surname"
+              autoComplete="family-name"
               value={s.surname}
               onChange={(e) => {
                 s.set("surname", e.target.value);

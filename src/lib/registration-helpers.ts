@@ -58,6 +58,7 @@ export const generalSchema = z.object({
 });
 export const kitSchema = z.object({
   role: z.enum(["sports", "cultural"]), tshirt: z.enum(JERSEY_SIZES), waist: z.enum(TRACK_PANT_SIZES),
+  alsoParticipatesInCultural: z.enum(["true", "false"]).default("false"),
   agreement: z.literal("true"), outdoor: z.array(z.string()).max(5), indoor: z.array(z.string()).max(4),
 });
 export function validateSports(outdoor: string[], indoor: string[], gender: string, role: string) {
