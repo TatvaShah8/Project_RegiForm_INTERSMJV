@@ -1,3 +1,4 @@
+import { BodyTooLargeError } from "./request-body";
 import { z } from "zod";
 import { BLOOD_GROUPS, YEARS_OF_STUDY, RELATIONS, JERSEY_SIZES, TRACK_PANT_SIZES, getOutdoorSportsForGender, INDOOR_SPORTS } from "./fest";
 import { MongoServerError } from "mongodb";
@@ -37,6 +38,7 @@ export function duplicateMessage(error: unknown) {
   return "Duplicate registration";
 }
 export function badInput(error: unknown) {
+  if (error instanceof BodyTooLargeError) return Response.json({ error: "Request too large" }, { status: 413 });
   const message = error instanceof z.ZodError ? error.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ") : error instanceof SyntaxError ? "Invalid request body" : error instanceof Error ? error.message : "INVALID_DATA";
   return Response.json({ error: message.replaceAll("_", " ") }, { status: 400 });
 }

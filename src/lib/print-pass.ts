@@ -26,7 +26,23 @@ export interface PassPrintData {
   qr: string;
 }
 
-export function printPassCard(data: PassPrintData) {
+function escapeHtml(value: string) {
+  return value.replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]!);
+}
+
+function imageSource(value: string | null | undefined) {
+  if (!value || !/^(https?:\/\/|data:image\/(?:png|jpeg|webp|svg\+xml)[;,]|\/(?!\/))/i.test(value)) return "";
+  return escapeHtml(value);
+}
+
+export function printPassCard(input: PassPrintData) {
+  // Every value interpolated into the print document must remain text, never HTML.
+  const data = Object.fromEntries(Object.entries(input).map(([key, value]) =>
+    [key, typeof value === "string" ? escapeHtml(value) : value]
+  )) as unknown as PassPrintData;
+  data.sports = input.sports.map(escapeHtml);
+  data.photo = imageSource(input.photo);
+  data.qr = imageSource(input.qr);
   if (typeof window === "undefined") return;
 
   const iframe = document.createElement("iframe");

@@ -63,15 +63,6 @@ export function Step3General({
   const [showSizeModal, setShowSizeModal] = React.useState(false);
   const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("jersey");
   const [compressingPhoto, setCompressingPhoto] = React.useState(false);
-  const [compressedSizeKB, setCompressedSizeKB] = React.useState<number | null>(null);
-
-  // Auto-detect existing photo size if loaded
-  React.useEffect(() => {
-    if (s.photo && compressedSizeKB === null) {
-      const approxKB = Math.round((s.photo.length * 0.75) / 1024);
-      setCompressedSizeKB(approxKB);
-    }
-  }, [s.photo, compressedSizeKB]);
 
   const jerseySizes = React.useMemo(() => getTshirtSizesForGender(s.gender), [s.gender]);
   const trackPantSizes = React.useMemo(() => getTrackPantSizesForGender(s.gender), [s.gender]);
@@ -192,11 +183,10 @@ export function Step3General({
       setCompressingPhoto(true);
       const res = await compressImageToMaxKB(rawDataUrl, 200);
       s.set("photo", res.dataUrl);
-      setCompressedSizeKB(res.sizeKB);
       setErr("photo");
       toast({
-        title: "PHOTO CAPTURED & COMPRESSED",
-        description: `Saved at ${res.sizeKB} KB (under 200 KB target).`,
+        title: "PHOTO READY",
+        description: "Your photo is ready for registration.",
       });
     } catch (err) {
       console.error("Camera photo compression error:", err);
@@ -294,17 +284,16 @@ export function Step3General({
       setCompressingPhoto(true);
       const res = await compressImageToMaxKB(f, 200);
       s.set("photo", res.dataUrl);
-      setCompressedSizeKB(res.sizeKB);
       setErr("photo");
       toast({
-        title: "PHOTO OPTIMIZED (≤ 200 KB) ✓",
-        description: `Compressed from ${res.originalSizeKB} KB to ${res.sizeKB} KB while preserving sharpness.`,
+        title: "PHOTO READY",
+        description: "Your photo is ready for registration.",
       });
     } catch (err: any) {
       console.error("Image compression error:", err);
       toast({
-        title: "COMPRESSION FAILED",
-        description: "Could not compress this image. Please try another image file.",
+        title: "PHOTO COULD NOT BE PROCESSED",
+        description: "Could not prepare this image. Please try another image file.",
         variant: "destructive",
       });
     } finally {
@@ -360,7 +349,7 @@ export function Step3General({
         const account = await loadRegistration();
         if (!account?.completed) throw new Error("Saved registration could not be confirmed. Please retry.");
         s.loginAccount(account);
-        toast({ title: "REGISTRATION SAVED", description: "Your data has been saved to MongoDB and your photo uploaded to Supabase." });
+        toast({ title: "REGISTRATION SAVED", description: "Your registration is complete. Your ID pass is ready." });
       }
       onNext();
     } catch (error) {
@@ -411,7 +400,7 @@ export function Step3General({
               <span className="text-xs font-mono text-fest-label">
                 {compressingPhoto ? (
                   <span className="inline-flex items-center gap-1.5 text-fest-orange font-bold">
-                    <RefreshCw className="h-3 w-3 animate-spin" /> Compressing (≤ 200 KB)…
+                    <RefreshCw className="h-3 w-3 animate-spin" /> Preparing photo…
                   </span>
                 ) : s.photo ? (
                   <span className="inline-flex items-center gap-1 text-fest-green font-bold">
@@ -423,7 +412,7 @@ export function Step3General({
               </span>
             </div>
             <p className="mt-2 text-xs text-fest-label/70">
-              Upload any photo (JPG, PNG of any size) or take photo. Automatically compressed to <b>&le; 200 KB</b> with high clarity.
+              Upload a clear JPG or PNG photo, or take a photo.
             </p>
             <div className="mt-3 flex items-start gap-3">
               <div
@@ -437,7 +426,7 @@ export function Step3General({
                   <div className="flex flex-col items-center gap-2 p-2 text-center text-fest-orange">
                     <RefreshCw className="h-6 w-6 animate-spin" />
                     <span className="font-mono text-[9px] font-bold uppercase tracking-wider">
-                      Compressing…
+                      Preparing photo…
                     </span>
                   </div>
                 ) : s.photo ? (
@@ -447,7 +436,6 @@ export function Step3General({
                       type="button"
                       onClick={() => {
                         s.set("photo", null);
-                        setCompressedSizeKB(null);
                         setErr("photo", "Please upload or capture a photo");
                       }}
                       className="absolute inset-0 flex items-center justify-center bg-black/65 font-mono text-[10px] font-bold tracking-wider text-white opacity-0 transition group-hover:opacity-100"
@@ -467,12 +455,10 @@ export function Step3General({
                 <div className="space-y-1.5 pt-1 text-xs">
                   <div className="inline-flex items-center gap-1.5 rounded-lg border border-fest-green/40 bg-fest-green/10 px-2.5 py-1 font-mono text-[11px] font-bold text-fest-green shadow-xs">
                     <span>✓</span>
-                    <span>{compressedSizeKB ? `${compressedSizeKB} KB` : "≤ 200 KB"}</span>
-                    <span className="text-fest-label font-normal">· Compressed</span>
+                    <span>Photo ready</span>
                   </div>
                   <p className="font-mono text-[10px] text-fest-label">
-                    Resolution: 1024px max<br />
-                    Optimized for ID badge printing
+                    Ready for your ID pass
                   </p>
                 </div>
               )}

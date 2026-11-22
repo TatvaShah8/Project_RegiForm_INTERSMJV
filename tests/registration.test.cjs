@@ -208,3 +208,80 @@ test("portrait filenames have a safe fallback for names with no ASCII characters
   assert.equal((await route.POST(await request(await jpeg()))).status, 200);
   assert.match(state.uploaded[0], /^registrations\/participant-[0-9a-f-]{36}\.jpg$/);
 });
+
+for (const [route, methods] of Object.entries({ signup: ['POST'], general: ['PATCH'], finish: ['POST'], me: ['GET'], 'jersey-availability': ['GET'], admin: ['GET', 'PATCH'], support: ['GET', 'PATCH', 'DELETE'] })) {
+  for (const method of methods) test(`${route} ${method} denies anonymous access before services`, async () => {
+    const handler = load(`src/app/api/registration/${route}/route.ts`, { '@/lib/mongodb': { registrations: () => assert.fail('Database accessed'), database: () => assert.fail('Database accessed') } });
+    const response = await handler[method](new Request('http://localhost/api/test', { method }));
+    assert.equal(response.status, 401);
+  });
+}
+
+test('authentication configuration failures never expose secrets to clients', async () => {
+  const { authError } = load('src/lib/firebase-admin.ts');
+  const response = authError(new Error('mongodb://user:secret@example private_key=secret'));
+  assert.equal(response.status, 503);
+  assert.doesNotMatch(await response.text(), /mongodb|private_key|secret|example/);
+});
+
+test('profile database failures return a generic response', async () => {
+  const route = load('src/app/api/registration/me/route.ts', {
+    '@/lib/firebase-admin': { authenticatedUser: async () => ({ uid: 'owner' }) },
+    '@/lib/mongodb': { registrations: async () => { throw new Error('mongodb://user:secret@host'); } },
+  });
+  const response = await route.GET(new Request('http://localhost/api/test'));
+  assert.equal(response.status, 503);
+  assert.doesNotMatch(await response.text(), /mongodb|secret|host/);
+});
+
+test('profile uses token ownership rather than a user-supplied identifier', async () => {
+  let filter;
+  const route = load('src/app/api/registration/me/route.ts', {
+    '@/lib/firebase-admin': { authenticatedUser: async () => ({ uid: 'owner' }) },
+    '@/lib/mongodb': { registrations: async () => ({ findOne: async query => { filter = query; return null; } }) },
+  });
+  await route.GET(new Request('http://localhost/api/test?firebaseUid=victim'));
+  assert.deepEqual(filter, { firebaseUid: 'owner' });
+});
+
+test('print pass escapes markup and attribute injection in participant data', () => {
+  const { printPassCard } = load('src/lib/print-pass.ts');
+  const before = { window: global.window, document: global.document, setTimeout: global.setTimeout };
+  let output;
+  global.window = {};
+  global.document = { createElement: () => ({ style: {}, contentWindow: { document: { open() {}, write(html) { output = html; }, close() {} } } }), body: { appendChild() {} } };
+  global.setTimeout = () => 0;
+  try {
+    printPassCard({ name: '</title><script>alert(1)</script>', sports: ['<img onerror=alert(1)>'], role: 'sports', photo: 'https://example.com/a" onerror="alert(1)', qr: 'javascript:alert(1)' });
+    assert.doesNotMatch(output, /<script>|<img onerror=|src="javascript:|a" onerror="alert/);
+    assert.match(output, /&lt;script&gt;/);
+    assert.match(output, /&quot; onerror=&quot;/);
+  } finally { Object.assign(global, before); }
+});
+
+
+test('streamed request size limits work without Content-Length', async () => {
+  const { readJson, BodyTooLargeError } = load('src/lib/request-body.ts');
+  const req = new Request('http://localhost', { method: 'POST', body: new ReadableStream({ start(controller) { controller.enqueue(new Uint8Array(33)); controller.close(); } }), duplex: 'half' });
+  await assert.rejects(readJson(req, 32), BodyTooLargeError);
+});
+
+test('support rejects oversized requests before any database connection', async () => {
+  const route = load('src/app/api/registration/support/route.ts', { '@/lib/mongodb': { database: () => assert.fail('Database accessed') } });
+  assert.equal((await route.POST(new Request('http://localhost', { method: 'POST', body: 'x'.repeat(12001) }))).status, 413);
+});
+
+test('authentication checks revocation and rejects an unverified email or non-admin', async () => {
+  let verified = false;
+  const { authenticatedUser, authenticatedAdmin } = load('src/lib/firebase-admin.ts', {
+    'firebase-admin/app': { getApps: () => [{ name: 'smjv-server' }] },
+    'firebase-admin/auth': { getAuth: () => ({
+      verifyIdToken: async (token, revoked) => { assert.equal(token, 'token'); assert.equal(revoked, true); return { uid: 'not-a-committee-user' }; },
+      getUser: async () => ({ uid: 'not-a-committee-user', email: 'user@example.com', emailVerified: verified }),
+    }) },
+  });
+  const request = new Request('http://localhost', { headers: { authorization: 'Bearer token' } });
+  await assert.rejects(authenticatedUser(request), /EMAIL_NOT_VERIFIED/);
+  verified = true;
+  await assert.rejects(authenticatedAdmin(request), /FORBIDDEN/);
+});

@@ -9,8 +9,8 @@ export async function GET(request: Request) {
     const record = await (await registrations()).findOne({ firebaseUid: user.uid });
     return Response.json({ account: record ? { ...await registrationProfile(record), emailVerified: user.emailVerified } : null }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.error("Profile load failed", error);
-    const msg = error instanceof Error ? error.message : "Could not load your saved registration";
+    console.error("Profile load failed");
+    const msg = "Could not load your registration. Please try again.";
     return Response.json({ error: msg }, { status: 503 });
   }
 }

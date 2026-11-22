@@ -1,3 +1,4 @@
+import { readJson } from "@/lib/request-body";
 import { signupSchema, validationError } from "@/lib/registration-helpers";
 import { authenticatedUser, authError } from "@/lib/firebase-admin";
 import { registrations } from "@/lib/mongodb";
@@ -9,7 +10,7 @@ export async function POST(request: Request) {
   try { user = await authenticatedUser(request, false); }
   catch (error) { return authError(error); }
   try {
-    const body = signupSchema.parse(await request.json());
+    const body = signupSchema.parse(await readJson(request));
     const email = user.email!.trim().toLowerCase();
     const firstName = String(body.firstName ?? "").trim();
     const middleName = String(body.middleName ?? "").trim();
@@ -37,8 +38,8 @@ export async function POST(request: Request) {
     const duplicate = duplicateMessage(error);
     if (duplicate) return Response.json({ error: duplicate }, { status: 409 });
     if (validationError(error)) return badInput(error);
-    console.error("Signup failed", error);
-    const msg = error instanceof Error ? error.message : "Registration temporarily unavailable";
+    console.error("Signup failed");
+    const msg = "Registration temporarily unavailable. Please try again.";
     return Response.json({ error: msg }, { status: 500 });
   }
 }

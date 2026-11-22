@@ -1,3 +1,4 @@
+import { readJson } from "@/lib/request-body";
 import { generalSchema, validationError } from "@/lib/registration-helpers";
 import { authenticatedUser, authError } from "@/lib/firebase-admin";
 import { registrations } from "@/lib/mongodb";
@@ -8,7 +9,7 @@ export async function PATCH(request: Request) {
   try { user = await authenticatedUser(request); }
   catch (error) { return authError(error); }
   try {
-    const body = generalSchema.parse(await request.json());
+    const body = generalSchema.parse(await readJson(request));
     const collection = await registrations();
     const record = await collection.findOne({ firebaseUid: user.uid });
     if (!record) return Response.json({ error: "Finish signup first" }, { status: 404 });
@@ -33,8 +34,8 @@ export async function PATCH(request: Request) {
     return Response.json({ success: true });
   } catch (error) {
     if (validationError(error)) return badInput(error);
-    console.error("General update failed", error);
-    const msg = error instanceof Error ? error.message : "Unable to save general information";
+    console.error("General update failed");
+    const msg = "Unable to save your information. Please try again.";
     return Response.json({ error: msg }, { status: 500 });
   }
 }

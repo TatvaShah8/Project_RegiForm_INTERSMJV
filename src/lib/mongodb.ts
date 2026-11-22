@@ -22,16 +22,6 @@ export async function database() {
     cache.smjvMongo = client.connect().catch(async error => {
       cache.smjvMongo = undefined;
       await client.close();
-      const msg = error instanceof Error ? error.message : String(error);
-      if (
-        msg.includes("Server selection timed out") ||
-        msg.includes("ECONNREFUSED") ||
-        msg.includes("ENOTFOUND")
-      ) {
-        throw new Error(
-          "MongoDB connection timed out. Please ensure '0.0.0.0/0' (Allow access from anywhere) is added to IP Access List in MongoDB Atlas -> Network Access."
-        );
-      }
       throw error;
     });
   }
@@ -49,9 +39,10 @@ export async function registrations() {
       { key: { branch: 1, gender: 1, jerseyNumber: 1 }, unique: true,
         partialFilterExpression: { jerseyNumber: { $type: "number" } } },
     ]).catch(error => {
-      console.warn("MongoDB index notice (non-fatal):", (error as any)?.message || error);
-      return null;
+      cache.smjvIndexes = undefined;
+      throw error;
     });
   }
+  await cache.smjvIndexes;
   return collection;
 }

@@ -1,3 +1,4 @@
+import { readForm } from "@/lib/request-body";
 import sharp from "sharp";
 import { kitSchema, validateSports, validationError } from "@/lib/registration-helpers";
 import { randomUUID } from "node:crypto";
@@ -14,7 +15,7 @@ export async function POST(request: Request) {
   let uploaded: string[] = [];
   try {
     if (Number(request.headers.get("content-length")) > 26 * 1024 * 1024) return Response.json({ error: "Upload too large" }, { status: 413 });
-    const form = await request.formData();
+    const form = await readForm(request);
     const collection = await registrations();
     const record = await collection.findOne({ firebaseUid: user.uid });
     if (!record?.branch || !record.gender || !record.bloodGroup) return Response.json({ error: "Complete general details first" }, { status: 409 });
@@ -96,8 +97,8 @@ export async function POST(request: Request) {
     const duplicate = duplicateMessage(error);
     if (duplicate) return Response.json({ error: duplicate }, { status: 409 });
     if (validationError(error)) return badInput(error);
-    console.error("Finish registration failed", error);
-    const msg = error instanceof Error ? error.message : "Could not finalize registration";
+    console.error("Finish registration failed");
+    const msg = "Could not complete your registration. Please try again.";
     return Response.json({ error: msg }, { status: 500 });
   }
 }

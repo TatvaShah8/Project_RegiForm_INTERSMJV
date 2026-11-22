@@ -1,3 +1,4 @@
+import { readJson } from "@/lib/request-body";
 import { authenticatedAdmin, authError } from "@/lib/firebase-admin";
 import { registrations } from "@/lib/mongodb";
 import { registrationProfile } from "@/lib/registration-profile";
@@ -14,7 +15,7 @@ export async function PATCH(request: Request) {
   let user;
   try { user = await authenticatedAdmin(request); } catch (error) { return authError(error); }
   try {
-    const body = z.object({ identifier: z.string().trim().min(1).max(254), isVerified: z.boolean() }).parse(await request.json());
+    const body = z.object({ identifier: z.string().trim().min(1).max(254), isVerified: z.boolean() }).parse(await readJson(request));
     const result = await (await registrations()).updateOne({ registrationStatus: "completed", $or: [{ grnumber: body.identifier.toUpperCase() }, { email: body.identifier.toLowerCase() }] }, {
       $set: { isVerified: body.isVerified, verifiedBy: user.uid, updatedAt: new Date() },
     });

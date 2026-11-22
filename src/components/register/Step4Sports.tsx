@@ -118,7 +118,7 @@ export function Step4Sports({
       const account = await loadRegistration();
         if (!account?.completed) throw new Error("Saved registration could not be confirmed. Please retry.");
         s.loginAccount(account);
-      toast({ title: "REGISTRATION SAVED 🏅", description: "MongoDB saved your details and Supabase received your image." });
+      toast({ title: "REGISTRATION SAVED 🏅", description: "Your registration is complete. Your ID pass is ready." });
       onComplete();
     } catch (error) {
       toast({ title: "REGISTRATION NOT SAVED", description: error instanceof Error ? error.message : "Please retry", variant: "destructive" });

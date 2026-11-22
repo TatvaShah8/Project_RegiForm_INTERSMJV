@@ -22,8 +22,8 @@ export function adminAuth() {
         // Fix unescaped newlines in private key if copied directly into Vercel
         account.private_key = account.private_key.replace(/\\n/g, "\n");
       }
-    } catch (err) {
-      throw new Error("Failed to parse FIREBASE_SERVICE_ACCOUNT_JSON: " + (err instanceof Error ? err.message : String(err)));
+    } catch {
+      throw new Error("Invalid server authentication configuration");
     }
   }
 
@@ -75,8 +75,8 @@ export function authError(error: unknown) {
   if (["UNAUTHORIZED", "EMAIL_MISSING"].includes(message) || [
     "auth/id-token-expired", "auth/id-token-revoked", "auth/invalid-id-token", "auth/argument-error", "auth/user-disabled", "auth/user-not-found",
   ].includes(code ?? "")) return Response.json({ error: "Please sign in again" }, { status: 401 });
-  console.error("Firebase Admin unavailable:", code ?? message, error);
+  console.error("Server authentication unavailable");
   return Response.json({
-    error: `Server authentication unavailable: ${message || code || "Check Firebase Admin configuration"}`
+    error: "Sign-in is temporarily unavailable. Please try again later."
   }, { status: 503 });
 }

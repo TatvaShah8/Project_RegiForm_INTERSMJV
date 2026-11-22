@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import QRCode from "qrcode";
 import Link from "next/link";
 import {
   Search,
@@ -77,11 +78,14 @@ export function CommitteeVerificationDashboard() {
     });
   };
 
-  const handlePrintStudent = (account: Partial<RegisterState>) => {
+  const handlePrintStudent = async (account: Partial<RegisterState>) => {
     const age = account.dob ? selectAge(account.dob) : null;
     const sports = [...(account.outdoor || []), ...(account.indoor || [])];
     const isCultural = account.role === "cultural";
 
+    let qr: string;
+    try { qr = await QRCode.toDataURL("SMJV_VERIFIED_" + (account.grNo || "000"), { width: 300 }); }
+    catch { toast({ title: "Could not prepare ID pass", description: "Please try again.", variant: "destructive" }); return; }
     printPassCard({
       name: [account.firstName, account.middleName, account.surname].filter(Boolean).join(" ") || "SMJVIAN",
       grNo: account.grNo || "—",
@@ -101,7 +105,7 @@ export function CommitteeVerificationDashboard() {
       kit: isCultural ? (account.tshirt || "—") : `${account.tshirt || "—"} / ${account.waist || "—"}`,
       jerseyNumber: !isCultural ? account.jerseyNumber : undefined,
       photo: account.photo,
-      qr: "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=SMJV_VERIFIED_" + (account.grNo || "000"),
+      qr,
     });
   };
 
