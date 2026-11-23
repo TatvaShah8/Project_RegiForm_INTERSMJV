@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>502 • Claude Credits Khali, Tech Team Vanchva Bethi! | SMJV Youth Festival</title>
+    <title>502 • Server Down | Claude Credits Exhausted & Exam Season</title>
     <style>
         * {
             box-sizing: border-box;
@@ -108,7 +108,7 @@
         }
 
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.55rem;
             font-weight: 900;
             color: #f8fafc;
             text-transform: uppercase;
@@ -120,10 +120,6 @@
         .highlight-red {
             color: #f87171;
             text-decoration: underline wavy #ef4444 2px;
-        }
-
-        .highlight-yellow {
-            color: #fbbf24;
         }
 
         /* Funny Meme speech bubble */
@@ -251,7 +247,6 @@
             text-transform: uppercase;
         }
 
-        /* Sound effect toast indicator */
         #sound-toast {
             display: none;
             margin-top: 0.75rem;
@@ -284,52 +279,52 @@
         <div class="emoji-cluster">💸📚💻😭</div>
 
         <h1>
-            SERVER DOWN CHE! <br>
-            <span class="highlight-red">CLAUDE CREDITS PATI GAYA</span> 
+            SERVER IS DOWN! <br>
+            <span class="highlight-red">CLAUDE CREDITS EXHAUSTED</span> 
         </h1>
 
         <div class="speech-box">
             <div class="speech-title">
                 <span>📢</span>
-                <span>Official Tech Team Update (Gharethi Fatkar)</span>
+                <span>Official Tech Team Notice (Strict Parental Orders)</span>
             </div>
             <p class="speech-quote">
-                "Anthropic / Claude Code nu card swipe thavani na paadi didhi... Balance: $0.00!"
+                "Anthropic just declined our card... Claude Code credit balance: $0.00!"
             </p>
             <p class="speech-body">
-                Upar thi Tech Team na Mummy-Pappa e dhobi-pachhad aapi ne direct chetavni aapi didhi che: 
-                <strong>'Aava festival na coding bandh karo ne Semester Exam ma dhyan aapo! Ek mark pan ochho aavyo toh laptop japt!'</strong> 
+                To make matters worse, our parents found out and gave a strict, non-negotiable ultimatum: 
+                <strong>'Stop coding for festivals and focus on your Semester Exams! One mark less on your report card, and your laptop gets confiscated!'</strong> 
                 <br><br>
-                Toh haal ma amara badha developers Next.js chhodine textbook ghot-ta che! Shanti thi bes, exam pati gaya pachi server ubho thase! 🧘‍♂️
+                So right now, our developers have shut down VS Code and are violently memorizing engineering textbooks. Sit tight, chill out, and server will be rebooted once exams are conquered! 🧘‍♂️📖
             </p>
         </div>
 
         <div class="status-grid">
             <div class="status-row">
                 <span class="label">💳 Claude Code Credits:</span>
-                <span class="val-red">$0.00 (Kangaal Mode)</span>
+                <span class="val-red">$0.00 (Wallet Bankrupt)</span>
             </div>
             <div class="status-row">
-                <span class="label">👨‍👩‍👦 Parents Nu Farman:</span>
-                <span class="val-purple">"Pehla Exam, Pachi Coding!"</span>
+                <span class="label">👨‍👩‍👦 Parents' Final Verdict:</span>
+                <span class="val-purple">"Exams First, Coding Later!"</span>
             </div>
             <div class="status-row">
-                <span class="label">📖 Developer Status:</span>
-                <span class="val-yellow">Chopdi Kholine Ratto Mare Che 🧠</span>
+                <span class="label">📖 Tech Team Status:</span>
+                <span class="val-yellow">Cramming Syllabus with Black Coffee ☕</span>
             </div>
             <div class="status-row">
                 <span class="label">🛠️ Server Recovery ETA:</span>
-                <span class="val-green">Exam ma Pass Thaya Pachi 🤞</span>
+                <span class="val-green">Right After Last Exam Paper 🤞</span>
             </div>
         </div>
 
         <button class="btn-retry" id="retry-btn" onclick="handleRetryWithSound()">
             <span class="sound-icon">🔊</span>
-            <span id="btn-text">Farithi Connect Karva Matho (Retry) 🔄</span>
+            <span id="btn-text">Retry & Reconnect 🔄</span>
         </button>
 
         <div id="sound-toast">
-            🎵 *BONK!* Server bolyu: "Haji to book kholi che, thodi vaar shanti rakh!"... Connecting...
+            🎵 *BONK!* Server says: "Still on chapter 1, give us a minute!"... Connecting...
         </div>
 
         <p class="timer-notice">
@@ -400,7 +395,7 @@
             // 2. Show funny feedback text
             const btnText = document.getElementById("btn-text");
             const toast = document.getElementById("sound-toast");
-            if (btnText) btnText.textContent = "Connecting to Server... 📡";
+            if (btnText) btnText.textContent = "Checking Server Status... 📡";
             if (toast) toast.style.display = "block";
 
             // 3. After sound plays (~700ms), attempt page reload to check if server is back up!
