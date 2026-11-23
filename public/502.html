@@ -88,8 +88,18 @@
         </button>
     </div>
 
+    <!-- Preloaded audio element (works both locally and on web server) -->
+    <audio id="fa-audio" preload="auto" src="faaaa.mp3"></audio>
+
     <script>
-        const audio = new Audio("/faaaa.mp3");
+        // ===================================================================
+        // 🎵 PUT YOUR FILE LOCATION OR WEB LINK HERE:
+        // - In same folder:  "faaaa.mp3"
+        // - Full web URL:    "https://example.com/faaaa.mp3"
+        // - Absolute local:  "C:/Users/StrongRock/Downloads/faaaa.mp3"
+        // ===================================================================
+        const AUDIO_FILE_LOCATION = "faaaa.mp3";
+
         let loading = false;
 
         function retry() {
@@ -99,10 +109,25 @@
             const btn = document.getElementById("btn");
             if (btn) btn.innerHTML = "<span>Connecting... 🔊</span>";
 
-            // Play the faaaa sound
-            audio.play().catch(() => {});
+            // Try playing from <audio> element first, then fallback to new Audio()
+            const audioElement = document.getElementById("fa-audio");
+            const sound = audioElement || new Audio(AUDIO_FILE_LOCATION);
 
-            // Reload page after audio plays
+            sound.currentTime = 0;
+            const playPromise = sound.play();
+
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    console.log("Audio playing successfully!");
+                }).catch((err) => {
+                    console.warn("Audio play blocked by browser or file not found:", err);
+                    // Fallback attempt with direct path
+                    const fallbackAudio = new Audio(AUDIO_FILE_LOCATION);
+                    fallbackAudio.play().catch((e) => console.error("Fallback error:", e));
+                });
+            }
+
+            // Reload page after audio plays (~1.8 seconds)
             setTimeout(() => {
                 window.location.reload();
             }, 1800);
