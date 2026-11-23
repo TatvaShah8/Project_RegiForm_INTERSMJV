@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>502 • Server Down | Claude Credits Exhausted & Exam Season</title>
+    <title>faaaa</title>
     <style>
         * {
             box-sizing: border-box;
@@ -12,432 +12,101 @@
         }
 
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: radial-gradient(circle at 50% 15%, #2e1065 0%, #0f172a 55%, #020617 100%);
-            color: #f8fafc;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #0b0f19;
+            color: #ffffff;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.25rem;
-            overflow-x: hidden;
-        }
-
-        .card {
-            max-width: 540px;
-            width: 100%;
-            background: rgba(30, 41, 59, 0.85);
-            border: 2px solid rgba(245, 158, 11, 0.4);
-            border-radius: 2rem;
-            padding: 2.25rem 1.75rem;
+            padding: 1.5rem;
             text-align: center;
-            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(24px);
-            position: relative;
         }
 
-        .ambient-glow {
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 220px;
-            height: 45px;
-            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
-            filter: blur(35px);
-            opacity: 0.55;
-            pointer-events: none;
-        }
-
-        .badge-bar {
+        .container {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            margin-bottom: 1.25rem;
+            gap: 2rem;
         }
 
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(239, 68, 68, 0.18);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            color: #fca5a5;
-            font-size: 0.72rem;
-            font-weight: 800;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            padding: 0.35rem 0.8rem;
-            border-radius: 9999px;
-        }
-
-        .badge-exam {
-            background: rgba(168, 85, 247, 0.2);
-            border: 1px solid rgba(168, 85, 247, 0.5);
-            color: #d8b4fe;
-        }
-
-        .badge-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #ef4444;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ef4444;
-            animation: pulse 1.2s infinite;
+        .title {
+            font-size: clamp(4rem, 15vw, 10rem);
+            font-weight: 900;
+            text-transform: lowercase;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            user-select: none;
+            animation: pulse 1.8s ease-in-out infinite alternate;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.3; transform: scale(0.85); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(239, 68, 68, 0.3)); }
+            100% { transform: scale(1.04); filter: drop-shadow(0 0 45px rgba(245, 158, 11, 0.6)); }
         }
 
-        .emoji-cluster {
-            font-size: 3.5rem;
-            line-height: 1;
-            margin-bottom: 0.75rem;
-            display: inline-block;
-            animation: bounce 2s infinite ease-in-out alternate;
-            user-select: none;
-        }
-
-        @keyframes bounce {
-            0% { transform: translateY(0px) rotate(-4deg); }
-            100% { transform: translateY(-8px) rotate(4deg); }
-        }
-
-        h1 {
-            font-size: 1.55rem;
-            font-weight: 900;
-            color: #f8fafc;
-            text-transform: uppercase;
-            letter-spacing: 0.03em;
-            line-height: 1.3;
-            margin-bottom: 0.5rem;
-        }
-
-        .highlight-red {
-            color: #f87171;
-            text-decoration: underline wavy #ef4444 2px;
-        }
-
-        /* Funny Meme speech bubble */
-        .speech-box {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(168, 85, 247, 0.12));
-            border: 1.5px dashed rgba(245, 158, 11, 0.6);
-            border-radius: 1.25rem;
-            padding: 1.15rem 1.25rem;
-            margin: 1.25rem 0;
-            text-align: left;
-            position: relative;
-        }
-
-        .speech-title {
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #f59e0b;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .speech-quote {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #fef08a;
-            line-height: 1.5;
-            margin-bottom: 0.6rem;
-        }
-
-        .speech-body {
-            font-size: 0.88rem;
-            color: #cbd5e1;
-            line-height: 1.55;
-        }
-
-        /* Status grid */
-        .status-grid {
-            background: #020617;
-            border: 1px solid #1e293b;
-            border-radius: 1rem;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-            font-size: 0.78rem;
-            text-align: left;
-            line-height: 1.6;
-        }
-
-        .status-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #0f172a;
-            padding: 0.35rem 0;
-        }
-
-        .status-row:last-child {
-            border-bottom: none;
-        }
-
-        .label { color: #94a3b8; }
-        .val-red { color: #f87171; font-weight: 700; }
-        .val-purple { color: #c084fc; font-weight: 700; }
-        .val-yellow { color: #fde047; font-weight: 700; }
-        .val-green { color: #4ade80; font-weight: 700; }
-
-        /* Sound retry button */
         .btn-retry {
-            width: 100%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.65rem;
+            gap: 0.75rem;
             background: linear-gradient(90deg, #f59e0b, #ea580c);
-            color: #0f172a;
-            font-size: 1.05rem;
-            font-weight: 900;
+            color: #0b0f19;
+            font-size: 1.25rem;
+            font-weight: 800;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 1rem 1.5rem;
-            border-radius: 1rem;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
             cursor: pointer;
             border: none;
-            box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.45);
+            box-shadow: 0 10px 30px -5px rgba(234, 88, 12, 0.5);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             user-select: none;
         }
 
         .btn-retry:hover {
-            filter: brightness(1.12);
-            transform: scale(1.02);
-            box-shadow: 0 15px 30px -5px rgba(234, 88, 12, 0.6);
+            transform: scale(1.06);
+            filter: brightness(1.15);
+            box-shadow: 0 15px 40px -5px rgba(234, 88, 12, 0.7);
         }
 
         .btn-retry:active {
-            transform: scale(0.97);
-        }
-
-        .sound-icon {
-            display: inline-block;
-            animation: wiggle 0.6s infinite alternate ease-in-out;
-        }
-
-        @keyframes wiggle {
-            0% { transform: rotate(-10deg); }
-            100% { transform: rotate(10deg); }
-        }
-
-        .timer-notice {
-            margin-top: 1rem;
-            font-size: 0.8rem;
-            color: #64748b;
-            font-family: monospace;
-        }
-
-        .footer {
-            margin-top: 1.25rem;
-            font-size: 0.72rem;
-            color: #475569;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-        }
-
-        #sound-toast {
-            display: none;
-            margin-top: 0.75rem;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #facc15;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
+            transform: scale(0.95);
         }
     </style>
 </head>
 <body>
-    <div class="card">
-        <div class="ambient-glow"></div>
-
-        <div class="badge-bar">
-            <span class="badge">
-                <span class="badge-dot"></span>
-                Error 502 • Bad Gateway
-            </span>
-            <span class="badge badge-exam">
-                📚 Exam Season Active
-            </span>
-        </div>
-
-        <div class="emoji-cluster">💸📚💻😭</div>
-
-        <h1>
-            SERVER IS DOWN! <br>
-            <span class="highlight-red">CLAUDE CREDITS EXHAUSTED</span> 
-        </h1>
-
-        <div class="speech-box">
-            <div class="speech-title">
-                <span>📢</span>
-                <span>Official Tech Team Notice (Strict Parental Orders)</span>
-            </div>
-            <p class="speech-quote">
-                "Anthropic just declined our card... Claude Code credit balance: $0.00!"
-            </p>
-            <p class="speech-body">
-                To make matters worse, our parents found out and gave a strict, non-negotiable ultimatum: 
-                <strong>'Stop coding for festivals and focus on your Semester Exams! One mark less on your report card, and your laptop gets confiscated!'</strong> 
-                <br><br>
-                So right now, our developers have shut down VS Code and are violently memorizing engineering textbooks. Sit tight, chill out, and server will be rebooted once exams are conquered! 🧘‍♂️📖
-            </p>
-        </div>
-
-        <div class="status-grid">
-            <div class="status-row">
-                <span class="label">💳 Claude Code Credits:</span>
-                <span class="val-red">$0.00 (Wallet Bankrupt)</span>
-            </div>
-            <div class="status-row">
-                <span class="label">👨‍👩‍👦 Parents' Final Verdict:</span>
-                <span class="val-purple">"Exams First, Coding Later!"</span>
-            </div>
-            <div class="status-row">
-                <span class="label">📖 Tech Team Status:</span>
-                <span class="val-yellow">Cramming Syllabus with Black Coffee ☕</span>
-            </div>
-            <div class="status-row">
-                <span class="label">🛠️ Server Recovery ETA:</span>
-                <span class="val-green">Right After Last Exam Paper 🤞</span>
-            </div>
-        </div>
-
-        <button class="btn-retry" id="retry-btn" onclick="handleRetryWithSound()">
-            <span class="sound-icon">🔊</span>
-            <span id="btn-text">Retry & Reconnect 🔄</span>
+    <div class="container">
+        <h1 class="title">faaaa</h1>
+        <button class="btn-retry" id="btn" onclick="retry()">
+            <span>Retry 🔄</span>
         </button>
-
-        <div id="sound-toast">
-            🎵 *FAAAAH!* Server scream detected! Reconnecting to check if developers finished studying...
-        </div>
-
-        <p class="timer-notice">
-            Auto-checking server in <span id="timer" style="color: #f59e0b; font-weight: bold;">20</span>s...
-        </p>
-
-        <p class="footer">
-            SMJV YOUTH FESTIVAL 2026 • ORGANIZING COMMITTEE VADODARA
-        </p>
     </div>
 
     <script>
-        // Custom audio URL: local server-hosted mp3 (zero lag, offline ready)
-        const CUSTOM_AUDIO_URL = "/faaaa.mp3";
+        const audio = new Audio("/faaaa.mp3");
+        let loading = false;
 
-        // Web Audio API Synthesizer - Plays funny multi-tone cartoon sound without any external MP3!
-        function playFunnyCartoonSound() {
-            try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                const ctx = new AudioCtx();
+        function retry() {
+            if (loading) return;
+            loading = true;
 
-                // Note 1: Boing / Spring sound
-                const osc1 = ctx.createOscillator();
-                const gain1 = ctx.createGain();
-                osc1.type = "sine";
-                
-                const t = ctx.currentTime;
-                osc1.frequency.setValueAtTime(150, t);
-                osc1.frequency.exponentialRampToValueAtTime(750, t + 0.12);
-                osc1.frequency.exponentialRampToValueAtTime(120, t + 0.35);
+            const btn = document.getElementById("btn");
+            if (btn) btn.innerHTML = "<span>Connecting... 🔊</span>";
 
-                gain1.gain.setValueAtTime(0.4, t);
-                gain1.gain.exponentialRampToValueAtTime(0.01, t + 0.38);
+            // Play the faaaa sound
+            audio.play().catch(() => {});
 
-                osc1.connect(gain1);
-                gain1.connect(ctx.destination);
-                osc1.start(t);
-                osc1.stop(t + 0.38);
-
-                // Note 2: Funny clown horn / Wah-Wah second tone
-                const osc2 = ctx.createOscillator();
-                const gain2 = ctx.createGain();
-                osc2.type = "triangle";
-
-                const t2 = t + 0.22;
-                osc2.frequency.setValueAtTime(320, t2);
-                osc2.frequency.exponentialRampToValueAtTime(160, t2 + 0.3);
-
-                gain2.gain.setValueAtTime(0.35, t2);
-                gain2.gain.exponentialRampToValueAtTime(0.01, t2 + 0.32);
-
-                osc2.connect(gain2);
-                gain2.connect(ctx.destination);
-                osc2.start(t2);
-                osc2.stop(t2 + 0.32);
-            } catch (err) {
-                console.log("Audio play error:", err);
-            }
-        }
-
-        function playSound() {
-            if (CUSTOM_AUDIO_URL && CUSTOM_AUDIO_URL.trim() !== "") {
-                try {
-                    const audio = new Audio(CUSTOM_AUDIO_URL);
-                    const playPromise = audio.play();
-                    if (playPromise !== undefined) {
-                        playPromise.catch(() => {
-                            // Fallback to synthesizer if audio link fails or network is blocked
-                            playFunnyCartoonSound();
-                        });
-                    }
-                } catch {
-                    playFunnyCartoonSound();
-                }
-            } else {
-                playFunnyCartoonSound();
-            }
-        }
-
-        let isConnecting = false;
-
-        function handleRetryWithSound() {
-            if (isConnecting) return;
-            isConnecting = true;
-
-            // 1. Play sound
-            playSound();
-
-            // 2. Show funny feedback text
-            const btnText = document.getElementById("btn-text");
-            const toast = document.getElementById("sound-toast");
-            if (btnText) btnText.textContent = "Checking Server Status... 📡";
-            if (toast) toast.style.display = "block";
-
-            // 3. After sound plays (~1.8s), attempt page reload to check if server is back up!
+            // Reload page after audio plays
             setTimeout(() => {
                 window.location.reload();
             }, 1800);
         }
-
-        // Auto reload timer
-        let timeLeft = 20;
-        const timerEl = document.getElementById("timer");
-
-        setInterval(() => {
-            timeLeft--;
-            if (timeLeft <= 0) {
-                window.location.reload();
-            } else {
-                if (timerEl) timerEl.textContent = timeLeft;
-            }
-        }, 1000);
     </script>
 </body>
 </html>
