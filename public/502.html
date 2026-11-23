@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>502 • Shanti Thi Bess | SMJV Youth Festival 2026</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 520px;
+            width: 100%;
+            background: rgba(30, 41, 59, 0.75);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+            border-radius: 1.75rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            position: relative;
+        }
+
+        /* Ambient glowing pill */
+        .ambient-glow {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 180px;
+            height: 40px;
+            background: linear-gradient(90deg, #f59e0b, #ea580c);
+            filter: blur(35px);
+            opacity: 0.45;
+            pointer-events: none;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            margin-bottom: 1.25rem;
+        }
+
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ef4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.85); }
+        }
+
+        .emoji-avatar {
+            font-size: 4rem;
+            line-height: 1;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: float 2.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(-3deg); }
+            100% { transform: translateY(-10px) rotate(3deg); }
+        }
+
+        .speech-bubble {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.12));
+            border: 1px dashed rgba(245, 158, 11, 0.5);
+            border-radius: 1.25rem;
+            padding: 1.15rem 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .punchline {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: #fbbf24;
+            line-height: 1.4;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .sub-punchline {
+            margin-top: 0.45rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #fef08a;
+            line-height: 1.5;
+        }
+
+        /* Dev log ticker */
+        .dev-terminal {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 0.85rem;
+            padding: 0.85rem 1rem;
+            text-align: left;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.8rem;
+            color: #94a3b8;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .terminal-row {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .text-green { color: #4ade80; }
+        .text-yellow { color: #facc15; }
+        .text-orange { color: #fb923c; }
+        .text-red { color: #f87171; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            background: linear-gradient(90deg, #f59e0b, #ea580c);
+            color: #0f172a;
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.9rem 1.5rem;
+            border-radius: 0.85rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 10px 20px -5px rgba(234, 88, 12, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .auto-refresh-text {
+            margin-top: 1rem;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-family: monospace;
+        }
+
+        .footer-note {
+            margin-top: 1.25rem;
+            font-size: 0.75rem;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ambient-glow"></div>
+
+        <div class="badge">
+            <span class="badge-dot"></span>
+            <span>Error 502 • Server Undh-ma Che</span>
+        </div>
+
+        <div class="emoji-avatar">😴💤</div>
+
+        <div class="speech-bubble">
+            <p class="punchline">
+                "Re ne re ne... haggan nikdi jai che su?!"
+            </p>
+            <p class="sub-punchline">
+                Shanti thi bess! Hamna server down che, thodi var ma ubho thase! 🛠️☕
+            </p>
+        </div>
+
+        <div class="dev-terminal">
+            <div class="terminal-row">
+                <span>[SERVER_STATUS]:</span>
+                <span class="text-red">Offline / Taking a Nap 🛌</span>
+            </div>
+            <div class="terminal-row">
+                <span>[DEVELOPER_MODE]:</span>
+                <span class="text-yellow">Chai Pive Che & Fixing ☕</span>
+            </div>
+            <div class="terminal-row">
+                <span>[USER_ADVICE]:</span>
+                <span class="text-green">Refresh Marvanu Bandh Rakh 😄</span>
+            </div>
+        </div>
+
+        <button class="btn" onclick="checkServer()">
+            Farithi Try Kar (Retry) 🔄
+        </button>
+
+        <p class="auto-refresh-text">
+            Auto-checking server in <span id="timer" class="text-orange">15</span>s...
+        </p>
+
+        <p class="footer-note">
+            SMJV YOUTH FESTIVAL 2026 • ORGANIZING COMMITTEE VADODARA
+        </p>
+    </div>
+
+    <script>
+        let timeLeft = 15;
+        const timerEl = document.getElementById("timer");
+
+        function checkServer() {
+            window.location.reload();
+        }
+
+        setInterval(() => {
+            timeLeft--;
+            if (timeLeft <= 0) {
+                checkServer();
+            } else {
+                if (timerEl) timerEl.textContent = timeLeft;
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
