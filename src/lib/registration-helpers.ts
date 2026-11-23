@@ -1,6 +1,6 @@
 import { BodyTooLargeError } from "./request-body";
 import { z } from "zod";
-import { BLOOD_GROUPS, YEARS_OF_STUDY, RELATIONS, JERSEY_SIZES, TRACK_PANT_SIZES, getOutdoorSportsForGender, INDOOR_SPORTS } from "./fest";
+import { BLOOD_GROUPS, YEARS_OF_STUDY, RELATIONS, JERSEY_SIZES, TRACK_PANT_SIZES, ALL_VALID_TRACK_PANT_SIZES, getOutdoorSportsForGender, INDOOR_SPORTS } from "./fest";
 import { MongoServerError } from "mongodb";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
 
@@ -59,7 +59,7 @@ export const generalSchema = z.object({
   year: z.enum(YEARS_OF_STUDY), emergency: z.string().max(20), relation: z.enum(RELATIONS),
 });
 export const kitSchema = z.object({
-  role: z.enum(["sports", "cultural"]), tshirt: z.enum(JERSEY_SIZES), waist: z.enum(TRACK_PANT_SIZES),
+  role: z.enum(["sports", "cultural"]), tshirt: z.enum(JERSEY_SIZES), waist: z.enum(ALL_VALID_TRACK_PANT_SIZES),
   alsoParticipatesInCultural: z.enum(["true", "false"]).default("false"),
   agreement: z.literal("true"), outdoor: z.array(z.string()).max(5), indoor: z.array(z.string()).max(4),
 });

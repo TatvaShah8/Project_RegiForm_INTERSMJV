@@ -44,6 +44,7 @@ export function TrackPantSizeModal({
   onSelectSize,
 }: TrackPantSizeModalProps) {
   const [category, setCategory] = React.useState<"jersey" | "track-pants">(initialCategory);
+  const [pantView, setPantView] = React.useState<"table" | "diagram">("table");
 
   // Sync state whenever modal opens or initial values change
   React.useEffect(() => {
@@ -113,8 +114,34 @@ export function TrackPantSizeModal({
               </button>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 rounded-md border border-fest-orange/30 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange">
-              <span>👥 Both Boys &amp; Girls</span>
+            <div className="flex items-center gap-2">
+              {!isJersey && (
+                <div className="flex rounded-lg bg-black/40 p-0.5 border border-white/10">
+                  <button
+                    type="button"
+                    onClick={() => setPantView("table")}
+                    className={cn(
+                      "rounded px-2.5 py-0.5 text-[11px] font-bold transition",
+                      pantView === "table" ? "bg-white/20 text-white" : "text-white/60 hover:text-white"
+                    )}
+                  >
+                    Table
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPantView("diagram")}
+                    className={cn(
+                      "rounded px-2.5 py-0.5 text-[11px] font-bold transition",
+                      pantView === "diagram" ? "bg-white/20 text-white" : "text-white/60 hover:text-white"
+                    )}
+                  >
+                    Diagram 🖼️
+                  </button>
+                </div>
+              )}
+              <div className="inline-flex items-center gap-1.5 rounded-md border border-fest-orange/30 bg-fest-orange/10 px-2.5 py-1 text-[11px] font-bold text-fest-orange">
+                <span>👥 Both Boys &amp; Girls</span>
+              </div>
             </div>
           </div>
         </div>
@@ -179,6 +206,20 @@ export function TrackPantSizeModal({
                   })}
                 </tbody>
               </table>
+            ) : pantView === "diagram" ? (
+              /* Track Pants Visual Diagram from official guide */
+              <div className="flex flex-col items-center justify-center p-3 text-center bg-black/60">
+                <div className="relative overflow-hidden rounded-xl border border-white/20 bg-white p-2 shadow-2xl max-w-sm w-full">
+                  <img
+                    src="/images/pant-size-chart.jpg"
+                    alt="Official Size Chart Pants for Boys and Girls"
+                    className="w-full h-auto max-h-[340px] rounded-lg object-contain mx-auto"
+                  />
+                </div>
+                <p className="mt-3 text-xs text-fest-label font-mono">
+                  Waist &amp; Length measurements in inches · Switch to <b className="text-fest-orange">Table</b> above to select size
+                </p>
+              </div>
             ) : (
               /* Track Pants Table */
               <table className="w-full text-left text-sm">
@@ -187,7 +228,6 @@ export function TrackPantSizeModal({
                     <th className="px-4 py-3 font-bold">Size</th>
                     <th className="px-4 py-3 font-bold">Waist (inches)</th>
                     <th className="px-4 py-3 font-bold">Length (inches)</th>
-                    <th className="px-4 py-3 font-bold">Rise</th>
                     <th className="px-3 py-3 text-right font-bold">Action</th>
                   </tr>
                 </thead>
@@ -219,9 +259,8 @@ export function TrackPantSizeModal({
                             {row.size}
                           </span>
                         </td>
-                        <td className="px-4 py-2.5 font-medium text-white/90">{row.waist}</td>
-                        <td className="px-4 py-2.5 font-medium text-white/90">{row.length}</td>
-                        <td className="px-4 py-2.5 font-medium text-white/90">{row.rise || "—"}</td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.waist}&quot;</td>
+                        <td className="px-4 py-2.5 font-medium text-white/90">{row.length}&quot;</td>
                         <td className="px-3 py-2.5 text-right">
                           {isSelected ? (
                             <span className="inline-flex items-center gap-1 rounded-md bg-fest-orange px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-fest-ink shadow-xs">
@@ -258,13 +297,10 @@ export function TrackPantSizeModal({
                 ) : (
                   <>
                     <p>
-                      <strong className="text-fest-white">Waist:</strong> Measure at your natural waistline.
+                      <strong className="text-fest-white">Waist:</strong> Measure around your natural waistline.
                     </p>
                     <p>
-                      <strong className="text-fest-white">Length:</strong> From top of waistband to hem (outseam).
-                    </p>
-                    <p>
-                      <strong className="text-fest-white">Rise:</strong> From crotch to top of waistband.
+                      <strong className="text-fest-white">Length:</strong> Outseam length measured from top of waistband straight down to bottom hem.
                     </p>
                   </>
                 )}

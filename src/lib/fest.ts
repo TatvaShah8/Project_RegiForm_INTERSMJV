@@ -92,14 +92,15 @@ export const JERSEY_SIZES = [
 
 /** Official Standardized Pant Size Chart (for both Boys and Girls) */
 export const TRACK_PANT_SIZE_CHART: readonly TrackPantSizeInfo[] = [
-  { size: "S", waist: "28", length: "36", rise: "—" },
-  { size: "M", waist: "30", length: "37", rise: "—" },
-  { size: "L", waist: "32", length: "38", rise: "—" },
-  { size: "XL", waist: "34", length: "39", rise: "—" },
-  { size: "XXL", waist: "36", length: "40", rise: "—" },
-  { size: "3XL", waist: "44–46", length: "45", rise: "14 ½" },
-  { size: "4XL", waist: "48–50", length: "45", rise: "14 ½" },
-  { size: "5XL", waist: "52–54", length: "46", rise: "15" },
+  { size: "S", waist: "28", length: "38" },
+  { size: "M", waist: "30", length: "38" },
+  { size: "L", waist: "32", length: "38" },
+  { size: "XL", waist: "34", length: "40" },
+  { size: "2XL", waist: "36", length: "40" },
+  { size: "3XL", waist: "38", length: "40" },
+  { size: "4XL", waist: "40", length: "42" },
+  { size: "5XL", waist: "42", length: "42" },
+  { size: "6XL", waist: "44", length: "42" },
 ] as const;
 
 export const TRACK_PANT_SIZES = [
@@ -107,10 +108,16 @@ export const TRACK_PANT_SIZES = [
   "M",
   "L",
   "XL",
-  "XXL",
+  "2XL",
   "3XL",
   "4XL",
   "5XL",
+  "6XL",
+] as const;
+
+export const ALL_VALID_TRACK_PANT_SIZES = [
+  ...TRACK_PANT_SIZES,
+  "XXL", // Backward compatibility for previously saved records
 ] as const;
 
 // Backward-compatible aliases (unified for both genders)
@@ -140,11 +147,15 @@ export function getTrackPantSizeInfo(
 ): TrackPantSizeInfo | undefined {
   if (!val) return undefined;
   const clean = val.trim().toLowerCase();
+  // Backward compatibility alias: XXL -> 2XL
+  if (clean === "xxl") {
+    return TRACK_PANT_SIZE_CHART.find((item) => item.size === "2XL");
+  }
   return (
     TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase() === clean) ||
     TRACK_PANT_SIZE_CHART.find((item) => item.size.toLowerCase() === clean.replace(/[^a-z0-9]/g, "")) ||
     TRACK_PANT_SIZE_CHART.find((item) => clean.includes(item.size.toLowerCase())) ||
-    TRACK_PANT_SIZE_CHART.find((item) => item.waist.includes(clean))
+    TRACK_PANT_SIZE_CHART.find((item) => item.waist === clean || item.waist.includes(clean))
   );
 }
 
