@@ -448,13 +448,6 @@ export function HomePage() {
             >
               CONTACT US & SUPPORT
             </Link>
-            <span className="text-fest-label/40">•</span>
-            <Link
-              href="/admin/support"
-              className="text-fest-label/70 hover:text-fest-orange transition underline-offset-4 hover:underline"
-            >
-              HELPDESK DASHBOARD
-            </Link>
           </div>
           <p className="font-mono text-[11px] text-fest-label">
             © 2026 SMJV YOUTH FESTIVAL VADODARA ORGANIZING COMMITTEE · ALL RIGHTS RESERVED
