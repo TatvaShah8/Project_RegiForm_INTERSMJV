@@ -6,7 +6,7 @@ import { X, LogIn, UserPlus, Eye, EyeOff, Sparkles, CheckCircle2, User } from "l
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import { loadRegistration } from "@/lib/registration-api";
-import { signInWithGoogle, loginWithEmailPassword } from "@/lib/auth-service";
+import { signInWithGoogle, loginWithEmailPassword, resetAccountPassword } from "@/lib/auth-service";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ export function StudentAuthModal({
   const [password, setPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const [resettingPassword, setResettingPassword] = React.useState(false);
   const [loadingGoogle, setLoadingGoogle] = React.useState(false);
 
   React.useEffect(() => {
@@ -119,6 +120,18 @@ export function StudentAuthModal({
     } catch (error) {
       setError(error instanceof Error ? error.message : "Could not load your registration");
     }
+  };
+
+  const handlePasswordReset = async () => {
+    if (resettingPassword) return;
+    setError(null);
+    if (!identifier.trim().includes("@")) { setError("Enter your registered email address first."); return; }
+    setResettingPassword(true);
+    try {
+      const result = await resetAccountPassword(identifier);
+      if (!result.ok) { setError(result.error || "Could not request password reset"); return; }
+      toast({ title: "PASSWORD RESET REQUESTED", description: "If this email has an eligible account, you will receive a password-reset link. Check your inbox and spam folder." });
+    } finally { setResettingPassword(false); }
   };
 
   const handleGoRegister = () => {
@@ -251,7 +264,7 @@ export function StudentAuthModal({
                     type="text"
                     value={identifier}
                     onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="e.g. aarav.mehta@smjv.edu or SMJV26-0142"
+                    placeholder="Your registered email address"
                     className="mt-1 h-11 w-full rounded-xl border border-fest-border bg-white/80 px-3.5 font-mono text-xs text-fest-deep shadow-sm outline-none transition placeholder:text-fest-label/50 focus:border-fest-orange focus:bg-white"
                   />
                 </div>
@@ -284,6 +297,9 @@ export function StudentAuthModal({
                 >
                   <LogIn className="h-4 w-4" />
                   LOG IN TO ID PASS
+                </button>
+                <button type="button" disabled={resettingPassword} onClick={handlePasswordReset} className="text-sm text-fest-orange underline disabled:opacity-50">
+                  {resettingPassword ? "Sending reset email…" : "Forgot password?"}
                 </button>
               </form>
 

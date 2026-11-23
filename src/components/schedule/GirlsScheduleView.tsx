@@ -185,7 +185,7 @@ export function GirlsScheduleView({
           Ready to Represent Your Branch?
         </h3>
         <p className="mx-auto mt-2 max-w-md text-sm sm:text-base font-medium text-fest-deep">
-          Choose your sports quota (2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor) and secure your official digital pass.
+          Choose any 1, 2, or 3 sports, in any indoor/outdoor combination, and secure your official digital pass. Bhavnagar branch students have no sports-selection limit.
         </p>
 
         <div className="mt-5 flex flex-wrap items-center justify-center gap-3">

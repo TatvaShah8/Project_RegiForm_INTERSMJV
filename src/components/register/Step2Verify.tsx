@@ -158,6 +158,11 @@ export function Step2Verify({
       if (!s.firstName?.trim() || !s.surname?.trim() || !s.grNo?.trim() || !s.gender) {
         throw new Error("Your identity details from Step 1 are missing. Please click '← Back to Step 1' and confirm your details.");
       }
+      if (s.password) {
+        const credentials = await registerWithEmailPassword(s.email, s.password);
+        if (!credentials.ok) throw new Error(credentials.error || "Could not save your sign-in password");
+        s.set("password", "");
+      }
       await registrationRequest("signup", "POST", {
         firstName: s.firstName,
         middleName: s.middleName,

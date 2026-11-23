@@ -73,7 +73,7 @@ export function RulesView({
             </span>
           </div>
           <span className="rounded-full border border-fest-orange/40 bg-white/70 px-3 py-1 font-mono text-[11px] font-bold tracking-wider text-fest-deep shadow-sm backdrop-blur-md">
-            EXACTLY 3 SPORTS
+            {gender === "girls" ? "1–3 SPORTS · BHAVNAGAR EXEMPT" : "EXACTLY 3 SPORTS"}
           </span>
         </div>
         <p className="mt-4 text-base font-medium leading-relaxed text-fest-deep md:text-lg">
@@ -81,13 +81,13 @@ export function RulesView({
         </p>
         <div className="mt-4 flex flex-wrap gap-2 text-xs font-mono text-fest-label">
           <span className="rounded-lg border border-white/80 bg-white/60 px-3 py-1.5 shadow-sm">
-            Option A: 2 Outdoor + 1 Indoor
+            {gender === "girls" ? "All outdoor, all indoor, or mixed" : "Option A: 2 Outdoor + 1 Indoor"}
           </span>
           <span className="rounded-lg border border-white/80 bg-white/60 px-3 py-1.5 shadow-sm">
-            Option B: 1 Outdoor + 2 Indoor
+            {gender === "girls" ? "Choose any 1, 2, or 3 sports" : "Option B: 1 Outdoor + 2 Indoor"}
           </span>
           <span className="rounded-lg border border-white/80 bg-white/60 px-3 py-1.5 text-fest-alert shadow-sm">
-            Maximum 2 sports in any single category
+            {gender === "girls" ? "Bhavnagar branch: no selection limit" : "Maximum 2 sports in any single category"}
           </span>
         </div>
       </motion.div>

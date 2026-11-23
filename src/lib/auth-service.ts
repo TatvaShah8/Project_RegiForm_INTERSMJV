@@ -4,6 +4,9 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   signOut,
+  EmailAuthProvider,
+  linkWithCredential,
+  sendPasswordResetEmail,
   User,
 } from "firebase/auth";
 import { auth, googleProvider, isFirebaseConfigured } from "./firebase";
@@ -75,26 +78,26 @@ export async function registerWithEmailPassword(
   try {
     const trimmedEmail = email.trim().toLowerCase();
     
-    // Check if the current user session is already this email
-    const current = auth.currentUser;
-    if (current && current.email?.trim().toLowerCase() === trimmedEmail) {
-      try {
-        await current.reload();
-        if (current.emailVerified) {
-          return { ok: true, user: current, email: current.email };
-        }
-        await sendEmailVerification(current);
-        return { ok: true, user: current, email: current.email };
-      } catch (err: any) {
-        // If reloading fails, continue with credentials below
-      }
-    }
-
     if (!pass || pass.length < 8) return { ok: false, error: "Password must be at least 8 characters long. If you refreshed the page, please go back to Step 1 to re-enter your password." };
     if (!/[a-z]/.test(pass)) return { ok: false, error: "Password must include at least one lowercase letter (a-z)." };
     if (!/[A-Z]/.test(pass)) return { ok: false, error: "Password must include at least one uppercase letter (A-Z)." };
     if (!/\d/.test(pass)) return { ok: false, error: "Password must include at least one number (0-9)." };
     if (!/[^a-zA-Z0-9]/.test(pass)) return { ok: false, error: "Password must include at least one special character (!@#...)." };
+
+    // A Google session does not create the password entered in the form.
+    // Link it to the same UID; never silently replace an existing password.
+    const current = auth.currentUser;
+    if (current && current.email?.trim().toLowerCase() === trimmedEmail) {
+      await current.reload();
+      if (!current.providerData.some(provider => provider.providerId === "password")) {
+        const linked = await linkWithCredential(current, EmailAuthProvider.credential(trimmedEmail, pass));
+        if (!linked.user.emailVerified) await sendEmailVerification(linked.user);
+        return { ok: true, user: linked.user, email: linked.user.email || trimmedEmail };
+      }
+      const signedIn = await signInWithEmailAndPassword(auth, trimmedEmail, pass);
+      if (!signedIn.user.emailVerified) await sendEmailVerification(signedIn.user);
+      return { ok: true, user: signedIn.user, email: signedIn.user.email || trimmedEmail };
+    }
 
     let cred;
     try {
@@ -148,7 +151,7 @@ export async function loginWithEmailPassword(
     };
   }
   try {
-    const cred = await signInWithEmailAndPassword(auth, email, pass);
+    const cred = await signInWithEmailAndPassword(auth, email.trim().toLowerCase(), pass);
     return {
       ok: true,
       user: cred.user,
@@ -158,7 +161,7 @@ export async function loginWithEmailPassword(
     console.error("Email login error:", err);
     let msg = err.message || "Invalid email or password";
     if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
-      msg = "Invalid email or password. Please check your credentials.";
+      msg = "Unable to sign in with that email and password. If you registered using Google, use Google sign-in or reset your password.";
     }
     return { ok: false, error: msg };
   }
@@ -202,4 +205,18 @@ export async function logoutFirebase(): Promise<void> {
   try {
     if (auth) await signOut(auth);
   } catch {}
+}
+
+/** Send recovery mail without disclosing whether an account exists. */
+export async function resetAccountPassword(email: string): Promise<AuthResult> {
+  if (!isFirebaseConfigured || !auth) return { ok: false, error: "Sign-in is temporarily unavailable." };
+  try {
+    await sendPasswordResetEmail(auth, email.trim().toLowerCase());
+    return { ok: true };
+  } catch (error: any) {
+    if (error?.code === "auth/user-not-found") return { ok: true };
+    return { ok: false, error: error?.code === "auth/invalid-email"
+      ? "Enter a valid email address."
+      : "Could not request a password reset. Please try again later." };
+  }
 }

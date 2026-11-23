@@ -285,3 +285,52 @@ test('authentication checks revocation and rejects an unverified email or non-ad
   verified = true;
   await assert.rejects(authenticatedAdmin(request), /FORBIDDEN/);
 });
+
+function authService(currentUser, sdk = {}) {
+  return load('src/lib/auth-service.ts', {
+    './firebase': { auth: { currentUser }, googleProvider: {}, isFirebaseConfigured: true },
+    'firebase/auth': sdk,
+  });
+}
+
+test('Google registration links the entered password to the existing UID', async () => {
+  const user = { uid: 'same-user', email: 'student@example.com', emailVerified: true, providerData: [{ providerId: 'google.com' }], reload: async () => {} };
+  let linked;
+  const service = authService(user, {
+    EmailAuthProvider: { credential: (email, password) => ({ email, password }) },
+    linkWithCredential: async (account, credential) => { assert.equal(account, user); linked = credential; return { user }; },
+  });
+  const result = await service.registerWithEmailPassword(' Student@Example.com ', 'StrongPass1!');
+  assert.equal(result.ok, true);
+  assert.equal(result.user.uid, 'same-user');
+  assert.deepEqual(linked, { email: 'student@example.com', password: 'StrongPass1!' });
+});
+
+test('existing password sessions cannot silently accept a different form password', async () => {
+  const user = { email: 'student@example.com', emailVerified: true, providerData: [{ providerId: 'password' }], reload: async () => {} };
+  const service = authService(user, { signInWithEmailAndPassword: async () => { throw { code: 'auth/invalid-credential' }; } });
+  assert.equal((await service.registerWithEmailPassword(user.email, 'DifferentPass1!')).ok, false);
+});
+
+test('failed password linking does not report registration success', async () => {
+  const user = { email: 'student@example.com', emailVerified: true, providerData: [], reload: async () => {} };
+  const service = authService(user, {
+    EmailAuthProvider: { credential: () => ({}) },
+    linkWithCredential: async () => { throw { code: 'auth/requires-recent-login' }; },
+  });
+  assert.equal((await service.registerWithEmailPassword(user.email, 'StrongPass1!')).ok, false);
+});
+
+test('login normalizes email while preserving the password exactly', async () => {
+  let sent;
+  const service = authService(null, { signInWithEmailAndPassword: async (_, email, password) => { sent = { email, password }; return { user: { email } }; } });
+  assert.equal((await service.loginWithEmailPassword(' Student@Example.com ', ' password ')).ok, true);
+  assert.deepEqual(sent, { email: 'student@example.com', password: ' password ' });
+});
+
+test('password reset normalizes email and does not disclose missing accounts', async () => {
+  let email;
+  const service = authService(null, { sendPasswordResetEmail: async (_, value) => { email = value; throw { code: 'auth/user-not-found' }; } });
+  assert.equal((await service.resetAccountPassword(' Student@Example.com ')).ok, true);
+  assert.equal(email, 'student@example.com');
+});
