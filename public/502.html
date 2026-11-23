@@ -337,6 +337,9 @@
     </div>
 
     <script>
+        // Set your custom audio URL here (e.g. "https://example.com/sound.mp3" or "/sounds/funny.mp3")
+        const CUSTOM_AUDIO_URL = "";
+
         // Web Audio API Synthesizer - Plays funny multi-tone cartoon sound without any external MP3!
         function playFunnyCartoonSound() {
             try {
@@ -379,7 +382,26 @@
                 osc2.start(t2);
                 osc2.stop(t2 + 0.32);
             } catch (err) {
-                console.log("Audio play allowed after click:", err);
+                console.log("Audio play error:", err);
+            }
+        }
+
+        function playSound() {
+            if (CUSTOM_AUDIO_URL && CUSTOM_AUDIO_URL.trim() !== "") {
+                try {
+                    const audio = new Audio(CUSTOM_AUDIO_URL);
+                    const playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(() => {
+                            // Fallback to synthesizer if audio link fails or network is blocked
+                            playFunnyCartoonSound();
+                        });
+                    }
+                } catch {
+                    playFunnyCartoonSound();
+                }
+            } else {
+                playFunnyCartoonSound();
             }
         }
 
@@ -389,8 +411,8 @@
             if (isConnecting) return;
             isConnecting = true;
 
-            // 1. Play funny synthesized cartoon sound instantly!
-            playFunnyCartoonSound();
+            // 1. Play sound
+            playSound();
 
             // 2. Show funny feedback text
             const btnText = document.getElementById("btn-text");
@@ -398,10 +420,10 @@
             if (btnText) btnText.textContent = "Checking Server Status... 📡";
             if (toast) toast.style.display = "block";
 
-            // 3. After sound plays (~700ms), attempt page reload to check if server is back up!
+            // 3. After sound plays (~900ms), attempt page reload to check if server is back up!
             setTimeout(() => {
                 window.location.reload();
-            }, 750);
+            }, 900);
         }
 
         // Auto reload timer
