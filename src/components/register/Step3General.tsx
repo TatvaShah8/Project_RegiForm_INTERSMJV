@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { Camera, X, RefreshCw, Shirt, Ruler } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -94,7 +95,23 @@ export function Step3General({
   const [cameraStream, setCameraStream] = React.useState<MediaStream | null>(null);
   const [cameraLoading, setCameraLoading] = React.useState(false);
   const [cameraReady, setCameraReady] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
   const nativeCameraInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock background scroll when camera modal is active
+  React.useEffect(() => {
+    if (cameraOpen) {
+      const origOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = origOverflow;
+      };
+    }
+  }, [cameraOpen]);
 
   const startStream = async (mode: "user" | "environment") => {
     setCameraLoading(true);
@@ -988,10 +1005,10 @@ export function Step3General({
         </CTAButton>
       </motion.div>
 
-      {/* ── Live Camera Modal ── */}
-      {cameraOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
-          <div className="w-full max-w-sm overflow-hidden rounded-3xl border border-white/80 bg-white/95 p-5 shadow-2xl backdrop-blur-2xl">
+      {/* ── Live Camera Modal (Portaled to document.body so it is 100% viewport-fixed and escapes Framer Motion transform/filter traps) ── */}
+      {mounted && cameraOpen && typeof document !== "undefined" && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/85 p-4">
+          <div className="w-full max-w-sm max-h-[92dvh] overflow-y-auto rounded-3xl border border-white/80 bg-white p-5 shadow-2xl">
             <div className="flex items-center justify-between border-b border-fest-border/60 pb-3">
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-fest-orange/15 font-mono text-xs font-bold text-fest-orange">
@@ -1091,7 +1108,8 @@ export function Step3General({
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* ── Apparel Size Modal for Cultural Team ── */}
