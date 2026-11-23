@@ -91,12 +91,19 @@ export function Step3General({
   const [facingMode, setFacingMode] = React.useState<"user" | "environment">("user");
   const videoRef = React.useRef<HTMLVideoElement | null>(null);
   const streamRef = React.useRef<MediaStream | null>(null);
+  const [cameraStream, setCameraStream] = React.useState<MediaStream | null>(null);
+  const [cameraLoading, setCameraLoading] = React.useState(false);
+  const [cameraReady, setCameraReady] = React.useState(false);
+  const nativeCameraInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const startStream = async (mode: "user" | "environment") => {
+    setCameraLoading(true);
+    setCameraReady(false);
     try {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
+        setCameraStream(null);
       }
       if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
         toast({
@@ -105,21 +112,42 @@ export function Step3General({
           variant: "destructive",
         });
         setCameraOpen(false);
+        setCameraLoading(false);
         return;
       }
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: mode,
-          width: { ideal: 640 },
-          height: { ideal: 640 },
-        },
-        audio: false,
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play().catch(() => {});
+
+      let stream: MediaStream | null = null;
+
+      // Strategy 1: Ideal 720p with facingMode (supported natively by iOS & Android camera HAL)
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: mode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+          },
+          audio: false,
+        });
+      } catch {
+        // Strategy 2: Simple facingMode constraint
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: mode },
+            audio: false,
+          });
+        } catch {
+          // Strategy 3: Any video track
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+        }
       }
+
+      if (!stream) throw new Error("Could not initialize camera stream");
+
+      streamRef.current = stream;
+      setCameraStream(stream);
     } catch (err: any) {
       console.error("Camera error:", err);
       toast({
@@ -128,6 +156,8 @@ export function Step3General({
         variant: "destructive",
       });
       setCameraOpen(false);
+    } finally {
+      setCameraLoading(false);
     }
   };
 
@@ -141,6 +171,9 @@ export function Step3General({
       streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
+    setCameraStream(null);
+    setCameraReady(false);
+    setCameraLoading(false);
     setCameraOpen(false);
   }, []);
 
@@ -198,11 +231,32 @@ export function Step3General({
   };
 
   React.useEffect(() => {
-    if (cameraOpen && videoRef.current && streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-      videoRef.current.play().catch(() => {});
-    }
-  }, [cameraOpen]);
+    const video = videoRef.current;
+    if (!cameraOpen || !video || !cameraStream) return;
+
+    video.srcObject = cameraStream;
+    video.muted = true;
+    video.setAttribute("playsinline", "true");
+    video.setAttribute("webkit-playsinline", "true");
+
+    const markReadyAndPlay = () => {
+      setCameraReady(true);
+      video.play().catch((err) => {
+        console.warn("Video play interrupted/denied:", err);
+      });
+    };
+
+    video.addEventListener("loadedmetadata", markReadyAndPlay);
+    video.addEventListener("canplay", markReadyAndPlay);
+
+    // Initial play attempt
+    video.play().catch(() => {});
+
+    return () => {
+      video.removeEventListener("loadedmetadata", markReadyAndPlay);
+      video.removeEventListener("canplay", markReadyAndPlay);
+    };
+  }, [cameraOpen, cameraStream]);
 
   React.useEffect(() => {
     return () => {
@@ -382,7 +436,7 @@ export function Step3General({
                 📁 Choose File
                 <input
                   type="file"
-                  accept=".jpg,.jpeg,.png"
+                  accept="image/*,.jpg,.jpeg,.png"
                   className="hidden"
                   onChange={(e) => onPhoto(e.target.files?.[0])}
                 />
@@ -956,12 +1010,20 @@ export function Step3General({
               </button>
             </div>
 
-            <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-2xl bg-black shadow-inner">
+            <div className="relative mt-4 aspect-square w-full overflow-hidden rounded-2xl bg-black shadow-inner flex items-center justify-center">
+              {(!cameraReady || cameraLoading) && (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-black/85 text-white">
+                  <RefreshCw className="h-7 w-7 animate-spin text-fest-orange" />
+                  <span className="font-mono text-xs text-fest-label">Starting camera feed…</span>
+                </div>
+              )}
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
+                onLoadedMetadata={() => setCameraReady(true)}
+                onCanPlay={() => setCameraReady(true)}
                 className="h-full w-full object-cover"
                 style={{ transform: facingMode === "user" ? "scaleX(-1)" : "none" }}
               />
@@ -988,10 +1050,11 @@ export function Step3General({
               <button
                 type="button"
                 onClick={capturePhoto}
-                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange py-2.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95"
+                disabled={!cameraReady || compressingPhoto}
+                className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange py-2.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md shadow-fest-orange/30 transition hover:brightness-110 active:scale-95 disabled:opacity-50"
               >
                 <Camera className="h-4 w-4" />
-                Capture Photo
+                {compressingPhoto ? "Saving…" : !cameraReady ? "Starting…" : "Capture Photo"}
               </button>
 
               <button
@@ -1001,6 +1064,31 @@ export function Step3General({
               >
                 Cancel
               </button>
+            </div>
+
+            {/* Direct Device Camera / File Option */}
+            <div className="mt-3 border-t border-fest-border/60 pt-2.5 text-center">
+              <button
+                type="button"
+                onClick={() => nativeCameraInputRef.current?.click()}
+                className="font-mono text-xs text-fest-orange underline underline-offset-2 hover:text-fest-deep transition"
+              >
+                📱 Or open device camera directly
+              </button>
+              <input
+                ref={nativeCameraInputRef}
+                type="file"
+                accept="image/*"
+                capture="user"
+                className="hidden"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) {
+                    stopCamera();
+                    onPhoto(file);
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
