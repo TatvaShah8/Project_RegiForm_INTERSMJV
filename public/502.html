@@ -324,7 +324,7 @@
         </button>
 
         <div id="sound-toast">
-            🎵 *BONK!* Server says: "Still on chapter 1, give us a minute!"... Connecting...
+            🎵 *FAAAAH!* Server scream detected! Reconnecting to check if developers finished studying...
         </div>
 
         <p class="timer-notice">
@@ -337,8 +337,8 @@
     </div>
 
     <script>
-        // Set your custom audio URL here (e.g. "https://example.com/sound.mp3" or "/sounds/funny.mp3")
-        const CUSTOM_AUDIO_URL = "";
+        // Custom audio URL: local server-hosted mp3 (zero lag, offline ready)
+        const CUSTOM_AUDIO_URL = "/faaaa.mp3";
 
         // Web Audio API Synthesizer - Plays funny multi-tone cartoon sound without any external MP3!
         function playFunnyCartoonSound() {
@@ -420,10 +420,10 @@
             if (btnText) btnText.textContent = "Checking Server Status... 📡";
             if (toast) toast.style.display = "block";
 
-            // 3. After sound plays (~900ms), attempt page reload to check if server is back up!
+            // 3. After sound plays (~1.8s), attempt page reload to check if server is back up!
             setTimeout(() => {
                 window.location.reload();
-            }, 900);
+            }, 1800);
         }
 
         // Auto reload timer
