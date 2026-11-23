@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>502 • Shanti Thi Bess | SMJV Youth Festival 2026</title>
+    <title>502 • Claude Credits Khali, Tech Team Vanchva Bethi! | SMJV Youth Festival</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,57 +13,70 @@
 
         body {
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: radial-gradient(circle at 50% 20%, #1e1b4b 0%, #0f172a 60%, #020617 100%);
+            background: radial-gradient(circle at 50% 15%, #2e1065 0%, #0f172a 55%, #020617 100%);
             color: #f8fafc;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1.5rem;
+            padding: 1.25rem;
             overflow-x: hidden;
         }
 
-        .container {
-            max-width: 520px;
+        .card {
+            max-width: 540px;
             width: 100%;
-            background: rgba(30, 41, 59, 0.75);
-            border: 1px solid rgba(245, 158, 11, 0.35);
-            border-radius: 1.75rem;
-            padding: 2.5rem 2rem;
+            background: rgba(30, 41, 59, 0.85);
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            border-radius: 2rem;
+            padding: 2.25rem 1.75rem;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(24px);
             position: relative;
         }
 
-        /* Ambient glowing pill */
         .ambient-glow {
             position: absolute;
-            top: -20px;
+            top: -25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 180px;
-            height: 40px;
-            background: linear-gradient(90deg, #f59e0b, #ea580c);
+            width: 220px;
+            height: 45px;
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6);
             filter: blur(35px);
-            opacity: 0.45;
+            opacity: 0.55;
             pointer-events: none;
+        }
+
+        .badge-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.4);
+            gap: 0.4rem;
+            background: rgba(239, 68, 68, 0.18);
+            border: 1px solid rgba(239, 68, 68, 0.5);
             color: #fca5a5;
-            font-size: 0.75rem;
-            font-weight: 700;
+            font-size: 0.72rem;
+            font-weight: 800;
             letter-spacing: 0.08em;
             text-transform: uppercase;
-            padding: 0.35rem 0.85rem;
+            padding: 0.35rem 0.8rem;
             border-radius: 9999px;
-            margin-bottom: 1.25rem;
+        }
+
+        .badge-exam {
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid rgba(168, 85, 247, 0.5);
+            color: #d8b4fe;
         }
 
         .badge-dot {
@@ -72,182 +85,338 @@
             background-color: #ef4444;
             border-radius: 50%;
             box-shadow: 0 0 8px #ef4444;
-            animation: pulse 1.5s infinite;
+            animation: pulse 1.2s infinite;
         }
 
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(0.85); }
+            50% { opacity: 0.3; transform: scale(0.85); }
         }
 
-        .emoji-avatar {
-            font-size: 4rem;
+        .emoji-cluster {
+            font-size: 3.5rem;
             line-height: 1;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             display: inline-block;
-            animation: float 2.5s ease-in-out infinite alternate;
+            animation: bounce 2s infinite ease-in-out alternate;
+            user-select: none;
         }
 
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(-3deg); }
-            100% { transform: translateY(-10px) rotate(3deg); }
+        @keyframes bounce {
+            0% { transform: translateY(0px) rotate(-4deg); }
+            100% { transform: translateY(-8px) rotate(4deg); }
         }
 
-        .speech-bubble {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(234, 88, 12, 0.12));
-            border: 1px dashed rgba(245, 158, 11, 0.5);
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: #f8fafc;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-red {
+            color: #f87171;
+            text-decoration: underline wavy #ef4444 2px;
+        }
+
+        .highlight-yellow {
+            color: #fbbf24;
+        }
+
+        /* Funny Meme speech bubble */
+        .speech-box {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(168, 85, 247, 0.12));
+            border: 1.5px dashed rgba(245, 158, 11, 0.6);
             border-radius: 1.25rem;
             padding: 1.15rem 1.25rem;
-            margin-bottom: 1.5rem;
+            margin: 1.25rem 0;
+            text-align: left;
             position: relative;
         }
 
-        .punchline {
-            font-size: 1.35rem;
-            font-weight: 900;
-            color: #fbbf24;
-            line-height: 1.4;
-            letter-spacing: 0.02em;
+        .speech-title {
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #f59e0b;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .sub-punchline {
-            margin-top: 0.45rem;
-            font-size: 0.95rem;
-            font-weight: 600;
+        .speech-quote {
+            font-size: 1.05rem;
+            font-weight: 700;
             color: #fef08a;
             line-height: 1.5;
+            margin-bottom: 0.6rem;
         }
 
-        /* Dev log ticker */
-        .dev-terminal {
+        .speech-body {
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.55;
+        }
+
+        /* Status grid */
+        .status-grid {
             background: #020617;
             border: 1px solid #1e293b;
-            border-radius: 0.85rem;
-            padding: 0.85rem 1rem;
-            text-align: left;
-            font-family: "Courier New", Courier, monospace;
-            font-size: 0.8rem;
-            color: #94a3b8;
+            border-radius: 1rem;
+            padding: 1rem;
             margin-bottom: 1.5rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.78rem;
+            text-align: left;
             line-height: 1.6;
         }
 
-        .terminal-row {
+        .status-row {
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #0f172a;
+            padding: 0.35rem 0;
         }
 
-        .text-green { color: #4ade80; }
-        .text-yellow { color: #facc15; }
-        .text-orange { color: #fb923c; }
-        .text-red { color: #f87171; }
+        .status-row:last-child {
+            border-bottom: none;
+        }
 
-        .btn {
+        .label { color: #94a3b8; }
+        .val-red { color: #f87171; font-weight: 700; }
+        .val-purple { color: #c084fc; font-weight: 700; }
+        .val-yellow { color: #fde047; font-weight: 700; }
+        .val-green { color: #4ade80; font-weight: 700; }
+
+        /* Sound retry button */
+        .btn-retry {
+            width: 100%;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
+            gap: 0.65rem;
             background: linear-gradient(90deg, #f59e0b, #ea580c);
             color: #0f172a;
-            font-size: 1rem;
-            font-weight: 800;
+            font-size: 1.05rem;
+            font-weight: 900;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            padding: 0.9rem 1.5rem;
-            border-radius: 0.85rem;
+            padding: 1rem 1.5rem;
+            border-radius: 1rem;
             cursor: pointer;
             border: none;
-            box-shadow: 0 10px 20px -5px rgba(234, 88, 12, 0.4);
-            transition: all 0.2s ease;
+            box-shadow: 0 10px 25px -5px rgba(234, 88, 12, 0.45);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
         }
 
-        .btn:hover {
-            filter: brightness(1.1);
+        .btn-retry:hover {
+            filter: brightness(1.12);
             transform: scale(1.02);
+            box-shadow: 0 15px 30px -5px rgba(234, 88, 12, 0.6);
         }
 
-        .btn:active {
-            transform: scale(0.98);
+        .btn-retry:active {
+            transform: scale(0.97);
         }
 
-        .auto-refresh-text {
+        .sound-icon {
+            display: inline-block;
+            animation: wiggle 0.6s infinite alternate ease-in-out;
+        }
+
+        @keyframes wiggle {
+            0% { transform: rotate(-10deg); }
+            100% { transform: rotate(10deg); }
+        }
+
+        .timer-notice {
             margin-top: 1rem;
             font-size: 0.8rem;
             color: #64748b;
             font-family: monospace;
         }
 
-        .footer-note {
+        .footer {
             margin-top: 1.25rem;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #475569;
+            letter-spacing: 0.08em;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
+        }
+
+        /* Sound effect toast indicator */
+        #sound-toast {
+            display: none;
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #facc15;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="card">
         <div class="ambient-glow"></div>
 
-        <div class="badge">
-            <span class="badge-dot"></span>
-            <span>Error 502 • Server Undh-ma Che</span>
+        <div class="badge-bar">
+            <span class="badge">
+                <span class="badge-dot"></span>
+                Error 502 • Bad Gateway
+            </span>
+            <span class="badge badge-exam">
+                📚 Exam Season Active
+            </span>
         </div>
 
-        <div class="emoji-avatar">😴💤</div>
+        <div class="emoji-cluster">💸📚💻😭</div>
 
-        <div class="speech-bubble">
-            <p class="punchline">
-                "Re ne re ne... haggan nikdi jai che su?!"
+        <h1>
+            SERVER DOWN CHE! <br>
+            <span class="highlight-red">CLAUDE CREDITS PATI GAYA</span> 
+        </h1>
+
+        <div class="speech-box">
+            <div class="speech-title">
+                <span>📢</span>
+                <span>Official Tech Team Update (Gharethi Fatkar)</span>
+            </div>
+            <p class="speech-quote">
+                "Anthropic / Claude Code nu card swipe thavani na paadi didhi... Balance: $0.00!"
             </p>
-            <p class="sub-punchline">
-                Shanti thi bess! Hamna server down che, thodi var ma ubho thase! 🛠️☕
+            <p class="speech-body">
+                Upar thi Tech Team na Mummy-Pappa e dhobi-pachhad aapi ne direct chetavni aapi didhi che: 
+                <strong>'Aava festival na coding bandh karo ne Semester Exam ma dhyan aapo! Ek mark pan ochho aavyo toh laptop japt!'</strong> 
+                <br><br>
+                Toh haal ma amara badha developers Next.js chhodine textbook ghot-ta che! Shanti thi bes, exam pati gaya pachi server ubho thase! 🧘‍♂️
             </p>
         </div>
 
-        <div class="dev-terminal">
-            <div class="terminal-row">
-                <span>[SERVER_STATUS]:</span>
-                <span class="text-red">Offline / Taking a Nap 🛌</span>
+        <div class="status-grid">
+            <div class="status-row">
+                <span class="label">💳 Claude Code Credits:</span>
+                <span class="val-red">$0.00 (Kangaal Mode)</span>
             </div>
-            <div class="terminal-row">
-                <span>[DEVELOPER_MODE]:</span>
-                <span class="text-yellow">Chai Pive Che & Fixing ☕</span>
+            <div class="status-row">
+                <span class="label">👨‍👩‍👦 Parents Nu Farman:</span>
+                <span class="val-purple">"Pehla Exam, Pachi Coding!"</span>
             </div>
-            <div class="terminal-row">
-                <span>[USER_ADVICE]:</span>
-                <span class="text-green">Refresh Marvanu Bandh Rakh 😄</span>
+            <div class="status-row">
+                <span class="label">📖 Developer Status:</span>
+                <span class="val-yellow">Chopdi Kholine Ratto Mare Che 🧠</span>
+            </div>
+            <div class="status-row">
+                <span class="label">🛠️ Server Recovery ETA:</span>
+                <span class="val-green">Exam ma Pass Thaya Pachi 🤞</span>
             </div>
         </div>
 
-        <button class="btn" onclick="checkServer()">
-            Farithi Try Kar (Retry) 🔄
+        <button class="btn-retry" id="retry-btn" onclick="handleRetryWithSound()">
+            <span class="sound-icon">🔊</span>
+            <span id="btn-text">Farithi Connect Karva Matho (Retry) 🔄</span>
         </button>
 
-        <p class="auto-refresh-text">
-            Auto-checking server in <span id="timer" class="text-orange">15</span>s...
+        <div id="sound-toast">
+            🎵 *BONK!* Server bolyu: "Haji to book kholi che, thodi vaar shanti rakh!"... Connecting...
+        </div>
+
+        <p class="timer-notice">
+            Auto-checking server in <span id="timer" style="color: #f59e0b; font-weight: bold;">20</span>s...
         </p>
 
-        <p class="footer-note">
+        <p class="footer">
             SMJV YOUTH FESTIVAL 2026 • ORGANIZING COMMITTEE VADODARA
         </p>
     </div>
 
     <script>
-        let timeLeft = 15;
-        const timerEl = document.getElementById("timer");
+        // Web Audio API Synthesizer - Plays funny multi-tone cartoon sound without any external MP3!
+        function playFunnyCartoonSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
 
-        function checkServer() {
-            window.location.reload();
+                // Note 1: Boing / Spring sound
+                const osc1 = ctx.createOscillator();
+                const gain1 = ctx.createGain();
+                osc1.type = "sine";
+                
+                const t = ctx.currentTime;
+                osc1.frequency.setValueAtTime(150, t);
+                osc1.frequency.exponentialRampToValueAtTime(750, t + 0.12);
+                osc1.frequency.exponentialRampToValueAtTime(120, t + 0.35);
+
+                gain1.gain.setValueAtTime(0.4, t);
+                gain1.gain.exponentialRampToValueAtTime(0.01, t + 0.38);
+
+                osc1.connect(gain1);
+                gain1.connect(ctx.destination);
+                osc1.start(t);
+                osc1.stop(t + 0.38);
+
+                // Note 2: Funny clown horn / Wah-Wah second tone
+                const osc2 = ctx.createOscillator();
+                const gain2 = ctx.createGain();
+                osc2.type = "triangle";
+
+                const t2 = t + 0.22;
+                osc2.frequency.setValueAtTime(320, t2);
+                osc2.frequency.exponentialRampToValueAtTime(160, t2 + 0.3);
+
+                gain2.gain.setValueAtTime(0.35, t2);
+                gain2.gain.exponentialRampToValueAtTime(0.01, t2 + 0.32);
+
+                osc2.connect(gain2);
+                gain2.connect(ctx.destination);
+                osc2.start(t2);
+                osc2.stop(t2 + 0.32);
+            } catch (err) {
+                console.log("Audio play allowed after click:", err);
+            }
         }
+
+        let isConnecting = false;
+
+        function handleRetryWithSound() {
+            if (isConnecting) return;
+            isConnecting = true;
+
+            // 1. Play funny synthesized cartoon sound instantly!
+            playFunnyCartoonSound();
+
+            // 2. Show funny feedback text
+            const btnText = document.getElementById("btn-text");
+            const toast = document.getElementById("sound-toast");
+            if (btnText) btnText.textContent = "Connecting to Server... 📡";
+            if (toast) toast.style.display = "block";
+
+            // 3. After sound plays (~700ms), attempt page reload to check if server is back up!
+            setTimeout(() => {
+                window.location.reload();
+            }, 750);
+        }
+
+        // Auto reload timer
+        let timeLeft = 20;
+        const timerEl = document.getElementById("timer");
 
         setInterval(() => {
             timeLeft--;
             if (timeLeft <= 0) {
-                checkServer();
+                window.location.reload();
             } else {
                 if (timerEl) timerEl.textContent = timeLeft;
             }
