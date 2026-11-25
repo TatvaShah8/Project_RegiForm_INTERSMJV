@@ -6,9 +6,8 @@ const cache = globalThis as typeof globalThis & {
   smjvIndexes?: Promise<unknown>;
 };
 
-export async function database() {
+export async function mongoClient() {
   const uri = process.env.MONGODB_URI;
-  const name = process.env.MONGODB_DB || "intersmjv";
   if (!uri) {
     throw new Error(
       "MONGODB_URI environment variable is missing. Please add it to your Vercel Project Settings > Environment Variables."
@@ -25,7 +24,11 @@ export async function database() {
       throw error;
     });
   }
-  return (await cache.smjvMongo).db(name);
+  return await cache.smjvMongo;
+}
+
+export async function database() {
+  return (await mongoClient()).db(process.env.MONGODB_DB || "intersmjv");
 }
 
 export async function registrations() {

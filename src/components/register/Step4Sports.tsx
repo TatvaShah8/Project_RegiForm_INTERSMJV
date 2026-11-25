@@ -141,6 +141,14 @@ export function Step4Sports({
         />
       </motion.div>
 
+      {(s.role === "cultural" || s.alsoParticipatesInCultural) && (
+        <p className="mt-4 rounded-xl border border-fest-orange/30 bg-fest-orange/10 p-4 text-sm text-fest-deep">
+          {s.branch === "vadodara"
+            ? "Vadodara has no cultural participation limit."
+            : "Cultural participation is limited to 10 boys and 10 girls per branch, including sports participants who select Yes for cultural events. Places are confirmed when registration is completed. Vadodara is exempt."}
+        </p>
+      )}
+
       <motion.div variants={staggerChild} className="mt-5 grid gap-5 md:grid-cols-2">
         <Field
           label="OFFICIAL TOURNAMENT T-SHIRT / JERSEY SIZE"

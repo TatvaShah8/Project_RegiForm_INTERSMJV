@@ -583,6 +583,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
             )}
 
+{gender === "girls" && (<p className="mb-6 rounded-xl border border-fest-orange/30 bg-fest-orange/10 p-4 text-sm text-fest-deep">Previous team pairings are retained with updated timings (IST). Where individual timings are missing, the previous match timings apply. Additional Match 5 pairings and Carrom Match 5 timing remain unconfirmed because they were not in the previous draw.</p>)}
             {/* day selector */}
 
             <div className="sticky top-[57px] z-30 mb-8 flex justify-center md:top-[65px]">

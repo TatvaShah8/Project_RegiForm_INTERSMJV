@@ -334,3 +334,85 @@ test('password reset normalizes email and does not disclose missing accounts', a
   assert.equal((await service.resetAccountPassword(' Student@Example.com ')).ok, true);
   assert.equal(email, 'student@example.com');
 });
+
+test("cultural quota counts both routes together and separates branch/gender", async () => {
+  const rows = Array.from({ length: 9 }, (_, i) => ({ branch: "pune", gender: "MALE", registrationStatus: "completed", role: i < 5 ? "cultural" : "sports", alsoParticipatesInCultural: i >= 5 }));
+  let lockWrites = 0;
+  const session = { withTransaction: async fn => fn(), endSession: async () => {} };
+  const quota = load("src/lib/cultural-quota.ts", { "@/lib/mongodb": {
+    database: async () => ({ collection: () => ({ updateOne: async (filter, update, options) => { if (update.$inc) { assert.equal(options.session, session); lockWrites++; } } }) }),
+    mongoClient: async () => ({ startSession: () => session }),
+  }});
+  const collection = {
+    countDocuments: async (query, options) => {
+      assert.equal(options.session, session);
+      assert.deepEqual(query.$or, [{ role: "cultural" }, { role: "sports", alsoParticipatesInCultural: true }]);
+      return rows.filter(r => r.branch === query.branch && r.gender === query.gender && r.registrationStatus === query.registrationStatus && (r.role === "cultural" || (r.role === "sports" && r.alsoParticipatesInCultural))).length;
+    },
+    updateOne: async (filter, update, options) => {
+      assert.equal(options?.session, session);
+      rows.push({ branch: current.branch, gender: current.gender, registrationStatus: "completed", ...update.$set });
+      return { matchedCount: 1 };
+    },
+  };
+  let current = { firebaseUid: "new", branch: "pune", gender: "MALE", updatedAt: new Date() };
+  await quota.completeRegistration(collection, current, { role: "sports", alsoParticipatesInCultural: true });
+  await assert.rejects(quota.completeRegistration(collection, current, { role: "cultural" }), /CULTURAL_QUOTA_FULL/);
+  current = { ...current, gender: "FEMALE" };
+  await quota.completeRegistration(collection, current, { role: "cultural" });
+  current = { ...current, branch: "ahmedabad", gender: "MALE" };
+  await quota.completeRegistration(collection, current, { role: "cultural" });
+  assert.equal(lockWrites, 4);
+});
+
+test("Vadodara and sports-only registrations bypass cultural quota", async () => {
+  const quota = load("src/lib/cultural-quota.ts", { "@/lib/mongodb": {
+    database: async () => { throw new Error("quota must not run"); },
+  }});
+  const collection = { updateOne: async () => ({ matchedCount: 1 }) };
+  for (const fields of [{ role: "cultural" }, { role: "sports", alsoParticipatesInCultural: true }]) {
+    assert.equal((await quota.completeRegistration(collection, { branch: "vadodara" }, fields)).matchedCount, 1);
+  }
+  assert.equal((await quota.completeRegistration(collection, { branch: "pune" }, { role: "sports", alsoParticipatesInCultural: false })).matchedCount, 1);
+});
+
+test("full cultural quota returns conflict and cleans up uploaded portraits", async () => {
+  const f = finish({ countDocuments: async () => 10 });
+  f.record.branch = "pune";
+  // Load the handler with a controlled quota boundary to exercise its error response and cleanup.
+  const route = load("src/app/api/registration/finish/route.ts", {
+    "@/lib/firebase-admin": { authenticatedUser: async () => ({ uid: "uid1" }) },
+    "@/lib/mongodb": { registrations: async () => ({ findOne: async q => q.imagePaths || q.jerseyNumber !== undefined ? null : f.record }) },
+    "@/lib/cultural-quota": { completeRegistration: async () => { throw new Error("CULTURAL_QUOTA_FULL"); }, CULTURAL_FULL_MESSAGE: "Cultural registration is full" },
+    "@/lib/supabase": { imageStorage: () => ({ storage: { upload: async () => ({}), remove: async paths => { f.state.removed.push(...paths); return {}; } } }), imageUrls: async () => [] },
+  });
+  const photo = await sharp({ create: { width: 2, height: 2, channels: 3, background: "white" } }).jpeg().toBuffer();
+  const response = await route.POST(await request(photo, { alsoParticipatesInCultural: "true" }));
+  assert.equal(response.status, 409);
+  assert.match((await response.json()).error, /full/);
+  assert.equal(f.state.removed.length, 1);
+});
+
+test("girls schedule preserves the new PDF times and boys schedule is unchanged", () => {
+  const schedule = load("src/lib/schedule.ts");
+  const sport = (day, name) => schedule.GIRLS_SCHEDULE[day - 1].sports.find(s => s.name === name);
+  assert.deepEqual(sport(1, "BADMINTON").matches.map(m => m.time), ["12:00 PM – 1:00 PM", "12:00 PM – 1:00 PM", "1:00 PM – 2:00 PM", "1:00 PM – 2:00 PM"]);
+  assert.equal(sport(2, "TUG OF WAR").matches[0].time, "7:00 AM – 7:15 AM");
+  assert.equal(sport(2, "KHO-KHO").matches.at(-1).time, "12:00 PM – 1:00 PM");
+  assert.equal(sport(3, "PICKLE BALL").matches[0].time, "7:30 PM – 8:30 PM");
+  assert.equal(sport(3, "CARROM").matches[0].no, "6");
+  assert.equal(schedule.BOYS_SCHEDULE[0].sports[0].matches[0].time, "12.00 – 2.30");
+});
+
+
+test("girls retain every previous team pairing and bye with the revised times", () => {
+  const oldSource = require("node:child_process").execFileSync("git", ["show", "HEAD:src/lib/schedule.ts"], { encoding: "utf8" });
+  const previous = { exports: {} };
+  vm.runInNewContext(ts.transpileModule(oldSource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { exports: previous.exports });
+  const current = load("src/lib/schedule.ts");
+  for (const day of previous.exports.GIRLS_SCHEDULE) for (const sport of day.sports) {
+    const labels = current.GIRLS_SCHEDULE.flatMap(d => d.sports.filter(s => s.name === sport.name).flatMap(s => s.matches.flatMap(m => m.pairings.map(p => p.label))));
+    for (const match of sport.matches) for (const pairing of match.pairings) assert.ok(labels.includes(pairing.label), pairing.label);
+  }
+  assert.deepEqual(JSON.parse(JSON.stringify(current.GIRLS_BYES)), JSON.parse(JSON.stringify(previous.exports.GIRLS_BYES)));
+});

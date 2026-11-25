@@ -332,177 +332,167 @@ export const SCHEDULE: ScheduleDay[] = [
 
 export const BOYS_SCHEDULE = SCHEDULE;
 
+// Updated PDF timings with the existing draw retained. Additional Match 5 pairings await confirmation.
 export const GIRLS_SCHEDULE: ScheduleDay[] = [
   {
-    day: "DAY 1",
-    date: "24 DECEMBER",
-    label: "Opening Day",
+    day: "DAY 1", date: "24 DECEMBER", label: "Opening Day",
     sports: [
       {
-        name: "BADMINTON",
-        emoji: "🏸",
+        name: "BADMINTON", emoji: "🏸",
         matches: [
-          { no: "1", time: "12.00 – 1.00", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.pune) }] },
-          { no: "2", time: "1.00 – 2.00", pairings: [{ label: vs(TEAMS.ahmedabad, TEAMS.rebels) }] },
-          { no: "Semi 1", time: "2.00 – 3.00", pairings: [{ label: vs(TEAMS.vvn + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "3.00 – 4.00", pairings: [{ label: "Semi Final 2" }] },
+          { no: "1", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Victorious Vadodara VS Spirit of Pune" }] },
+          { no: "2", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Ahmedabad Attackers VS Surtified Rebels" }] },
+          { no: "3", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Valorious VVN (Bye) VS Winner M1" }] },
+          { no: "4", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Semi Final 2" }] },
         ],
       },
       {
-        name: "TABLE TENNIS",
-        emoji: "🏓",
+        name: "TABLE TENNIS", emoji: "🏓",
         matches: [
-          { no: "1", time: "12.00 – 1.00", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.ahmedabad) }] },
-          { no: "2", time: "1.00 – 2.00", pairings: [{ label: vs(TEAMS.vvn, TEAMS.rebels) }] },
-          { no: "Semi 1", time: "2.00 – 3.00", pairings: [{ label: vs(TEAMS.pune + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "3.00 – 4.00", pairings: [{ label: "Semi Final 2" }] },
+          { no: "1", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Victorious Vadodara VS Ahmedabad Attackers" }] },
+          { no: "2", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Valorious VVN VS Surtified Rebels" }] },
+          { no: "3", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Spirit of Pune (Bye) VS Winner M1" }] },
+          { no: "4", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Semi Final 2" }] },
         ],
       },
       {
-        name: "CRICKET",
-        emoji: "🏏",
+        name: "CRICKET", emoji: "🏏",
         matches: [
-          { no: "1", time: "4.00 – 5.00", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.vvn) }] },
-          { no: "2", time: "5.00 – 6.00", pairings: [{ label: vs(TEAMS.pune, TEAMS.ahmedabad) }] },
+          { no: "1", time: "3:00 PM – 4:00 PM", pairings: [{ label: "Victorious Vadodara VS Valorious VVN" }] },
+          { no: "2", time: "4:00 PM – 5:00 PM", pairings: [{ label: "Spirit of Pune VS Ahmedabad Attackers" }] },
+          { no: "3", time: "5:00 PM – 6:00 PM", pairings: [{ label: "Surtified Rebels (Bye) VS Winner M1" }] },
         ],
       },
       {
-        name: "CHESS",
-        emoji: "♟️",
+        name: "CHESS", emoji: "♟️",
         matches: [
-          { no: "1", time: "4.00 – 5.00", pairings: [{ label: vs(TEAMS.ahmedabad, TEAMS.vvn) }] },
-          { no: "2", time: "5.00 – 6.00", pairings: [{ label: vs(TEAMS.rebels, TEAMS.pune) }] },
-          { no: "Semi 1", time: "6.00 – 7.00", pairings: [{ label: vs(TEAMS.vadodara + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "7.00 – 8.00", pairings: [{ label: "Semi Final 2" }] },
+          { no: "1", time: "4:00 PM – 4:30 PM", pairings: [{ label: "Ahmedabad Attackers VS Valorious VVN" }] },
+          { no: "2", time: "4:30 PM – 5:00 PM", pairings: [{ label: "Surtified Rebels VS Spirit of Pune" }] },
+          { no: "3", time: "5:00 PM – 5:30 PM", pairings: [{ label: "Victorious Vadodara (Bye) VS Winner M1" }] },
+        ],
+      },
+      {
+        name: "PICKLE BALL", emoji: "🥎",
+        matches: [
+          { no: "1", time: "6:00 PM – 7:00 PM", pairings: [{ label: "Victorious Vadodara VS Surtified Rebels" }] },
+          { no: "2", time: "7:00 PM – 8:00 PM", pairings: [{ label: "Spirit of Pune VS Ahmedabad Attackers" }] },
+          { no: "3", time: "8:00 PM – 9:00 PM", pairings: [{ label: "Valorious VVN (Bye) VS Winner M1" }] },
         ],
       },
     ],
   },
   {
-    day: "DAY 2",
-    date: "25 DECEMBER",
-    label: "Semis & Knockouts",
+    day: "DAY 2", date: "25 DECEMBER", label: "Match Day",
     sports: [
       {
-        name: "TUG OF WAR",
-        emoji: "🪢",
+        name: "TUG OF WAR", emoji: "🪢",
         matches: [
-          { no: "1", time: "7.00 – 7.15", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.rebels) }] },
-          { no: "2", time: "7.15 – 7.30", pairings: [{ label: vs(TEAMS.pune, TEAMS.vvn) }] },
-          { no: "Semi 1", time: "7.30 – 7.45", pairings: [{ label: vs(TEAMS.ahmedabad + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "7.45 – 8.00", pairings: [{ label: "Semi Final 2" }] },
-          { no: "Final", time: "8.00 – 8.15", pairings: [{ label: "Grand Final" }] },
+          { no: "1", time: "7:00 AM – 7:15 AM", pairings: [{ label: "Victorious Vadodara VS Surtified Rebels" }] },
+          { no: "2", time: "7:15 AM – 7:30 AM", pairings: [{ label: "Spirit of Pune VS Valorious VVN" }] },
+          { no: "3", time: "7:30 AM – 7:45 AM", pairings: [{ label: "Ahmedabad Attackers (Bye) VS Winner M1" }] },
+          { no: "4", time: "7:45 AM – 8:00 AM", pairings: [{ label: "Semi Final 2" }] },
+          { no: "5", time: "Within 7:00 AM – 9:00 AM (additional match; individual time not provided)", pairings: [{ label: "Team pairing to be confirmed" }] },
+          { no: "6", time: "8:00 AM – 8:15 AM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "KHO-KHO",
-        emoji: "🏃",
+        name: "KHO-KHO", emoji: "🏃",
         matches: [
-          { no: "1", time: "8.00 – 9.00", pairings: [{ label: vs(TEAMS.rebels, TEAMS.ahmedabad) }] },
-          { no: "2", time: "9.00 – 10.00", pairings: [{ label: vs(TEAMS.pune, TEAMS.vvn) }] },
-          { no: "Semi 1", time: "10.00 – 11.00", pairings: [{ label: vs(TEAMS.vadodara + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "11.00 – 12.00", pairings: [{ label: "Semi Final 2" }] },
-          { no: "Final", time: "12.00 – 1.00", pairings: [{ label: "Grand Final" }] },
+          { no: "1", time: "8:00 AM – 9:00 AM", pairings: [{ label: "Surtified Rebels VS Ahmedabad Attackers" }] },
+          { no: "2", time: "9:00 AM – 10:00 AM", pairings: [{ label: "Spirit of Pune VS Valorious VVN" }] },
+          { no: "3", time: "10:00 AM – 11:00 AM", pairings: [{ label: "Victorious Vadodara (Bye) VS Winner M1" }] },
+          { no: "4", time: "11:00 AM – 12:00 PM", pairings: [{ label: "Semi Final 2" }] },
+          { no: "5", time: "Within 8:00 AM – 1:00 PM (additional match; individual time not provided)", pairings: [{ label: "Team pairing to be confirmed" }] },
+          { no: "6", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "THROW BALL",
-        emoji: "🏐",
+        name: "CHESS", emoji: "♟️",
         matches: [
-          { no: "1", time: "2.00 – 3.00", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.pune) }] },
-          { no: "2", time: "3.00 – 4.00", pairings: [{ label: vs(TEAMS.vvn, TEAMS.ahmedabad) }] },
-          { no: "Semi 1", time: "4.00 – 5.00", pairings: [{ label: vs(TEAMS.rebels + " (Bye)", "Winner M1") }] },
+          { no: "4", time: "10:30 AM – 11:00 AM", pairings: [{ label: "Semi Final 2" }] },
+          { no: "5", time: "11:00 AM – 12:00 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
         ],
       },
       {
-        name: "CRICKET",
-        emoji: "🏏",
+        name: "THROW BALL", emoji: "🏐",
         matches: [
-          { no: "Semi 1", time: "4.00 – 5.00", pairings: [{ label: vs(TEAMS.rebels + " (Bye)", "Winner M1") }] },
-          { no: "Semi 2", time: "5.00 – 6.00", pairings: [{ label: "Semi Final 2" }] },
+          { no: "1", time: "11:00 AM – 12:00 PM", pairings: [{ label: "Victorious Vadodara VS Spirit of Pune" }] },
+          { no: "2", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Valorious VVN VS Ahmedabad Attackers" }] },
+          { no: "3", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Surtified Rebels (Bye) VS Winner M1" }] },
+          { no: "4", time: "2:00 PM – 3:00 PM", pairings: [{ label: "Semi Final 2" }] },
         ],
       },
       {
-        name: "CARROM",
-        emoji: "🎯",
+        name: "CARROM", emoji: "🎯",
         matches: [
-          { no: "1", time: "2.00 – 3.00", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.rebels) }] },
-          { no: "2", time: "3.00 – 4.00", pairings: [{ label: vs(TEAMS.ahmedabad, TEAMS.vvn) }] },
-          {
-            no: "Semis",
-            time: "4.00 – 5.00",
-            pairings: [
-              { label: vs(TEAMS.pune + " (Bye)", "Winner M1") },
-              { label: "Semi Final 2" },
-            ],
-          },
+          { no: "1", time: "1:00 PM – 1:30 PM", pairings: [{ label: "Victorious Vadodara VS Surtified Rebels" }] },
+          { no: "2", time: "1:30 PM – 2:00 PM", pairings: [{ label: "Ahmedabad Attackers VS Valorious VVN" }] },
+          { no: "3", time: "2:00 PM – 2:30 PM", pairings: [{ label: "Spirit of Pune (Bye) VS Winner M1" }] },
+          { no: "4", time: "2:30 PM – 3:00 PM", pairings: [{ label: "Semi Final 2" }] },
         ],
       },
       {
-        name: "PICKLE BALL",
-        emoji: "🥎",
+        name: "CRICKET", emoji: "🏏",
         matches: [
-          { no: "1", time: "7.00 – 7.40", pairings: [{ label: vs(TEAMS.vadodara, TEAMS.rebels) }] },
-          { no: "2", time: "7.40 – 8.20", pairings: [{ label: vs(TEAMS.pune, TEAMS.ahmedabad) }] },
-          { no: "Semi 1", time: "8.20 – 9.00", pairings: [{ label: vs(TEAMS.vvn + " (Bye)", "Winner M1") }] },
+          { no: "4", time: "3:30 PM – 4:30 PM", pairings: [{ label: "Semi Final 2" }] },
+          { no: "5", time: "4:30 PM – 5:30 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
         ],
       },
       {
-        name: "CHESS",
-        emoji: "♟️",
+        name: "PICKLE BALL", emoji: "🥎",
         matches: [
-          { no: "Final", time: "10.30 – 12.00", pairings: [{ label: "Grand Final" }] },
+          { no: "4", time: "7:00 PM – 8:00 PM", pairings: [{ label: "Semi Final 2" }] },
+          { no: "5", time: "8:00 PM – 9:00 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
         ],
       },
     ],
   },
   {
-    day: "DAY 3",
-    date: "26 DECEMBER",
-    label: "Championship Finals",
+    day: "DAY 3", date: "26 DECEMBER", label: "Final Day",
     sports: [
       {
-        name: "CRICKET",
-        emoji: "🏏",
+        name: "CRICKET", emoji: "🏏",
         matches: [
-          { no: "Final", time: "10.00 – 12.00", pairings: [{ label: "Grand Final" }] },
+          { no: "6", time: "10:00 AM – 12:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "BADMINTON",
-        emoji: "🏸",
+        name: "BADMINTON", emoji: "🏸",
         matches: [
-          { no: "Final", time: "12.00 – 1.00", pairings: [{ label: "Grand Final" }] },
+          { no: "5", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
+          { no: "6", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "TABLE TENNIS",
-        emoji: "🏓",
+        name: "TABLE TENNIS", emoji: "🏓",
         matches: [
-          { no: "Final", time: "12.00 – 1.00", pairings: [{ label: "Grand Final" }] },
+          { no: "5", time: "12:00 PM – 1:00 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
+          { no: "6", time: "1:00 PM – 2:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "CARROM",
-        emoji: "🎯",
+        name: "CHESS", emoji: "♟️",
         matches: [
-          { no: "Final", time: "2.00 – 3.00", pairings: [{ label: "Grand Final" }] },
+          { no: "6", time: "2:00 PM – 3:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "THROW BALL",
-        emoji: "🏐",
+        name: "CARROM", emoji: "🎯",
         matches: [
-          { no: "Semi 2", time: "2.00 – 3.00", pairings: [{ label: "Semi Final 2" }] },
-          { no: "Final", time: "3.30 – 5.00", pairings: [{ label: "Grand Final" }] },
+          { no: "6", time: "3:00 PM – 4:00 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
       {
-        name: "PICKLE BALL",
-        emoji: "🥎",
+        name: "THROW BALL", emoji: "🏐",
         matches: [
-          { no: "Semi 2", time: "6.00 – 7.00", pairings: [{ label: "Semi Final 2" }] },
-          { no: "Final", time: "7.00 – 8.00", pairings: [{ label: "Grand Final" }] },
+          { no: "5", time: "4:00 PM – 5:00 PM", pairings: [{ label: "Team pairing to be confirmed" }] },
+          { no: "6", time: "5:00 PM – 6:00 PM", pairings: [{ label: "Grand Final" }] },
+        ],
+      },
+      {
+        name: "PICKLE BALL", emoji: "🥎",
+        matches: [
+          { no: "6", time: "7:30 PM – 8:30 PM", pairings: [{ label: "Grand Final" }] },
         ],
       },
     ],

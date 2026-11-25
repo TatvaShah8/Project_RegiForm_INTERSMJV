@@ -12,6 +12,7 @@ export interface RuleDetail {
   tag: string;
   duration: string;
   squad?: string;
+  pdfUrl?: string;
   items: string[];
 }
 
@@ -36,8 +37,8 @@ export const BOYS_RULES: RulesData = {
     "Participant must be a bona fide resident or enrolled student of Shri Mahavira Jaina Vidyalaya (SMJV).",
     "Valid SMJV Hostel G.R. Number and official digital accreditation pass with scannable QR code are mandatory at entry.",
     "Official tournament uniform kit (allocated T-shirt and track pant) must be worn during all matches.",
-    "Teams must report to the respective ground/court in charge 15 minutes prior to the scheduled fixture time.",
-    "Walkover will be awarded to the opponent if a team fails to report within 10 minutes after official call.",
+    "Teams must report to the respective ground/court in charge 15 minutes prior to the scheduled fixture time, except football: report at least 10 minutes before the match.",
+    "Walkover will be awarded to the opponent if a team fails to report within 10 minutes after official call. Football instead has a 5-minute grace period and a possible 3–0 walkover.",
   ],
   codeOfConduct: [
     "Referees and umpires decisions are final and binding in all circumstances.",
@@ -47,6 +48,7 @@ export const BOYS_RULES: RulesData = {
   sportsRules: [
     {
       sport: "CRICKET",
+      pdfUrl: "/rule-books-and-schedules/boys-cricket-rules-updated.pdf",
       emoji: "🏏",
       tag: "OUTDOOR · MAIN CRICKET OVAL",
       duration: "10 / 12 / 15 Overs per innings",
@@ -55,6 +57,12 @@ export const BOYS_RULES: RulesData = {
         "Team of 11 players with 4 extras (11 players + 4 extras).",
         "League matches will be 10 overs per innings. Semi-final matches will be 12 overs per innings. The final match will be 15 overs per innings.",
         "Overs may be reduced according to the match situation. Over rates are applicable.",
+        "Powerplay: first 3 overs in a 10-over match, first 4 overs in a 12-over match, and first 5 overs in a 15-over match.",
+        "Teams change ends after every 5 completed overs (after the 5th, 10th, and so on, where applicable). Batting and bowling ends switch; batsmen continue from the opposite end and the next over is bowled from the opposite end.",
+        "Bowling limits for 10 overs: 2 bowlers may bowl up to 3 overs each; remaining bowlers up to 2 overs each.",
+        "Bowling limits for 12 overs: 1 bowler may bowl up to 4 overs; 2 bowlers up to 3 overs each; remaining bowlers up to 2 overs each.",
+        "Bowling limits for 15 overs: 2 bowlers may bowl up to 4 overs each; remaining bowlers up to 3 overs each.",
+        "Umpires and tournament officials enforce powerplay, bowling limits and changes of ends, and decide any clarification during play.",
         "Providing a runner to the batsman will be decided by the umpires.",
         "Chucking is not allowed. Two bouncers are allowed per over.",
         "A free hit will be awarded for a no-ball.",
@@ -66,18 +74,30 @@ export const BOYS_RULES: RulesData = {
     {
       sport: "FOOTBALL",
       emoji: "⚽",
-      tag: "OUTDOOR · FOOTBALL FIELD",
-      duration: "8-a-side format",
-      squad: "8 playing + 5 extra (13 total)",
+      pdfUrl: "/rule-books-and-schedules/boys-football-7v7-rules.pdf",
+      tag: "OUTDOOR · ARTIFICIAL TURF",
+      duration: "30 / 40 / 50 minutes (league / semi / final)",
+      squad: "7 playing + up to 4 substitutes (11 total)",
       items: [
-        "Event is for SMJV students only; each player may represent only one team.",
-        "Team format: 8 playing players + 5 extra players (13 total).",
-        "Teams must report 30 minutes before match; toss is 15 minutes before scheduled start.",
-        "Teams change sides at half-time. Substitutions must be made from the registered team roster.",
-        "A tied match is decided by penalty shootout: 5 kicks per team; any 5 rostered players may take kicks.",
-        "Throw-ins awarded to opposing team when ball crosses side boundary.",
-        "Closed-toe athletic shoes mandatory; metal cleats, jeans, watches, and jewelry strictly prohibited.",
-        "Serious misconduct, dangerous contact, sliding tackles, or abusive language results in red card/disqualification.",
+        "7-a-side format: 6 outfield players and 1 goalkeeper, with a maximum of 4 substitutes. At least 6 players are required to start or continue a match.",
+        "Rolling substitutions are allowed through the designated area. The outgoing player must leave before the substitute enters.",
+        "Artificial-turf-appropriate football footwear is required. Metal studs, jewellery and watches are prohibited.",
+        "League/group matches: 15-minute halves (30 minutes total) and a 5-minute half-time break. Semi-finals: 20-minute halves (40 minutes total) and a 5-minute break. Final: 25-minute halves (50 minutes total) and a 10-minute break.",
+        "Matches start with a kick-off. The toss winner chooses kick-off or the side of the field. The offside rule applies. Deliberate handball is prohibited.",
+        "Opponents must stay at least 4 metres away for kick-ins, free kicks and corner kicks. Goals may be scored directly from kick-off or a corner, but not from a kick-in.",
+        "Kick-ins replace throw-ins when the ball crosses the touchline. The ball must be stationary on or behind the line and the kick taken within a reasonable time. An incorrect kick-in gives possession to the opponent. The taker cannot touch the ball again until another player has touched it.",
+        "A corner is awarded when a defender last touches the ball before it crosses their own goal line without a goal. Place the ball inside the corner area.",
+        "The goalkeeper may handle the ball only inside their own penalty area, must release it within 6 seconds, and cannot handle a deliberate kick from a teammate. Follow referee instructions during penalties.",
+        "Fouls include pushing, holding, deliberate handball, kicking, tripping, dangerous or reckless play, unfair charging, abusive language, unsporting behaviour, repeated fouls and deliberate time-wasting. The referee awards direct or indirect free kicks according to the offence.",
+        "A direct-free-kick offence inside the defending penalty area results in a penalty. Place the stationary ball on the penalty spot. The taker must kick from a stationary position without a run-up or moving forward to take one. Wait for the referee signal.",
+        "During a penalty, the goalkeeper stays on the goal line until the ball is kicked. Other players stay outside the penalty area and at least 4 metres from the spot.",
+        "Yellow cards apply for unsporting behaviour, repeated fouls, dissent and deliberate time-wasting. Red cards apply for serious foul play, violence/fighting, abusive or threatening behaviour, or two yellows in the same match. A sent-off player cannot return; further suspension may follow.",
+        "No draws: every tied match is decided by a penalty shootout. A win, including a shootout win, earns 3 points; a loss earns 0.",
+        "League/group standings are decided by total points, goal difference, goals scored, head-to-head result, then a penalty shootout if required by organisers.",
+        "Tied semi-finals and finals: 5 initial penalty kicks per team, followed by sudden death if still level. Eligible players participate under the applicable shootout rules.",
+        "Report at least 10 minutes before the match. A 5-minute grace period applies; failure to report with at least 6 players may result in a 3–0 walkover. The organising committee decides exceptional circumstances.",
+        "Only the captain may approach the referee for clarification. Respect opponents, referees and organisers and maintain discipline on and off the field. Fighting, abuse, threats and serious misconduct may lead to team disqualification.",
+        "The referee has final authority on field decisions. The organising committee interprets regulations, resolves disputes, takes disciplinary action and handles unforeseen situations.",
       ],
     },
     {

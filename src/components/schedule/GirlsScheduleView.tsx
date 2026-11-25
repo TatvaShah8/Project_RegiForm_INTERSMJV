@@ -103,6 +103,7 @@ export function GirlsScheduleView({
         </div>
       </motion.div>
 
+<p className="mb-6 rounded-xl border border-fest-orange/30 bg-fest-orange/10 p-4 text-sm text-fest-deep">Previous team pairings are retained with updated timings (IST). Where individual timings are missing, the previous match timings apply. Additional Match 5 pairings and Carrom Match 5 timing remain unconfirmed because they were not in the previous draw.</p>
       {/* ── Day selector ── */}
       <div className="sticky top-[57px] z-30 mb-8 flex justify-center md:top-[65px]">
         <div className="flex gap-1.5 rounded-2xl border border-white/80 bg-white/50 p-1.5 shadow-[0_12px_36px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl backdrop-saturate-180 md:gap-2">

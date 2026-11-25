@@ -4,6 +4,7 @@ import { kitSchema, validateSports, validationError } from "@/lib/registration-h
 import { randomUUID } from "node:crypto";
 import { authenticatedUser, authError } from "@/lib/firebase-admin";
 import { registrations } from "@/lib/mongodb";
+import { completeRegistration, CULTURAL_FULL_MESSAGE } from "@/lib/cultural-quota";
 import { imageStorage, imageUrls as resolveImageUrls } from "@/lib/supabase";
 import { normalizeBranch, normalizeJersey, duplicateMessage, badInput } from "@/lib/registration-helpers";
 export const runtime = "nodejs";
@@ -80,7 +81,7 @@ export async function POST(request: Request) {
     const imageUrls = await resolveImageUrls(uploaded);
     const fields: Record<string, unknown> = { role, tshirt, waist, outdoor, indoor, alsoParticipatesInCultural, outdoorSports: outdoor.join(", ") || "None", indoorSports: indoor.join(", ") || "None", agreement: true, passNo: `#${record._id.toString()}`, imagePaths: uploaded, imageUrls, registrationStatus: "completed", completedAt: new Date(), updatedAt: new Date() };
     if (jerseyNumber !== undefined) fields.jerseyNumber = jerseyNumber;
-    const update = await collection.updateOne({ firebaseUid: user.uid, registrationStatus: { $ne: "completed" }, updatedAt: record.updatedAt }, { $set: fields });
+    const update = await completeRegistration(collection, record, fields);
     if (!update.matchedCount) throw new Error("REGISTRATION_CHANGED");
     uploaded = []; // registered images now belong to the saved record
     return Response.json({ success: true });
@@ -93,6 +94,9 @@ export async function POST(request: Request) {
         const { error: removalError } = await imageStorage().storage.remove(uploaded);
         if (removalError) console.error("Supabase cleanup failed:", uploaded);
       } catch { console.error("Supabase cleanup requires retry:", uploaded); }
+    }
+    if (error instanceof Error && error.message === "CULTURAL_QUOTA_FULL") {
+      return Response.json({ error: CULTURAL_FULL_MESSAGE }, { status: 409 });
     }
     const duplicate = duplicateMessage(error);
     if (duplicate) return Response.json({ error: duplicate }, { status: 409 });
