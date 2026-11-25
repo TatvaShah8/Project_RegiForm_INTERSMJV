@@ -22,7 +22,6 @@ import {
   setStudentVerification,
 } from "@/lib/auth-storage";
 import { useRegister, type RegisterState, selectAge } from "@/lib/store";
-import { buildPassQrPayload } from "@/lib/pass-qr";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { printPassCard } from "@/lib/print-pass";
@@ -85,8 +84,7 @@ export function CommitteeVerificationDashboard() {
     const isCultural = account.role === "cultural";
 
     let qr: string;
-    const qrPayload = account.passNo ? buildPassQrPayload(account.passNo) : "SMJV_VERIFIED_" + (account.grNo || "000");
-    try { qr = await QRCode.toDataURL(qrPayload, { width: 300 }); }
+    try { qr = await QRCode.toDataURL("SMJV_VERIFIED_" + (account.grNo || "000"), { width: 300 }); }
     catch { toast({ title: "Could not prepare ID pass", description: "Please try again.", variant: "destructive" }); return; }
     printPassCard({
       name: [account.firstName, account.middleName, account.surname].filter(Boolean).join(" ") || "SMJVIAN",

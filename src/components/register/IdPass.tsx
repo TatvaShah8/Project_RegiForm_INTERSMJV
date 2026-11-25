@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import QRCode from "qrcode";
-import { X } from "lucide-react";
+import { X, QrCode } from "lucide-react";
 import { useRegister, selectAge } from "@/lib/store";
-import { buildPassQrPayload } from "@/lib/pass-qr";
 import {
   FEST_NAME,
   FEST_ORG,
@@ -26,14 +25,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-/** Real scannable QR generated locally from an opaque Pass URL (/pass/<id>).
- * Contains zero personal data so external scanners cannot read participant details.
+/** Real scannable QR generated locally from the registration payload.
+ * Strictly includes only student networking info (NO GR number, NO pass ID, NO blood group).
  */
 export function useFestQr() {
   const s = useRegister();
   const [url, setUrl] = React.useState("");
   React.useEffect(() => {
-    const payload = buildPassQrPayload(s.passNo);
+    const payload = JSON.stringify({
+      fest: FEST_NAME,
+      fn: s.firstName || "Aarav",
+      mn: s.middleName || "",
+      sn: s.surname || "Mehta",
+      mob: s.mobile || "9825040142",
+      ht: s.homeTown || "Vadodara",
+      br: s.branch || "Vadodara",
+      co: s.course || "B.Tech Computer Science",
+      cl: s.college || "Faculty of Technology & Engineering, MSU",
+      yr: s.year || "3rd Year",
+      jn: s.jerseyNumber || "",
+    });
     QRCode.toDataURL(payload, {
       margin: 1,
       width: 360,
@@ -41,7 +52,18 @@ export function useFestQr() {
     })
       .then(setUrl)
       .catch(() => setUrl(""));
-  }, [s.passNo]);
+  }, [
+    s.firstName,
+    s.middleName,
+    s.surname,
+    s.mobile,
+    s.homeTown,
+    s.branch,
+    s.course,
+    s.college,
+    s.year,
+    s.jerseyNumber,
+  ]);
   return url;
 }
 
