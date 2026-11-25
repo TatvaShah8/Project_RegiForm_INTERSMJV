@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { TournamentNav } from "@/components/navigation/TournamentNav";
 import { GirlsScheduleView } from "@/components/schedule/GirlsScheduleView";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
-import { Calendar, MapPin, Download } from "lucide-react";
+import { Calendar, MapPin } from "lucide-react";
 
 export default function GirlsSchedulePage() {
   const router = useRouter();
@@ -36,19 +36,8 @@ export default function GirlsSchedulePage() {
             </span>
           </div>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-fest-label">
-            Three days of championship competition across 9 sports and 5 branch teams (Girls Division). Review fixtures and seeded byes.
+            The official Girls Division tournament schedule and fixtures are being finalized and will be announced shortly.
           </p>
-          <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2.5">
-            <a
-              href="/rule-books-and-schedules/girls-tournament-schedule.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-white/65 px-4 py-1.5 font-mono text-xs font-bold text-fest-orange shadow-sm backdrop-blur-md transition hover:border-fest-orange/60 hover:bg-white/90"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>DOWNLOAD OFFICIAL GIRLS SCHEDULE (PDF)</span>
-            </a>
-          </div>
         </div>
 
         {/* Schedule Content */}

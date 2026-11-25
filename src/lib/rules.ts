@@ -31,7 +31,7 @@ export const BOYS_RULES: RulesData = {
   title: "BOYS TOURNAMENT REGULATIONS",
   subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Men's division.",
   pdfUrl: "/rule-books-and-schedules/boys-sports-rules.pdf",
-  schedulePdfUrl: "/rule-books-and-schedules/tournament-schedule.pdf",
+  schedulePdfUrl: "/rule-books-and-schedules/Inter_SMJV_Tournament_Schedule_BOYS.pdf",
   quotaRule: "A player can choose 1, 2, or 3 sports. For 3 sports: either 2 Outdoor + 1 Indoor, or 1 Outdoor + 2 Indoor. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).",
   eligibility: [
     "Participant must be a bona fide resident or enrolled student of Shri Mahavira Jaina Vidyalaya (SMJV).",
@@ -217,7 +217,7 @@ export const GIRLS_RULES: RulesData = {
   title: "GIRLS TOURNAMENT REGULATIONS",
   subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Women's division.",
   pdfUrl: "/rule-books-and-schedules/girls-sports-rules.pdf",
-  schedulePdfUrl: "/rule-books-and-schedules/girls-tournament-schedule.pdf",
+  schedulePdfUrl: "/rule-books-and-schedules/girls_sports_schedules.pdf",
   quotaRule: "A player can choose any 1, 2, or 3 sports: all outdoor, all indoor, or any combination. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).",
   eligibility: [
     "Participant must be a registered resident or enrolled student affiliated with Shri Mahavira Jaina Vidyalaya (SMJV).",
@@ -355,9 +355,9 @@ export const GIRLS_RULES: RulesData = {
       emoji: "♟️",
       tag: "INDOOR · MINDS ARENA",
       duration: "30 min + 5s increment",
-      squad: "3 playing + 1 substitute (4 total)",
+      squad: "3 playing + 2 substitute (5 total)",
       items: [
-        "Each team consists of 4 players, out of which 3 will play and 1 will be a substitute.",
+        "Each team consists of 5 players, out of which 3 will play and 2 will be substitutes.",
         "Match played in best-of-three format: team winning 2 out of 3 games declared winner.",
         "Touch and move will be strictly followed.",
         "Maximum of 2 illegal moves allowed; game ends at third illegal move.",

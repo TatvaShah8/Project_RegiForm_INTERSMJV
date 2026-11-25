@@ -268,19 +268,6 @@ export function IdPass({
                     className="h-24 w-24 object-contain sm:h-28 sm:w-28"
                   />
                 </div>
-                {onOpenScanner && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      onOpenChange(false);
-                      onOpenScanner();
-                    }}
-                    className="mt-1.5 flex items-center gap-1 rounded-lg border border-fest-orange/30 bg-fest-orange/10 px-2.5 py-0.5 font-mono text-[8.5px] sm:text-[9.5px] font-bold text-fest-orange hover:bg-fest-orange/20 transition active:scale-95"
-                  >
-                    <QrCode className="h-3 w-3" />
-                    <span>SCAN A FRIEND&apos;S PASS</span>
-                  </button>
-                )}
               </div>
             )}
           </div>

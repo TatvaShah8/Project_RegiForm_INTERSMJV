@@ -40,7 +40,7 @@ export default function BoysSchedulePage() {
           </p>
           <div className="mt-3.5 flex flex-wrap items-center justify-center gap-2.5">
             <a
-              href="/rule-books-and-schedules/tournament-schedule.pdf"
+              href="/rule-books-and-schedules/Inter_SMJV_Tournament_Schedule_BOYS.pdf"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 rounded-full border border-fest-orange/30 bg-white/65 px-4 py-1.5 font-mono text-xs font-bold text-fest-orange shadow-sm backdrop-blur-md transition hover:border-fest-orange/60 hover:bg-white/90"
