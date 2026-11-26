@@ -63,8 +63,8 @@ export function finalRegistrationForm(s: {
   form.set("waist", s.waist);
   form.set("agreement", String(s.agreement));
   form.set("alsoParticipatesInCultural", String(s.role === "sports" && s.alsoParticipatesInCultural === true));
-  form.set("outdoor", JSON.stringify(s.outdoor));
-  form.set("indoor", JSON.stringify(s.indoor));
+  form.set("outdoor", JSON.stringify(s.role === "cultural" ? [] : s.outdoor));
+  form.set("indoor", JSON.stringify(s.role === "cultural" ? [] : s.indoor));
   return form;
 }
 

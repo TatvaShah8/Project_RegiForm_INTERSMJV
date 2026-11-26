@@ -835,14 +835,6 @@ export function Step3General({
 
       {/* ── Cultural Team Specific: Jersey Size & Track Pant Size ── */}
       {s.role === "cultural" && (
-        <p className="mt-4 rounded-xl border border-fest-orange/30 bg-fest-orange/10 p-4 text-sm text-fest-deep">
-          {s.branch === "vadodara"
-            ? "Vadodara has no cultural participation limit."
-            : "Cultural participation is limited to 10 boys and 10 girls per branch, including sports participants who opt into cultural events. Places are confirmed when registration is completed. Vadodara is exempt."}
-        </p>
-      )}
-
-      {s.role === "cultural" && (
         <>
           <motion.div
             variants={staggerChild}
