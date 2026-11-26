@@ -19,7 +19,7 @@ const QrScannerModal = dynamic(
 );
 
 interface TournamentNavProps {
-  activeNav: "home" | "rules" | "schedule" | "register" | "reel-making" | "contact";
+  activeNav: "home" | "rules" | "schedule" | "register" | "edit" | "reel-making" | "contact";
   activeGender?: "boys" | "girls";
 }
 
@@ -154,6 +154,9 @@ export function TournamentNav({
           {[
             { id: "rules", label: "RULES", href: `/rules/${activeGender}` },
             { id: "schedule", label: "SCHEDULE", href: `/schedule/${activeGender}` },
+            ...(isLoggedIn && s.role === "sports"
+              ? [{ id: "edit", label: "EDIT REGISTRATION", href: "/register/edit" }]
+              : []),
             ...(isLoggedIn ? [{ id: "reel-making", label: "REEL MAKING COMPETITION", href: "/reel-making" }] : []),
             ...(!isLoggedIn ? [{ id: "register", label: "REGISTER", href: "/register" }] : []),
             { id: "contact", label: "CONTACT US", href: "/contact" },
