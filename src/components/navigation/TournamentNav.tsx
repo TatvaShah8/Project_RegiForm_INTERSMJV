@@ -154,8 +154,14 @@ export function TournamentNav({
           {[
             { id: "rules", label: "RULES", href: `/rules/${activeGender}` },
             { id: "schedule", label: "SCHEDULE", href: `/schedule/${activeGender}` },
-            ...(isLoggedIn && s.role === "sports"
-              ? [{ id: "edit", label: "EDIT REGISTRATION", href: "/register/edit" }]
+            ...(isLoggedIn && (s.role === "sports" || s.role === "cultural")
+              ? [
+                  {
+                    id: "edit",
+                    label: "EDIT REGISTRATION",
+                    href: s.role === "cultural" ? "/register/edit-cultural" : "/register/edit",
+                  },
+                ]
               : []),
             ...(isLoggedIn ? [{ id: "reel-making", label: "REEL MAKING COMPETITION", href: "/reel-making" }] : []),
             ...(!isLoggedIn ? [{ id: "register", label: "REGISTER", href: "/register" }] : []),

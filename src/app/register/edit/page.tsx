@@ -1,17 +1,21 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
   ArrowLeft,
+  Camera,
   Check,
   Loader2,
   Lock,
+  RefreshCw,
   Ruler,
   Save,
   Upload,
+  X,
 } from "lucide-react";
 import { TournamentNav } from "@/components/navigation/TournamentNav";
 import { Field, PillGroup } from "@/components/register/ui-bits";
@@ -112,6 +116,130 @@ export default function EditSportsRegistrationPage() {
   const [sizeModalOpen, setSizeModalOpen] = React.useState(false);
   const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("jersey");
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  /* Live camera capture state */
+  const [mounted, setMounted] = React.useState(false);
+  const [cameraOpen, setCameraOpen] = React.useState(false);
+  const [facingMode, setFacingMode] = React.useState<"user" | "environment">("user");
+  const [cameraStream, setCameraStream] = React.useState<MediaStream | null>(null);
+  const [cameraLoading, setCameraLoading] = React.useState(false);
+  const [cameraReady, setCameraReady] = React.useState(false);
+  const videoRef = React.useRef<HTMLVideoElement | null>(null);
+  const streamRef = React.useRef<MediaStream | null>(null);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (!cameraOpen) return;
+    const orig = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = orig;
+    };
+  }, [cameraOpen]);
+
+  const stopCameraStream = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setCameraStream(null);
+    setCameraReady(false);
+  };
+
+  React.useEffect(() => {
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+      }
+    };
+  }, []);
+
+  React.useEffect(() => {
+    if (!cameraOpen || !cameraStream || !videoRef.current) return;
+    const video = videoRef.current;
+    video.muted = true;
+    video.playsInline = true;
+    video.srcObject = cameraStream;
+    const markReady = () => {
+      if (video.videoWidth > 0 && video.videoHeight > 0) {
+        setCameraReady(true);
+        setCameraLoading(false);
+      }
+    };
+    video.addEventListener("loadedmetadata", markReady);
+    video.addEventListener("canplay", markReady);
+    video.play().catch(() => {});
+    return () => {
+      video.removeEventListener("loadedmetadata", markReady);
+      video.removeEventListener("canplay", markReady);
+    };
+  }, [cameraOpen, cameraStream]);
+
+  const openCamera = async (mode: "user" | "environment" = facingMode) => {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      toast({
+        title: "CAMERA UNAVAILABLE",
+        description: "Camera access is not supported in this browser.",
+        variant: "destructive",
+      });
+      return;
+    }
+    stopCameraStream();
+    setCameraOpen(true);
+    setCameraLoading(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: mode, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      streamRef.current = stream;
+      setCameraStream(stream);
+    } catch {
+      setCameraLoading(false);
+      setCameraOpen(false);
+      toast({
+        title: "CAMERA PERMISSION DENIED",
+        description: "Allow camera access in your browser or upload a photo instead.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const closeCamera = () => {
+    stopCameraStream();
+    setCameraOpen(false);
+  };
+
+  const flipCamera = () => {
+    const next = facingMode === "user" ? "environment" : "user";
+    setFacingMode(next);
+    void openCamera(next);
+  };
+
+  const snapPhoto = async () => {
+    const video = videoRef.current;
+    if (!video || !video.videoWidth || !video.videoHeight) return;
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    if (facingMode === "user") {
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob((b) => resolve(b), "image/jpeg", 0.88)
+    );
+    if (!blob) return;
+    setNewPhotoBlob(blob);
+    setPhotoPreview(URL.createObjectURL(blob));
+    closeCamera();
+  };
 
   React.useEffect(() => {
     if (!isLoggedIn || initialized) return;
@@ -411,14 +539,24 @@ export default function EditSportsRegistrationPage() {
                     onChange={handlePhotoChange}
                     className="hidden"
                   />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="inline-flex items-center gap-2 rounded-xl border border-fest-orange/40 bg-fest-orange/10 px-4 py-2 font-display text-xs uppercase tracking-wider text-fest-orange transition hover:bg-fest-orange hover:text-fest-ink"
-                  >
-                    <Upload className="h-3.5 w-3.5" />
-                    <span>{newPhotoBlob ? "Change Selected Photo" : "Upload New Photo (Optional)"}</span>
-                  </button>
+                  <div className="flex flex-wrap gap-2.5">
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="inline-flex items-center gap-2 rounded-xl border border-fest-orange/40 bg-fest-orange/10 px-4 py-2 font-display text-xs uppercase tracking-wider text-fest-orange transition hover:bg-fest-orange hover:text-fest-ink"
+                    >
+                      <Upload className="h-3.5 w-3.5" />
+                      <span>{newPhotoBlob ? "Change Selected Photo" : "Upload New Photo (Optional)"}</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => openCamera()}
+                      className="inline-flex items-center gap-2 rounded-xl bg-fest-deep px-4 py-2 font-display text-xs uppercase tracking-wider text-fest-yellow shadow-xs transition hover:bg-fest-deep/90"
+                    >
+                      <Camera className="h-3.5 w-3.5" />
+                      <span>Capture Live Photo</span>
+                    </button>
+                  </div>
                   <p className="mt-1.5 font-mono text-[11px] text-fest-label">
                     Leave as-is to keep your current portrait photo.
                   </p>
@@ -723,6 +861,73 @@ export default function EditSportsRegistrationPage() {
         onSelectJerseySize={setTshirt}
         onSelectTrackPantSize={setWaist}
       />
+
+      {mounted &&
+        cameraOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md">
+            <div className="w-full max-w-md overflow-hidden rounded-3xl border border-white/20 bg-fest-deep text-white shadow-2xl">
+              <div className="flex items-center justify-between border-b border-white/10 px-5 py-3.5">
+                <div className="flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-fest-orange" />
+                  <span className="font-display text-sm uppercase tracking-wider">
+                    Capture Portrait Photo
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeCamera}
+                  className="rounded-lg p-1.5 text-white/70 transition hover:bg-white/10 hover:text-white"
+                  aria-label="Close camera"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              <div className="relative aspect-[4/3] w-full bg-black">
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={cn(
+                    "h-full w-full object-cover",
+                    facingMode === "user" && "scale-x-[-1]"
+                  )}
+                />
+                {cameraLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70">
+                    <Loader2 className="h-7 w-7 animate-spin text-fest-orange" />
+                    <span className="mt-2 font-mono text-xs text-white/80">
+                      Starting camera...
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between gap-3 border-t border-white/10 px-5 py-4">
+                <button
+                  type="button"
+                  onClick={flipCamera}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 font-mono text-xs font-bold text-white transition hover:bg-white/20"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span>Flip</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={snapPhoto}
+                  disabled={!cameraReady}
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-5 py-2.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-md transition hover:brightness-110 disabled:opacity-50"
+                >
+                  <Camera className="h-4 w-4" />
+                  <span>Capture Photo</span>
+                </button>
+              </div>
+            </div>
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
