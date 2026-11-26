@@ -49,13 +49,28 @@ export function adminAuth() {
   return getAuth(initializeApp({ projectId, credential }, "smjv-server"));
 }
 
+export function isFirebaseUserVerified(user: {
+  email?: string;
+  emailVerified?: boolean;
+  providerData?: Array<{ providerId?: string; email?: string | null }>;
+}) {
+  if (user.emailVerified) return true;
+  const primary = user.email?.trim().toLowerCase();
+  return Boolean(
+    primary &&
+      user.providerData?.some(
+        (p) => p.providerId === "google.com" && p.email?.trim().toLowerCase() === primary
+      )
+  );
+}
+
 export async function authenticatedUser(request: Request, requireVerified = true) {
   const header = request.headers.get("authorization") ?? "";
   if (!header.startsWith("Bearer ") || !header.slice(7).trim()) throw new Error("UNAUTHORIZED");
   const auth = adminAuth();
   const decoded = await auth.verifyIdToken(header.slice(7), true);
   const user = await auth.getUser(decoded.uid);
-  if (requireVerified && !user.emailVerified) throw new Error("EMAIL_NOT_VERIFIED");
+  if (requireVerified && !isFirebaseUserVerified(user)) throw new Error("EMAIL_NOT_VERIFIED");
   if (!user.email) throw new Error("EMAIL_MISSING");
   return user;
 }

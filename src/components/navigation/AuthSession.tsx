@@ -4,6 +4,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { useRegister } from "@/lib/store";
 import { loadRegistration } from "@/lib/registration-api";
+import { isUserEmailVerified } from "@/lib/auth-service";
 
 export function AuthSession() {
   useEffect(() => {
@@ -40,7 +41,7 @@ export function AuthSession() {
             s.set("jerseyNumber", "");
           }
           s.set("email", user.email ?? s.email);
-          s.set("emailVerified", !!user.emailVerified);
+          s.set("emailVerified", isUserEmailVerified(user));
         }
       } catch (error) {
         if (current === generation) {

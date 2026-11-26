@@ -18,6 +18,7 @@ import {
   resendVerificationEmail,
   checkEmailVerified,
   signInWithGoogle,
+  isUserEmailVerified,
 } from "@/lib/auth-service";
 
 export function Step2Verify({
@@ -47,7 +48,7 @@ export function Step2Verify({
       if (current && current.email?.trim().toLowerCase() === s.email.trim().toLowerCase()) {
         try {
           await current.reload();
-          if (current.emailVerified) {
+          if (isUserEmailVerified(current)) {
             s.set("emailVerified", true);
           }
         } catch {}
@@ -70,7 +71,7 @@ export function Step2Verify({
     try {
       const res = await registerWithEmailPassword(s.email, s.password);
       if (res.ok) {
-        if (res.user?.emailVerified) {
+        if (isUserEmailVerified(res.user)) {
           s.set("emailVerified", true);
           toast({
             title: "EMAIL ALREADY VERIFIED ✓",
@@ -121,7 +122,7 @@ export function Step2Verify({
       const res = await signInWithGoogle();
       if (res.ok && res.email) {
         s.set("email", res.email);
-        s.set("emailVerified", !!res.user?.emailVerified);
+        s.set("emailVerified", isUserEmailVerified(res.user));
         toast({
           title: "AUTHENTICATED VIA GOOGLE ✓",
           description: `Email ${res.email} verified!`,
@@ -151,7 +152,7 @@ export function Step2Verify({
       const firebaseUser = auth?.currentUser;
       if (!firebaseUser) throw new Error("Please sign in with Firebase first");
       await firebaseUser.reload();
-      if (!firebaseUser.emailVerified) throw new Error("Verify your email first");
+      if (!isUserEmailVerified(firebaseUser)) throw new Error("Verify your email first");
       if (firebaseUser.email?.trim().toLowerCase() !== s.email.trim().toLowerCase()) {
         throw new Error("The verified Firebase email differs from the email in your form");
       }

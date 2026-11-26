@@ -20,6 +20,22 @@ export interface AuthResult {
 }
 
 /**
+ * Google OAuth accounts are pre-verified by Google even if linking an email/password
+ * credential later resets Firebase's top-level emailVerified flag.
+ */
+export function isUserEmailVerified(user: User | null | undefined): boolean {
+  if (!user) return false;
+  if (user.emailVerified) return true;
+  const primary = user.email?.trim().toLowerCase();
+  return Boolean(
+    primary &&
+      user.providerData?.some(
+        (p) => p.providerId === "google.com" && p.email?.trim().toLowerCase() === primary
+      )
+  );
+}
+
+/**
  * 1-Click Sign-in / Verification via Google.
  * Always marks email as verified because Google accounts are pre-verified.
  * Leaves tournament fields (name, surname, photo, branch) for manual entry for certificates.
@@ -91,11 +107,11 @@ export async function registerWithEmailPassword(
       await current.reload();
       if (!current.providerData.some(provider => provider.providerId === "password")) {
         const linked = await linkWithCredential(current, EmailAuthProvider.credential(trimmedEmail, pass));
-        if (!linked.user.emailVerified) await sendEmailVerification(linked.user);
+        if (!isUserEmailVerified(linked.user)) await sendEmailVerification(linked.user);
         return { ok: true, user: linked.user, email: linked.user.email || trimmedEmail };
       }
       const signedIn = await signInWithEmailAndPassword(auth, trimmedEmail, pass);
-      if (!signedIn.user.emailVerified) await sendEmailVerification(signedIn.user);
+      if (!isUserEmailVerified(signedIn.user)) await sendEmailVerification(signedIn.user);
       return { ok: true, user: signedIn.user, email: signedIn.user.email || trimmedEmail };
     }
 
@@ -192,7 +208,7 @@ export async function checkEmailVerified(): Promise<boolean> {
   try {
     await current.reload();
     await current.getIdToken(true);
-    return current.emailVerified;
+    return isUserEmailVerified(current);
   } catch {
     return false;
   }

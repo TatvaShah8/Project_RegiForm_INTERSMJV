@@ -6,7 +6,7 @@ import { X, LogIn, UserPlus, Eye, EyeOff, Sparkles, CheckCircle2, User } from "l
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import { loadRegistration } from "@/lib/registration-api";
-import { signInWithGoogle, loginWithEmailPassword, resetAccountPassword } from "@/lib/auth-service";
+import { signInWithGoogle, loginWithEmailPassword, resetAccountPassword, isUserEmailVerified } from "@/lib/auth-service";
 import {
   Dialog,
   DialogContent,
@@ -78,7 +78,7 @@ export function StudentAuthModal({
 
       // 2. New student registration with pre-verified Google email
       s.set("email", userEmail);
-      s.set("emailVerified", res.user.emailVerified);
+      s.set("emailVerified", isUserEmailVerified(res.user));
       toast({
         title: "GOOGLE ACCOUNT AUTHENTICATED ✓",
         description: `Verified ${userEmail}. Please fill your official details manually for certificates.`,
@@ -113,7 +113,7 @@ export function StudentAuthModal({
       if (account) s.loginAccount(account);
       else {
         s.set("email", result.user.email ?? id);
-        s.set("emailVerified", result.user.emailVerified);
+        s.set("emailVerified", isUserEmailVerified(result.user));
       }
       onOpenChange(false);
       if (!account?.completed) router.push("/register");
