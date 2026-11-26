@@ -84,7 +84,11 @@ export function CommitteeVerificationDashboard() {
     const isCultural = account.role === "cultural";
 
     let qr: string;
-    try { qr = await QRCode.toDataURL("SMJV_VERIFIED_" + (account.grNo || "000"), { width: 300 }); }
+    const passId = (account.passNo || "").replace(/^#/, "").trim();
+    const qrPayload = passId && typeof window !== "undefined"
+      ? `${window.location.origin}/pass/${encodeURIComponent(passId)}`
+      : "SMJV_VERIFIED_" + (account.grNo || "000");
+    try { qr = await QRCode.toDataURL(qrPayload, { width: 300 }); }
     catch { toast({ title: "Could not prepare ID pass", description: "Please try again.", variant: "destructive" }); return; }
     printPassCard({
       name: [account.firstName, account.middleName, account.surname].filter(Boolean).join(" ") || "SMJVIAN",

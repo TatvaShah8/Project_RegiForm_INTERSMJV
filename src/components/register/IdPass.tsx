@@ -32,19 +32,12 @@ export function useFestQr() {
   const s = useRegister();
   const [url, setUrl] = React.useState("");
   React.useEffect(() => {
-    const payload = JSON.stringify({
-      fest: FEST_NAME,
-      fn: s.firstName || "Aarav",
-      mn: s.middleName || "",
-      sn: s.surname || "Mehta",
-      mob: s.mobile || "9825040142",
-      ht: s.homeTown || "Vadodara",
-      br: s.branch || "Vadodara",
-      co: s.course || "B.Tech Computer Science",
-      cl: s.college || "Faculty of Technology & Engineering, MSU",
-      yr: s.year || "3rd Year",
-      jn: s.jerseyNumber || "",
-    });
+    const passId = (s.passNo || "").replace(/^#/, "").trim();
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "https://intersmjv.org";
+    const payload = passId
+      ? `${origin}/pass/${encodeURIComponent(passId)}`
+      : `${origin}/pass/pending`;
     QRCode.toDataURL(payload, {
       margin: 1,
       width: 360,
@@ -52,18 +45,7 @@ export function useFestQr() {
     })
       .then(setUrl)
       .catch(() => setUrl(""));
-  }, [
-    s.firstName,
-    s.middleName,
-    s.surname,
-    s.mobile,
-    s.homeTown,
-    s.branch,
-    s.course,
-    s.college,
-    s.year,
-    s.jerseyNumber,
-  ]);
+  }, [s.passNo]);
   return url;
 }
 
