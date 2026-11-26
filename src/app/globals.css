@@ -356,6 +356,27 @@
   -webkit-backdrop-filter: blur(8px) saturate(140%) !important;
 }
 
+/* ── Leaf-pen writing jerk animation on keystroke inside text boxes ── */
+@keyframes fest-quill-write {
+  0% {
+    transform: rotate(0deg) translate(0px, 0px);
+  }
+  30% {
+    transform: rotate(-14deg) translate(1.5px, -2.5px);
+  }
+  65% {
+    transform: rotate(6deg) translate(-0.5px, 1px);
+  }
+  100% {
+    transform: rotate(0deg) translate(0px, 0px);
+  }
+}
+
+.fest-quill-caret-write {
+  transform-origin: 2px 16px;
+  animation: fest-quill-write 160ms cubic-bezier(0.22, 1, 0.36, 1) 1;
+}
+
 /* reduced motion — disable all animations and transitions for
    users who prefer reduced motion. Covers both CSS animations
    and transitions, plus smooth scroll. */
