@@ -36,11 +36,14 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import jsQR from "@/lib/jsqr";
+import { auth } from "@/lib/firebase";
 import { useRegister } from "@/lib/store";
 import {
   type ScannedStudent,
   SAMPLE_STUDENTS,
   parseScannedQr,
+  extractPassIdFromQr,
+  studentFromPassData,
   getScannedConnections,
   saveScannedConnection,
   removeScannedConnection,
@@ -281,40 +284,74 @@ export function QrScannerModal({ open, onOpenChange, onOpenAuth }: QrScannerModa
     };
   };
 
-  const handleSuccessfulScan = (rawText: string) => {
-    const parsed = parseScannedQr(rawText);
-    if (parsed) {
-      // Haptic feedback
-      if (typeof navigator !== "undefined" && navigator.vibrate) {
-        try {
-          navigator.vibrate([100, 50, 100]);
-        } catch {}
+  const applyScannedStudent = (parsed: ScannedStudent) => {
+    // Haptic feedback
+    if (typeof navigator !== "undefined" && navigator.vibrate) {
+      try {
+        navigator.vibrate([100, 50, 100]);
+      } catch {}
+    }
+
+    stopCamera();
+    setScannedResult(parsed);
+
+    // Auto-check if already saved
+    const saved = getScannedConnections();
+    const exists = saved.some(
+      (s) =>
+        (s.mobile && s.mobile === parsed.mobile) ||
+        (s.firstName.toLowerCase() === parsed.firstName.toLowerCase() &&
+          s.surname.toLowerCase() === parsed.surname.toLowerCase())
+    );
+    setIsSaved(exists);
+
+    toast({
+      title: "QR PASS SCANNED!",
+      description: `Connected with ${parsed.firstName} ${parsed.surname} (${parsed.branch} branch).`,
+    });
+  };
+
+  const handleSuccessfulScan = async (rawText: string) => {
+    const legacyParsed = parseScannedQr(rawText);
+    if (legacyParsed) {
+      applyScannedStudent(legacyParsed);
+      return;
+    }
+
+    const passId = extractPassIdFromQr(rawText);
+    if (passId) {
+      const currentUser = auth?.currentUser;
+      if (!currentUser) {
+        toast({
+          title: "SIGN IN REQUIRED",
+          description: "Please log in to your account to scan a friend's pass.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      stopCamera();
-      setScannedResult(parsed);
-
-      // Auto-check if already saved
-      const saved = getScannedConnections();
-      const exists = saved.some(
-        (s) =>
-          (s.mobile && s.mobile === parsed.mobile) ||
-          (s.firstName.toLowerCase() === parsed.firstName.toLowerCase() &&
-            s.surname.toLowerCase() === parsed.surname.toLowerCase())
-      );
-      setIsSaved(exists);
-
-      toast({
-        title: "QR PASS SCANNED!",
-        description: `Connected with ${parsed.firstName} ${parsed.surname} (${parsed.branch} branch).`,
-      });
-    } else {
-      toast({
-        title: "UNRECOGNIZED QR CODE",
-        description: "This QR code does not contain valid student information.",
-        variant: "destructive",
-      });
+      try {
+        const token = await currentUser.getIdToken();
+        const res = await fetch(`/api/pass/${encodeURIComponent(passId)}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const json = await res.json();
+        const source = json.profile || json.student;
+        if (res.ok && json.valid && source) {
+          applyScannedStudent(studentFromPassData(source));
+          return;
+        }
+      } catch {
+        // Fall through to unrecognized toast
+      }
     }
+
+    toast({
+      title: "UNRECOGNIZED QR CODE",
+      description: "This QR code does not contain valid student information.",
+      variant: "destructive",
+    });
   };
 
   // Robust Image Upload handler (uses jsQR + multi-pass)

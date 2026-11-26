@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { authenticatedAdmin } from "@/lib/firebase-admin";
+import { authenticatedAdmin, authenticatedUser } from "@/lib/firebase-admin";
 import { registrations } from "@/lib/mongodb";
 import { registrationProfile } from "@/lib/registration-profile";
 
@@ -52,13 +52,37 @@ export async function GET(
         profile,
       });
     } catch {
-      // Non-admin or expired session: never expose personal details.
-      return Response.json({
-        valid: true,
-        access: "public",
-        status: publicStatus,
-        staffDenied: true,
-      });
+      // Not a committee admin; check if caller is a signed-in participant for safe networking info.
+      try {
+        await authenticatedUser(request);
+        const profile = (await registrationProfile(record)) as Record<string, unknown>;
+        return Response.json({
+          valid: true,
+          access: "student",
+          status: publicStatus,
+          staffDenied: true,
+          student: {
+            firstName: profile.firstName || "",
+            middleName: profile.middleName || "",
+            surname: profile.surname || "",
+            photo: profile.photo ?? null,
+            mobile: profile.mobile || "",
+            homeTown: profile.homeTown || "",
+            branch: profile.branch || "",
+            course: profile.course || "",
+            college: profile.college || "",
+            year: profile.year || "",
+            jerseyNumber: profile.jerseyNumber || "",
+          },
+        });
+      } catch {
+        return Response.json({
+          valid: true,
+          access: "public",
+          status: publicStatus,
+          staffDenied: true,
+        });
+      }
     }
   }
 

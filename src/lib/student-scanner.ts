@@ -141,6 +141,51 @@ export function generateAvatarSvg(name: string, surname: string): string {
 }
 
 /**
+ * Extract MongoDB pass ID from a /pass/<id> URL QR payload.
+ */
+export function extractPassIdFromQr(rawText: string): string | null {
+  if (!rawText || typeof rawText !== "string") return null;
+  const trimmed = rawText.trim();
+  const match = trimmed.match(/\/pass\/([a-f0-9]{24})(?:[/?#]|$)/i);
+  return match ? match[1] : null;
+}
+
+/**
+ * Convert an authenticated /api/pass/[id] response profile/student object into ScannedStudent.
+ */
+export function studentFromPassData(data: {
+  firstName?: string;
+  middleName?: string;
+  surname?: string;
+  photo?: string | null;
+  mobile?: string;
+  homeTown?: string;
+  branch?: string;
+  course?: string;
+  college?: string;
+  year?: string;
+  jerseyNumber?: string;
+}): ScannedStudent {
+  const fn = data.firstName || "SMJV";
+  const sn = data.surname || "Student";
+  return {
+    id: `scan-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    firstName: fn,
+    middleName: data.middleName || "",
+    surname: sn,
+    photo: data.photo || generateAvatarSvg(fn, sn),
+    mobile: data.mobile || "—",
+    homeTown: data.homeTown || "—",
+    branch: data.branch || "SMJV",
+    course: data.course || "—",
+    college: data.college || "—",
+    year: data.year || "",
+    jerseyNumber: data.jerseyNumber || undefined,
+    scannedAt: new Date().toISOString(),
+  };
+}
+
+/**
  * Parse QR raw decoded string into a structured ScannedStudent object.
  * Strictly ignores any GR, pass ID, or blood group data.
  */
