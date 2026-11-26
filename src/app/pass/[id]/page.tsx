@@ -295,18 +295,12 @@ export default function PassVerificationPage() {
                 <div className="mt-4 flex w-full items-start gap-2.5 rounded-2xl border border-black/10 bg-black/[0.03] p-4 text-left text-xs text-fest-label">
                   <Lock className="mt-0.5 h-4 w-4 shrink-0 text-fest-orange" />
                   <p className="leading-relaxed">
-                    Participant personal details are protected and hidden from public scanners. Authorized Committee &amp; Festival Staff can sign in below to inspect pass details.
+                    Participant personal details are protected and hidden from public scanners.
                   </p>
                 </div>
 
-                {data.staffDenied && user && (
-                  <p className="mt-3 font-mono text-xs font-semibold text-red-600">
-                    Signed in as {user.email} — this account does not have committee access.
-                  </p>
-                )}
-
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                  {!user ? (
+                {!user && (
+                  <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
                     <button
                       type="button"
                       onClick={handleStaffLogin}
@@ -316,18 +310,8 @@ export default function PassVerificationPage() {
                       <LogIn className="h-4 w-4" />
                       <span>COMMITTEE / STAFF SIGN IN</span>
                     </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={handleSignOut}
-                      disabled={authBusy}
-                      className="inline-flex items-center gap-2 rounded-xl border border-black/15 bg-white px-4 py-2 font-display text-xs uppercase tracking-wider text-fest-deep transition hover:bg-black/5"
-                    >
-                      <LogOut className="h-4 w-4" />
-                      <span>SIGN OUT</span>
-                    </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             )}
 
