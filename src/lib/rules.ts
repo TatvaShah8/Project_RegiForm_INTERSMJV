@@ -217,7 +217,7 @@ export const GIRLS_RULES: RulesData = {
   title: "GIRLS TOURNAMENT REGULATIONS",
   subtitle: "Official tournament guidelines, quota limitations, and sport-specific match regulations for Women's division.",
   pdfUrl: "/rule-books-and-schedules/girls-sports-rules.pdf",
-  schedulePdfUrl: "/rule-books-and-schedules/girls_sports_schedules.pdf",
+  schedulePdfUrl: "/rule-books-and-schedules/Girls%20Tournament%20Schedule.pdf",
   quotaRule: "A player can choose any 1, 2, or 3 sports: all outdoor, all indoor, or any combination. (Special exception: Bhavnagar SMJV Branch students have no limit on sports selection).",
   eligibility: [
     "Participant must be a registered resident or enrolled student affiliated with Shri Mahavira Jaina Vidyalaya (SMJV).",

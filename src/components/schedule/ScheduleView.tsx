@@ -405,7 +405,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
                   ? "/rule-books-and-schedules/Inter_SMJV_Tournament_Schedule_BOYS.pdf"
 
-                  : "/rule-books-and-schedules/girls_sports_schedules.pdf"
+                  : "/rule-books-and-schedules/Girls%20Tournament%20Schedule.pdf"
 
               }
 

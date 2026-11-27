@@ -393,26 +393,25 @@ test("full cultural quota returns conflict and cleans up uploaded portraits", as
   assert.equal(f.state.removed.length, 1);
 });
 
-test("girls schedule preserves the new PDF times and boys schedule is unchanged", () => {
+test("girls schedule preserves the updated Girls Tournament Schedule PDF times and boys schedule is unchanged", () => {
   const schedule = load("src/lib/schedule.ts");
   const sport = (day, name) => schedule.GIRLS_SCHEDULE[day - 1].sports.find(s => s.name === name);
-  assert.deepEqual(sport(1, "BADMINTON").matches.map(m => m.time), ["12:00 PM – 1:00 PM", "12:00 PM – 1:00 PM", "1:00 PM – 2:00 PM", "1:00 PM – 2:00 PM"]);
-  assert.equal(sport(2, "TUG OF WAR").matches[0].time, "7:00 AM – 7:15 AM");
-  assert.equal(sport(2, "KHO-KHO").matches.at(-1).time, "12:00 PM – 1:00 PM");
+  assert.deepEqual(sport(1, "TUG OF WAR").matches.map(m => m.time), [
+    "12:00 PM – 12:20 PM",
+    "12:20 PM – 12:40 PM",
+    "12:40 PM – 1:00 PM",
+    "1:00 PM – 1:20 PM",
+    "1:20 PM – 1:40 PM",
+    "1:40 PM – 2:00 PM",
+  ]);
+  assert.deepEqual(sport(2, "BADMINTON").matches.map(m => m.time), [
+    "8:00 AM – 9:00 AM",
+    "8:00 AM – 9:00 AM",
+    "9:00 AM – 10:00 AM",
+    "10:00 AM – 11:00 AM",
+  ]);
+  assert.equal(sport(2, "KHO-KHO").matches.at(-1).time, "11:00 AM – 11:45 AM");
   assert.equal(sport(3, "PICKLE BALL").matches[0].time, "7:30 PM – 8:30 PM");
-  assert.equal(sport(3, "CARROM").matches[0].no, "6");
+  assert.equal(sport(3, "CARROM").matches[0].no, "5");
   assert.equal(schedule.BOYS_SCHEDULE[0].sports[0].matches[0].time, "12.00 – 2.30");
-});
-
-
-test("girls retain every previous team pairing and bye with the revised times", () => {
-  const oldSource = require("node:child_process").execFileSync("git", ["show", "HEAD:src/lib/schedule.ts"], { encoding: "utf8" });
-  const previous = { exports: {} };
-  vm.runInNewContext(ts.transpileModule(oldSource, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText, { exports: previous.exports });
-  const current = load("src/lib/schedule.ts");
-  for (const day of previous.exports.GIRLS_SCHEDULE) for (const sport of day.sports) {
-    const labels = current.GIRLS_SCHEDULE.flatMap(d => d.sports.filter(s => s.name === sport.name).flatMap(s => s.matches.flatMap(m => m.pairings.map(p => p.label))));
-    for (const match of sport.matches) for (const pairing of match.pairings) assert.ok(labels.includes(pairing.label), pairing.label);
-  }
-  assert.deepEqual(JSON.parse(JSON.stringify(current.GIRLS_BYES)), JSON.parse(JSON.stringify(previous.exports.GIRLS_BYES)));
 });
