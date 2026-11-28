@@ -211,7 +211,7 @@ export const MONTHS = [
   "July", "August", "September", "October", "November", "December",
 ] as const;
 
-export type Role = "sports" | "cultural" | "visitor";
+export type Role = "sports" | "cultural" | "visitor" | "Daimond";
 export const ROLE_META: Record<Role, { emoji: string; title: string; sub: string; passLabel: string }> = {
   sports: {
     emoji: "⚡",
@@ -230,6 +230,12 @@ export const ROLE_META: Record<Role, { emoji: string; title: string; sub: string
     title: "Visitor",
     sub: "Student supporter, spectator & resident pass",
     passLabel: "VISITOR",
+  },
+  Daimond: {
+    emoji: "💎",
+    title: "Dignitary & Official",
+    sub: "Hostel Rector, Trustee, Hon Secretary & LMC Member",
+    passLabel: "Daimond",
   },
 };
 

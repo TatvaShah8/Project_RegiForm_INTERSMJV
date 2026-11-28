@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 const cache = globalThis as typeof globalThis & {
   smjvMongo?: Promise<MongoClient>;
   smjvIndexes?: Promise<unknown>;
+  smjvDiamondIndexes?: Promise<unknown>;
 };
 
 export async function mongoClient() {
@@ -47,5 +48,24 @@ export async function registrations() {
     });
   }
   await cache.smjvIndexes;
+  return collection;
+}
+
+export async function diamondRegistrations() {
+  const collection = (await database()).collection("diamond_registrations");
+  if (!cache.smjvDiamondIndexes) {
+    cache.smjvDiamondIndexes = collection
+      .createIndexes(
+        ["firebaseUid", "email", "phone"].map((field) => ({
+          key: { [field]: 1 as const },
+          unique: true,
+        }))
+      )
+      .catch((error) => {
+        cache.smjvDiamondIndexes = undefined;
+        throw error;
+      });
+  }
+  await cache.smjvDiamondIndexes;
   return collection;
 }

@@ -88,10 +88,18 @@ export function IdPass({
       college: s.college || "—",
       course: s.course || "—",
       year: s.year || "—",
-      role: s.role === "cultural" ? "CULTURAL" : "PLAYER",
+      role: s.role === "Daimond" ? "Daimond" : s.role === "cultural" ? "CULTURAL" : "PLAYER",
       isVerified: !!s.isVerified,
-      sports: sports.map((name) => sportChip(name)),
-      kit: s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      sports:
+        s.role === "Daimond"
+          ? [s.designation || "Official", ...(s.industry ? [s.industry] : [])]
+          : sports.map((name) => sportChip(name)),
+      kit:
+        s.role === "Daimond"
+          ? `${s.tshirt || "—"} / ${s.waist || "—"}`
+          : s.role === "cultural"
+            ? (s.tshirt || "—")
+            : `${s.tshirt || "—"} / ${s.waist || "—"}`,
       jerseyNumber: s.role === "sports" ? s.jerseyNumber : undefined,
       photo: s.photo,
       qr,
@@ -130,7 +138,7 @@ export function IdPass({
             </div>
             <div className="flex items-center gap-1.5 shrink-0">
               <span className="whitespace-nowrap rounded-full bg-black/85 px-2 py-0.5 sm:px-3 sm:py-1 font-mono text-[8.5px] sm:text-[10px] font-bold tracking-widest text-white shadow-xs">
-                {s.role === "cultural" ? "CULTURAL" : "PLAYER"}
+                {s.role === "Daimond" ? "Daimond" : s.role === "cultural" ? "CULTURAL" : "PLAYER"}
               </span>
               <button
                 type="button"
@@ -183,7 +191,7 @@ export function IdPass({
                   {fullName(s) || "SMJVIAN"}
                 </p>
                 <p className="font-mono text-[9px] sm:text-xs text-fest-label">
-                  Age: {age ?? "—"} yrs · {s.gender ? s.gender.charAt(0) + s.gender.slice(1).toLowerCase() : "—"} · DOB: {formatDob(s.dob)} · GR: <span className="font-bold text-fest-gold">{s.grNo || "—"}</span>
+                  Age: {age ?? "—"} yrs · {s.gender ? s.gender.charAt(0) + s.gender.slice(1).toLowerCase() : "—"} · DOB: {formatDob(s.dob)}{s.role !== "Daimond" ? <> · GR: <span className="font-bold text-fest-gold">{s.grNo || "—"}</span></> : null}
                 </p>
               </div>
             </div>
@@ -197,9 +205,17 @@ export function IdPass({
                 </span>
               </div>
               <div className="flex flex-col gap-0.5 border-t border-fest-border/40 pt-1">
-                <span className="font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-label">COLLEGE / COURSE</span>
+                <span className="font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-label">
+                  {s.role === "Daimond" ? "PROFESSIONAL INFO" : "COLLEGE / COURSE"}
+                </span>
                 <span className="font-mono text-[9px] sm:text-[10.5px] leading-snug text-fest-white/95">
-                  {s.college || "—"} · <span className="font-bold text-fest-gold">{s.course || "—"} ({s.year || "—"})</span>
+                  {s.role === "Daimond" ? (
+                    [s.position, s.companyName, s.industry].filter(Boolean).join(" · ") || "—"
+                  ) : (
+                    <>
+                      {s.college || "—"} · <span className="font-bold text-fest-gold">{s.course || "—"} ({s.year || "—"})</span>
+                    </>
+                  )}
                 </span>
               </div>
             </div>
@@ -219,6 +235,10 @@ export function IdPass({
                       {sportChip(sp)}
                     </span>
                   ))
+                ) : s.role === "Daimond" ? (
+                  <span className="rounded-full border border-fest-yellow/40 bg-fest-yellow/10 px-2 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold text-fest-yellow">
+                    💎 {s.designation || "Daimond"}
+                  </span>
                 ) : (
                   <span className="rounded-full border border-fest-yellow/40 bg-fest-yellow/10 px-2 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold text-fest-yellow">
                     {roleMeta?.emoji} {roleMeta?.title ?? "PARTICIPANT"}

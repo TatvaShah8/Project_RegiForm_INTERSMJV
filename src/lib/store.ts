@@ -47,6 +47,10 @@ export interface RegisterState {
 
   /* step 04 — participation */
   role: Role | "";
+  designation?: string;
+  companyName?: string;
+  position?: string;
+  industry?: string;
   jerseyNumber: string;
   tshirt: string;
   waist: string;
@@ -112,6 +116,10 @@ const initial = {
   relation: "",
 
   role: "" as Role | "",
+  designation: "",
+  companyName: "",
+  position: "",
+  industry: "",
   jerseyNumber: "",
   tshirt: "",
   waist: "",

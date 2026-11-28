@@ -35,14 +35,22 @@ export function SuccessScreen() {
       college: s.college || "—",
       course: s.course || "—",
       year: s.year || "—",
-      role: s.role === "cultural" ? "CULTURAL" : "PLAYER",
+      role: s.role === "Daimond" ? "Daimond" : s.role === "cultural" ? "CULTURAL" : "PLAYER",
       isVerified: !!s.isVerified,
-      sports: sports.map((name) => {
-        const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
-        const found = all.find((sp) => sp.name === name);
-        return found ? `${found.emoji} ${found.name}` : name;
-      }),
-      kit: s.role === "cultural" ? (s.tshirt || "—") : `${s.tshirt || "—"} / ${s.waist || "—"}`,
+      sports:
+        s.role === "Daimond"
+          ? [s.designation || "Official", ...(s.industry ? [s.industry] : [])]
+          : sports.map((name) => {
+              const all = [...BOYS_OUTDOOR_SPORTS, ...GIRLS_OUTDOOR_SPORTS, ...INDOOR_SPORTS];
+              const found = all.find((sp) => sp.name === name);
+              return found ? `${found.emoji} ${found.name}` : name;
+            }),
+      kit:
+        s.role === "Daimond"
+          ? `${s.tshirt || "—"} / ${s.waist || "—"}`
+          : s.role === "cultural"
+            ? (s.tshirt || "—")
+            : `${s.tshirt || "—"} / ${s.waist || "—"}`,
       jerseyNumber: s.role === "sports" ? s.jerseyNumber : undefined,
       photo: s.photo,
       qr,
@@ -96,12 +104,14 @@ export function SuccessScreen() {
               <span
                 className={cn(
                   "rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-widest uppercase",
-                  s.role === "cultural"
-                    ? "border-purple-400/50 bg-purple-500/15 text-purple-700"
-                    : "border-fest-orange/50 bg-fest-orange/15 text-fest-orange"
+                  s.role === "Daimond"
+                    ? "border-sky-400/50 bg-sky-500/15 text-sky-700"
+                    : s.role === "cultural"
+                      ? "border-purple-400/50 bg-purple-500/15 text-purple-700"
+                      : "border-fest-orange/50 bg-fest-orange/15 text-fest-orange"
                 )}
               >
-                {s.role === "cultural" ? "CULTURAL" : "PLAYER"}
+                {s.role === "Daimond" ? "Daimond" : s.role === "cultural" ? "CULTURAL" : "PLAYER"}
               </span>
               <span
                 className={cn(

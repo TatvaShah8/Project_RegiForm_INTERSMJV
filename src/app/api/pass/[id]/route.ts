@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { authenticatedAdmin, authenticatedUser } from "@/lib/firebase-admin";
-import { registrations } from "@/lib/mongodb";
+import { diamondRegistrations, registrations } from "@/lib/mongodb";
 import { registrationProfile } from "@/lib/registration-profile";
 
 export async function GET(
@@ -19,11 +19,16 @@ export async function GET(
 
   let record;
   try {
-    const col = await registrations();
-    record = await col.findOne({
+    const filter = {
       _id: new ObjectId(cleanId),
       registrationStatus: "completed",
-    });
+    };
+    const col = await registrations();
+    record = await col.findOne(filter);
+    if (!record) {
+      const diamondCol = await diamondRegistrations();
+      record = await diamondCol.findOne(filter);
+    }
   } catch {
     return Response.json(
       { valid: false, error: "Could not verify pass right now." },

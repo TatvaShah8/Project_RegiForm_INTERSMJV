@@ -3,15 +3,16 @@
 import * as React from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import QRCode from "qrcode";
 import {
   Camera,
+  Check,
   CheckCircle2,
   Eye,
   EyeOff,
   MailCheck,
   RefreshCw,
   Ruler,
-  ShieldCheck,
   Shirt,
   Upload,
   X,
@@ -20,6 +21,7 @@ import {
   BOYS_BRANCHES,
   GIRLS_BRANCHES,
   MONTHS,
+  calcAge,
   getJerseySizeInfo,
   getTrackPantSizeInfo,
   getTrackPantSizesForGender,
@@ -27,7 +29,25 @@ import {
   isPhone,
 } from "@/lib/fest";
 import { compressImageToMaxKB } from "@/lib/image-compress";
+import { printPassCard } from "@/lib/print-pass";
+import { auth } from "@/lib/firebase";
+import {
+  registerWithEmailPassword,
+  resendVerificationEmail,
+  checkEmailVerified,
+  signInWithGoogle,
+  isUserEmailVerified,
+} from "@/lib/auth-service";
+import { addPhotoToForm } from "@/lib/registration-api";
+import { useToast } from "@/hooks/use-toast";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -49,7 +69,7 @@ import {
 } from "./ui-bits";
 import { cn } from "@/lib/utils";
 
-type OfficialRole = "Hostel Rector" | "Trustee";
+type OfficialRole = "Hostel Rector" | "Trustee" | "Hon Secretary" | "LMC Member";
 type Gender = "MALE" | "FEMALE";
 type Step = 1 | 2 | 3 | "submitted";
 
@@ -128,7 +148,7 @@ export function getOfficialBranches(gender: Gender | "", role: OfficialRole | ""
       : gender === "MALE"
       ? [...BOYS_BRANCHES, "Bombay HO"]
       : ["Bombay HO"];
-  if (role === "Trustee") {
+  if (role === "Trustee" || role === "Hon Secretary" || role === "LMC Member") {
     return [...base, "All / Central Committee"];
   }
   return base;
@@ -140,16 +160,58 @@ export function OfficialRegistrationFlow() {
   const [dir, setDir] = React.useState(1);
   const [errs, setErrs] = React.useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = React.useState(false);
+  const { toast } = useToast();
 
-  /* Step 2 frontend-only email verification preview state */
-  const [otpSent, setOtpSent] = React.useState(false);
-  const [otpInput, setOtpInput] = React.useState("");
+  /* Step 2 Firebase email verification state */
+  const [sendingEmail, setSendingEmail] = React.useState(false);
+  const [checkingEmail, setCheckingEmail] = React.useState(false);
+  const [emailSentNotice, setEmailSentNotice] = React.useState(false);
+  const [loadingGoogle, setLoadingGoogle] = React.useState(false);
 
-  /* Step 3 photo & size chart state */
+  /* Step 3 photo, size chart & submission state */
   const [compressingPhoto, setCompressingPhoto] = React.useState(false);
+  const [submitting, setSubmitting] = React.useState(false);
   const [showSizeModal, setShowSizeModal] = React.useState(false);
   const [sizeModalCategory, setSizeModalCategory] = React.useState<"jersey" | "track-pants">("jersey");
   const fileInputRef = React.useRef<HTMLInputElement | null>(null);
+
+  /* Pass modal & QR state */
+  const [passNo, setPassNo] = React.useState("");
+  const [passOpen, setPassOpen] = React.useState(false);
+  const [qrUrl, setQrUrl] = React.useState("");
+
+  React.useEffect(() => {
+    if (step !== 2) return;
+    const checkCurrent = async () => {
+      const current = auth?.currentUser;
+      if (current && current.email?.trim().toLowerCase() === form.email.trim().toLowerCase()) {
+        try {
+          await current.reload();
+          if (isUserEmailVerified(current)) {
+            setField("emailVerified", true);
+          }
+        } catch {}
+      }
+    };
+    checkCurrent();
+  }, [step, form.email]);
+
+  React.useEffect(() => {
+    if (step !== "submitted") return;
+    const cleanId = passNo.replace(/^#/, "").trim();
+    const origin =
+      typeof window !== "undefined" ? window.location.origin : "https://intersmjv.org";
+    const payload = cleanId
+      ? `${origin}/pass/${encodeURIComponent(cleanId)}`
+      : `${origin}/pass/pending`;
+    QRCode.toDataURL(payload, {
+      margin: 1,
+      width: 360,
+      color: { dark: "#0A0E2A", light: "#FFFFFF" },
+    })
+      .then(setQrUrl)
+      .catch(() => setQrUrl(""));
+  }, [step, passNo]);
 
   /* Live camera state */
   const [cameraOpen, setCameraOpen] = React.useState(false);
@@ -369,7 +431,7 @@ export function OfficialRegistrationFlow() {
 
   const validateStep1 = (): boolean => {
     const e: Record<string, string> = {};
-    if (!form.role) e.role = "Please select Hostel Rector or Trustee";
+    if (!form.role) e.role = "Please select a role / designation";
     if (!form.firstName.trim()) e.firstName = "First name is required";
     if (!form.middleName.trim()) e.middleName = "Middle name is required";
     if (!form.surname.trim()) e.surname = "Surname is required";
@@ -430,6 +492,10 @@ export function OfficialRegistrationFlow() {
       if (!form.companyName.trim()) e.companyName = "Company / Organization name is required for Trustees";
       if (!form.position.trim()) e.position = "Position / Designation is required for Trustees";
       if (!form.industry.trim()) e.industry = "Industry / Sector is required for Trustees";
+    }
+
+    if (!form.allowMentorshipShare) {
+      e.allowMentorshipShare = "Please confirm consent to share your professional profile with students";
     }
 
     if (!form.agreeTerms) {
@@ -509,7 +575,7 @@ export function OfficialRegistrationFlow() {
                   <motion.div variants={staggerChild}>
                     <Field label="Role / Designation" required error={errs.role}>
                       <PillGroup
-                        options={["Hostel Rector", "Trustee"]}
+                        options={["Hostel Rector", "Trustee", "Hon Secretary", "LMC Member"]}
                         value={form.role}
                         onChange={(v) => setField("role", v as OfficialRole)}
                         ariaLabel="Role or Designation"
@@ -612,7 +678,9 @@ export function OfficialRegistrationFlow() {
                     >
                       <FestInput
                         id="off-email"
+                        name="official-email"
                         type="email"
+                        autoComplete="off"
                         value={form.email}
                         onChange={(e) => setField("email", e.target.value)}
                         placeholder="name@example.com"
@@ -630,7 +698,9 @@ export function OfficialRegistrationFlow() {
                       <div className="relative">
                         <FestInput
                           id="off-password"
+                          name="official-password"
                           type={showPassword ? "text" : "password"}
+                          autoComplete="new-password"
                           value={form.password}
                           onChange={(e) => setField("password", e.target.value)}
                           placeholder="Min. 8 chars (e.g. Pass@123)"
@@ -726,57 +796,147 @@ export function OfficialRegistrationFlow() {
                           VERIFIED
                         </span>
                       ) : (
-                        <CTAButton
-                          type="button"
-                          variant="dark"
-                          onClick={() => {
-                            setOtpSent(true);
-                            setErrs({});
-                          }}
-                        >
-                          {otpSent ? "Resend Verification Code" : "Send Verification Code"}
-                        </CTAButton>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <CTAButton
+                            type="button"
+                            variant="dark"
+                            disabled={sendingEmail}
+                            onClick={async () => {
+                              setSendingEmail(true);
+                              setErrs({});
+                              try {
+                                const res = await registerWithEmailPassword(form.email, form.password);
+                                if (res.ok) {
+                                  if (isUserEmailVerified(res.user)) {
+                                    setField("emailVerified", true);
+                                    toast({
+                                      title: "EMAIL ALREADY VERIFIED ✓",
+                                      description: `Your email (${form.email}) is verified and linked!`,
+                                    });
+                                    return;
+                                  }
+                                  setEmailSentNotice(true);
+                                  toast({
+                                    title: "VERIFICATION EMAIL DISPATCHED",
+                                    description: `A verification link was sent to ${form.email}. Please check your Inbox and Spam folder.`,
+                                  });
+                                } else {
+                                  toast({
+                                    title: "VERIFICATION FAILED",
+                                    description: res.error,
+                                    variant: "destructive",
+                                  });
+                                }
+                              } finally {
+                                setSendingEmail(false);
+                              }
+                            }}
+                          >
+                            {sendingEmail
+                              ? "Sending..."
+                              : emailSentNotice
+                                ? "Re-send Verification Link"
+                                : "Send Verification Link"}
+                          </CTAButton>
+                          <CTAButton
+                            type="button"
+                            variant="dark"
+                            disabled={loadingGoogle}
+                            onClick={async () => {
+                              setLoadingGoogle(true);
+                              try {
+                                const res = await signInWithGoogle();
+                                if (res.ok && res.user?.email) {
+                                  const verifiedEmail = res.user.email.trim().toLowerCase();
+                                  setForm((prev) => ({
+                                    ...prev,
+                                    email: verifiedEmail,
+                                    emailVerified: true,
+                                  }));
+                                  toast({
+                                    title: "GOOGLE VERIFIED ✓",
+                                    description: `Verified with Google (${verifiedEmail}).`,
+                                  });
+                                } else if (!res.ok) {
+                                  toast({
+                                    title: "GOOGLE SIGN-IN FAILED",
+                                    description: res.error,
+                                    variant: "destructive",
+                                  });
+                                }
+                              } finally {
+                                setLoadingGoogle(false);
+                              }
+                            }}
+                          >
+                            {loadingGoogle ? "Connecting..." : "Verify with Google"}
+                          </CTAButton>
+                        </div>
                       )}
                     </div>
 
-                    {otpSent && !form.emailVerified && (
+                    {emailSentNotice && !form.emailVerified && (
                       <div className="mt-5 space-y-4 border-t border-fest-border/60 pt-5">
                         <p className="text-xs font-medium text-fest-label">
-                          Frontend preview mode: enter any 6-digit code (e.g. <code className="font-mono font-bold text-fest-deep">123456</code>) and click Verify.
+                          Click the verification link sent to <b className="text-fest-deep">{form.email}</b>, then click the button below to confirm.
                         </p>
-                        <div className="flex flex-wrap items-end gap-3">
-                          <Field
-                            label="6-Digit Verification Code"
-                            htmlFor="off-otp"
-                            error={errs.otp}
-                            className="w-full max-w-xs"
-                          >
-                            <FestInput
-                              id="off-otp"
-                              inputMode="numeric"
-                              maxLength={6}
-                              value={otpInput}
-                              onChange={(e) => {
-                                setOtpInput(e.target.value.replace(/\D/g, "").slice(0, 6));
-                                setErrs({});
-                              }}
-                              placeholder="Enter 6-digit code"
-                              className="font-mono tracking-[0.25em]"
-                              error={!!errs.otp}
-                            />
-                          </Field>
+                        <div className="flex flex-wrap items-center gap-3">
                           <CTAButton
                             type="button"
-                            onClick={() => {
-                              if (otpInput.length !== 6) {
-                                setErrs({ otp: "Please enter a 6-digit verification code" });
-                                return;
+                            disabled={checkingEmail}
+                            onClick={async () => {
+                              setCheckingEmail(true);
+                              try {
+                                const ok =
+                                  auth?.currentUser?.email?.toLowerCase() === form.email.trim().toLowerCase() &&
+                                  (await checkEmailVerified());
+                                if (ok) {
+                                  setField("emailVerified", true);
+                                  toast({
+                                    title: "EMAIL VERIFIED ✓",
+                                    description: "Your email is verified. You can continue to Step 3.",
+                                  });
+                                } else {
+                                  toast({
+                                    title: "NOT VERIFIED YET",
+                                    description: "Please click the link in your email inbox (or Spam folder) first.",
+                                    variant: "destructive",
+                                  });
+                                }
+                              } finally {
+                                setCheckingEmail(false);
                               }
-                              setField("emailVerified", true);
                             }}
                           >
-                            Verify Email ✓
+                            {checkingEmail ? "Checking..." : "I've Verified My Email ✓"}
                           </CTAButton>
+                          <button
+                            type="button"
+                            disabled={sendingEmail}
+                            onClick={async () => {
+                              setSendingEmail(true);
+                              try {
+                                const res = await resendVerificationEmail();
+                                if (res.ok) {
+                                  toast({
+                                    title: "EMAIL RESENT",
+                                    description: `Verification email resent to ${form.email}.`,
+                                  });
+                                } else {
+                                  toast({
+                                    title: "RESEND FAILED",
+                                    description: res.error,
+                                    variant: "destructive",
+                                  });
+                                }
+                              } finally {
+                                setSendingEmail(false);
+                              }
+                            }}
+                            className="font-mono text-xs font-bold uppercase text-fest-orange hover:underline disabled:opacity-50"
+                          >
+                            Resend Email
+                          </button>
                         </div>
                       </div>
                     )}
@@ -1082,16 +1242,24 @@ export function OfficialRegistrationFlow() {
 
                   {/* Consents & Terms */}
                   <div className="space-y-3 rounded-2xl border border-fest-orange/25 bg-white/60 p-4 md:p-5">
-                    <label className="flex cursor-pointer items-start gap-3 text-xs leading-relaxed text-fest-deep sm:text-sm">
-                      <Checkbox
-                        checked={form.allowMentorshipShare}
-                        onCheckedChange={(v) => setField("allowMentorshipShare", v === true)}
-                        className="mt-0.5 border-fest-orange/60 data-[state=checked]:bg-fest-orange data-[state=checked]:text-white"
-                      />
-                      <span>
-                        Allow SMJV organizing team to share my professional profile with students for career/industry mentorship.
-                      </span>
-                    </label>
+                    <div>
+                      <label className="flex cursor-pointer items-start gap-3 text-xs font-medium leading-relaxed text-fest-deep sm:text-sm">
+                        <Checkbox
+                          checked={form.allowMentorshipShare}
+                          onCheckedChange={(v) => setField("allowMentorshipShare", v === true)}
+                          className="mt-0.5 border-fest-orange/60 data-[state=checked]:bg-fest-orange data-[state=checked]:text-white"
+                        />
+                        <span>
+                          Allow SMJV organizing team to share my professional profile with students for career/industry mentorship.{" "}
+                          <span className="text-fest-orange">*</span>
+                        </span>
+                      </label>
+                      {errs.allowMentorshipShare && (
+                        <p className="mt-1.5 pl-7 text-xs font-medium text-red-500" role="alert">
+                          {errs.allowMentorshipShare}
+                        </p>
+                      )}
+                    </div>
 
                     <div className="h-px bg-fest-border/60" />
 
@@ -1116,129 +1284,382 @@ export function OfficialRegistrationFlow() {
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">
-                    <CTAButton type="button" variant="dark" onClick={() => go(2)}>
+                    <CTAButton type="button" variant="dark" onClick={() => go(2)} disabled={submitting}>
                       ← Back
                     </CTAButton>
                     <CTAButton
                       type="button"
-                      onClick={() => {
-                        if (validateStep3()) go("submitted");
+                      disabled={submitting}
+                      onClick={async () => {
+                        if (!validateStep3()) return;
+                        const current = auth?.currentUser;
+                        if (!current) {
+                          toast({
+                            title: "VERIFICATION REQUIRED",
+                            description: "Please verify your email in Step 2 first.",
+                            variant: "destructive",
+                          });
+                          go(2);
+                          return;
+                        }
+                        setSubmitting(true);
+                        try {
+                          const token = await current.getIdToken();
+                          const dobIso = `${form.dobYear}-${form.dobMonth}-${form.dobDay}`;
+                          const fd = new FormData();
+                          fd.append("designation", form.role);
+                          fd.append("firstName", form.firstName.trim());
+                          fd.append("middleName", form.middleName.trim());
+                          fd.append("surname", form.surname.trim());
+                          fd.append("gender", form.gender);
+                          fd.append("mobile", form.mobile);
+                          fd.append("dob", dobIso);
+                          fd.append("branch", form.branch);
+                          fd.append("tshirt", form.tshirt);
+                          fd.append("waist", form.waist);
+                          fd.append("companyName", form.companyName.trim());
+                          fd.append("position", form.position.trim());
+                          fd.append("industry", form.industry.trim());
+                          fd.append("allowMentorshipShare", "true");
+                          fd.append("agreeTerms", "true");
+                          if (form.photo) {
+                            await addPhotoToForm(fd, form.photo);
+                          }
+
+                          const res = await fetch("/api/diamond-registration/finish", {
+                            method: "POST",
+                            headers: { Authorization: `Bearer ${token}` },
+                            body: fd,
+                          });
+                          const data = await res.json().catch(() => ({}));
+                          if (!res.ok) {
+                            throw new Error(data.error || "Could not complete registration.");
+                          }
+                          if (data.passNo) setPassNo(data.passNo);
+                          if (data.photo) setField("photo", data.photo);
+                          toast({
+                            title: "REGISTRATION COMPLETE ✓",
+                            description: "Your Daimond accreditation pass has been saved.",
+                          });
+                          go("submitted");
+                        } catch (error) {
+                          toast({
+                            title: "REGISTRATION FAILED",
+                            description:
+                              error instanceof Error
+                                ? error.message
+                                : "Could not save your registration. Please try again.",
+                            variant: "destructive",
+                          });
+                        } finally {
+                          setSubmitting(false);
+                        }
                       }}
                     >
-                      Complete Registration →
+                      {submitting ? "Submitting..." : "Complete Registration →"}
                     </CTAButton>
                   </div>
                 </div>
               </motion.div>
             )}
 
-            {step === "submitted" && (
-              <motion.div
-                key="submitted"
-                custom={dir}
-                variants={stepVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                className="space-y-6"
-              >
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-fest-border/60 pb-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-700">
-                      <ShieldCheck className="h-6 w-6" />
-                    </span>
-                    <div>
-                      <span className="inline-block rounded-full border border-fest-orange/40 bg-fest-orange/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-widest text-fest-orange">
-                        FRONTEND PREVIEW ONLY · NO BACKEND CONNECTED YET
+            {step === "submitted" && (() => {
+              const displayName =
+                [form.firstName, form.middleName, form.surname].filter(Boolean).join(" ") || "SMJV OFFICIAL";
+              const dobStr = `${form.dobDay}/${form.dobMonth}/${form.dobYear}`;
+              const dobDate =
+                form.dobYear && form.dobMonth && form.dobDay
+                  ? new Date(Number(form.dobYear), Number(form.dobMonth) - 1, Number(form.dobDay))
+                  : null;
+              const ageVal = dobDate ? calcAge(dobDate) : null;
+              const genderLabel = form.gender === "MALE" ? "Male" : form.gender === "FEMALE" ? "Female" : "—";
+              const profSummary = [form.position, form.companyName, form.industry].filter(Boolean).join(" · ") || "—";
+              const roleTag = "Daimond";
+
+              const handlePrintOfficialPass = () => {
+                printPassCard({
+                  name: displayName,
+                  grNo: form.role || "OFFICIAL",
+                  branch: form.branch?.toUpperCase() || "SMJV",
+                  bloodGroup: "—",
+                  age: ageVal ? `${ageVal} yrs` : "—",
+                  gender: genderLabel,
+                  dob: dobStr,
+                  mobile: form.mobile || "—",
+                  email: form.email || "—",
+                  college: form.companyName || "SMJV",
+                  course: form.position || form.role || "—",
+                  year: form.industry || "—",
+                  role: roleTag,
+                  isVerified: form.emailVerified,
+                  sports: [form.role || "Official", ...(form.industry ? [form.industry] : [])],
+                  kit: `${form.tshirt || "—"} / ${form.waist || "—"}`,
+                  photo: form.photo,
+                  qr: qrUrl,
+                });
+              };
+
+              return (
+                <motion.div
+                  key="submitted"
+                  custom={dir}
+                  variants={stepVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className="mx-auto flex max-w-3xl flex-col items-center py-4 text-center"
+                >
+                  {/* green check */}
+                  <motion.div
+                    initial={{ scale: 0, rotate: -30 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 16, delay: 0.1 }}
+                    className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-fest-green bg-fest-green/15"
+                  >
+                    <Check className="h-10 w-10 text-fest-mint" strokeWidth={3} />
+                  </motion.div>
+
+                  <p className="mt-5 font-mono text-xs font-bold tracking-[0.3em] text-fest-mint">
+                    OFFICIAL ACCREDITATION CONFIRMED
+                  </p>
+                  <h1 className="mt-2 font-display text-3xl uppercase leading-tight tracking-wide text-fest-white md:text-5xl">
+                    REGISTRATION{" "}
+                    <span className="fest-gradient-text">SUCCESSFUL!</span>
+                  </h1>
+                  <p className="mt-3 max-w-xl text-sm leading-relaxed text-fest-label md:text-base">
+                    Welcome, <b className="text-fest-yellow">{displayName}</b>! Your official digital accreditation pass with scannable QR Code has been generated.
+                  </p>
+
+                  {/* mini ID card (same as student SuccessScreen) */}
+                  <div className="mt-7 w-full max-w-xl rounded-2xl border border-white/80 bg-white/50 p-5 text-left shadow-[0_16px_40px_rgba(28,36,56,0.06),inset_0_1.5px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl backdrop-saturate-180">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-display text-lg uppercase tracking-wide text-fest-white">
+                        SMJV YOUTH FESTIVAL 2026
                       </span>
-                      <h2 className="mt-1 font-display text-2xl uppercase tracking-wide text-fest-deep">
-                        {[form.firstName, form.middleName, form.surname].filter(Boolean).join(" ")}
-                      </h2>
+                      <div className="flex items-center gap-1.5">
+                        <span className="rounded-full border border-sky-400/50 bg-sky-500/15 px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-widest text-sky-700">
+                          💎 {roleTag}
+                        </span>
+                        <span className="rounded-full border border-emerald-500/40 bg-emerald-500/15 px-2 py-0.5 font-mono text-[9px] font-bold tracking-wider text-emerald-700">
+                          ✓ VERIFIED
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex items-center gap-4">
+                      {form.photo ? (
+                        <img
+                          src={form.photo}
+                          alt="Pass portrait"
+                          className="h-16 w-14 rounded-lg border border-fest-border object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-16 w-14 items-center justify-center rounded-lg border border-dashed border-fest-border bg-fest-input font-mono text-[9px] text-fest-label">
+                          PHOTO
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-display text-lg uppercase text-fest-white">
+                          {displayName}
+                        </p>
+                        <p className="mt-0.5 font-mono text-xs text-fest-label">
+                          Age: {ageVal ?? "—"} yrs · DOB: {dobStr} · {form.branch || "—"}
+                        </p>
+                        <p className="mt-0.5 truncate font-mono text-xs text-fest-yellow">
+                          {form.role} {profSummary !== "—" ? `· ${profSummary}` : ""}
+                        </p>
+                      </div>
+                      {qrUrl && (
+                        <div className="rounded-lg bg-white p-1.5">
+                          <img src={qrUrl} alt="Pass QR code" className="h-16 w-16" />
+                        </div>
+                      )}
                     </div>
                   </div>
-                  <span className="rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-4 py-1.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-sm">
-                    {form.role}
-                  </span>
-                </div>
 
-                <div className="grid gap-6 md:grid-cols-[160px_1fr]">
-                  {form.photo && (
-                    <img
-                      src={form.photo}
-                      alt="Submitted profile"
-                      className="h-40 w-40 rounded-2xl border-2 border-fest-orange/40 object-cover shadow-md"
-                    />
-                  )}
-                  <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">Gender</dt>
-                      <dd className="font-semibold text-fest-deep">{form.gender === "MALE" ? "Male" : "Female"}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">Date of Birth</dt>
-                      <dd className="font-semibold text-fest-deep">
-                        {form.dobDay}/{form.dobMonth}/{form.dobYear}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">WhatsApp Mobile</dt>
-                      <dd className="font-semibold text-fest-deep">{form.mobile}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">Email (Verified)</dt>
-                      <dd className="font-semibold text-fest-deep">{form.email}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">SMJV Branch / Hostel</dt>
-                      <dd className="font-semibold text-fest-deep">{form.branch}</dd>
-                    </div>
-                    <div>
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">Kit Sizes</dt>
-                      <dd className="font-semibold text-fest-deep">
-                        T-Shirt: {form.tshirt} · Pant: {form.waist}
-                      </dd>
-                    </div>
-                    {(form.companyName || form.position || form.industry) && (
-                      <div className="sm:col-span-2">
-                        <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">
-                          Professional Details
-                        </dt>
-                        <dd className="font-semibold text-fest-deep">
-                          {[form.position, form.companyName, form.industry].filter(Boolean).join(" · ")}
-                        </dd>
+                  {/* actions */}
+                  <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                    <CTAButton variant="gradient" type="button" onClick={() => setPassOpen(true)} className="px-7">
+                      🖥 VIEW OFFICIAL ID CARD
+                    </CTAButton>
+                    <CTAButton variant="dark" type="button" onClick={handlePrintOfficialPass}>
+                      🖨 PRINT PASS
+                    </CTAButton>
+                    <CTAButton type="button" variant="dark" onClick={() => go(3)}>
+                      ← EDIT DETAILS
+                    </CTAButton>
+                    <CTAButton
+                      type="button"
+                      variant="dark"
+                      onClick={() => {
+                        setForm(INITIAL_STATE);
+                        setEmailSentNotice(false);
+                        setPassNo("");
+                        setPassOpen(false);
+                        setErrs({});
+                        go(1);
+                      }}
+                    >
+                      + START ANOTHER ENTRY
+                    </CTAButton>
+                  </div>
+
+                  {/* Full Official ID Card Modal (matching student IdPass.tsx) */}
+                  <Dialog open={passOpen} onOpenChange={setPassOpen}>
+                    <DialogContent
+                      showCloseButton={false}
+                      className="flex flex-col gap-0 w-[calc(100%-1rem)] max-w-[460px] sm:max-w-[540px] overflow-hidden rounded-2xl sm:rounded-3xl border border-white/85 bg-white/95 p-0 shadow-[0_24px_64px_rgba(28,36,56,0.18),inset_0_1px_2px_rgba(255,255,255,0.95)] backdrop-blur-2xl"
+                    >
+                      <DialogHeader className="sr-only">
+                        <DialogTitle>Official SMJV Youth Festival 2026 ID pass</DialogTitle>
+                        <DialogDescription>Tournament accreditation pass with QR verification.</DialogDescription>
+                      </DialogHeader>
+
+                      <div className="print-area font-sans text-fest-white">
+                        {/* gradient header */}
+                        <div className="flex items-center justify-between bg-gradient-to-r from-fest-yellow via-fest-orange to-fest-orange px-3.5 py-2 sm:px-5 sm:py-3 text-fest-ink">
+                          <div className="flex items-center gap-2 sm:gap-2.5 min-w-0">
+                            <img
+                              src="/logo.jpg"
+                              alt="SMJV Youth Festival 2026 Logo"
+                              className="h-7 w-7 sm:h-9 sm:w-9 shrink-0 rounded-full border border-black/20 object-cover shadow-xs"
+                            />
+                            <div className="min-w-0">
+                              <p className="font-display text-base sm:text-xl uppercase leading-none tracking-wide text-fest-ink">
+                                SMJV YOUTH FESTIVAL 2026
+                              </p>
+                              <p className="mt-0.5 font-mono text-[8.5px] sm:text-[10px] font-bold tracking-[0.2em] text-fest-ink/80">
+                                VADODARA
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <span className="whitespace-nowrap rounded-full bg-black/85 px-2 py-0.5 sm:px-3 sm:py-1 font-mono text-[8.5px] sm:text-[10px] font-bold tracking-widest text-white shadow-xs">
+                              {roleTag}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setPassOpen(false)}
+                              className="rounded-full bg-black/15 p-1 text-fest-ink transition hover:bg-black/25 active:scale-95 shrink-0"
+                              title="Close"
+                            >
+                              <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* card body */}
+                        <div className="space-y-2 sm:space-y-2.5 p-3 sm:p-4 font-sans">
+                          {/* identity row */}
+                          <div className="flex items-center gap-2.5 sm:gap-3.5">
+                            <div className="relative shrink-0">
+                              {form.photo ? (
+                                <img
+                                  src={form.photo}
+                                  alt="Pass portrait"
+                                  className="h-18 w-15 sm:h-22 sm:w-18 rounded-xl border-2 border-fest-white/25 object-cover shadow-xs"
+                                />
+                              ) : (
+                                <div className="flex h-18 w-15 sm:h-22 sm:w-18 items-center justify-center rounded-xl border-2 border-dashed border-white/80 bg-white/60 font-mono text-[9px] tracking-[0.2em] text-fest-label backdrop-blur-sm">
+                                  PHOTO
+                                </div>
+                              )}
+                              <span className="absolute bottom-0.5 left-0.5 rounded-full bg-emerald-600 px-1.5 py-0.2 text-[6.5px] sm:text-[7.5px] font-bold tracking-wider text-white shadow">
+                                ✓ VERIFIED
+                              </span>
+                            </div>
+
+                            <div className="min-w-0 flex-1 space-y-0.5 sm:space-y-1">
+                              <div className="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                                <span className="rounded-md border border-fest-yellow/40 bg-fest-yellow/10 px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-yellow">
+                                  {form.branch?.toUpperCase() || "SMJV"}
+                                </span>
+                                <span className="rounded-md border border-sky-400/50 bg-sky-500/15 px-1.5 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-sky-700">
+                                  💎 {roleTag}
+                                </span>
+                              </div>
+                              <p className="font-display text-base sm:text-xl uppercase leading-tight text-fest-white break-words">
+                                {displayName}
+                              </p>
+                              <p className="font-mono text-[9px] sm:text-xs text-fest-label">
+                                Age: {ageVal ?? "—"} yrs · {genderLabel} · DOB: {dobStr}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* info panel */}
+                          <div className="space-y-1 rounded-xl border border-white/80 bg-white/60 p-2 sm:p-2.5 text-xs shadow-xs backdrop-blur-md">
+                            <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-0.5">
+                              <span className="shrink-0 font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-label">CONTACT</span>
+                              <span className="font-mono text-[9px] sm:text-[10.5px] text-fest-white/95 break-all">
+                                +91 {form.mobile || "—"} · {form.email || "—"}
+                              </span>
+                            </div>
+                            <div className="flex flex-col gap-0.5 border-t border-fest-border/40 pt-1">
+                              <span className="font-mono text-[8.5px] sm:text-[9.5px] font-bold tracking-wider text-fest-label">PROFESSIONAL INFO</span>
+                              <span className="font-mono text-[9px] sm:text-[10.5px] leading-snug text-fest-white/95">
+                                {profSummary}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* role + kit */}
+                          <div className="flex flex-wrap items-center justify-between gap-1.5 sm:gap-2 rounded-xl border border-white/80 bg-white/60 px-2.5 py-1 sm:px-3 sm:py-1.5 shadow-xs backdrop-blur-md">
+                            <div className="flex flex-wrap items-center gap-1 min-w-0">
+                              <span className="font-mono text-[8.5px] sm:text-[9.5px] font-bold uppercase tracking-wider text-fest-label mr-0.5">
+                                ROLE:
+                              </span>
+                              <span className="rounded-full border border-fest-yellow/40 bg-fest-yellow/10 px-2 py-0.2 font-mono text-[8.5px] sm:text-[9.5px] font-bold text-fest-yellow">
+                                {form.role || roleTag}
+                              </span>
+                            </div>
+                            <div className="shrink-0 flex items-center gap-1 rounded-md border border-fest-border/50 bg-white/60 px-2 py-0.5">
+                              <span className="font-mono text-[8px] sm:text-[9px] font-bold tracking-wider text-fest-label">
+                                KIT:
+                              </span>
+                              <span className="font-mono text-[9.5px] sm:text-[11px] font-bold text-fest-gold">
+                                {form.tshirt || "—"} / {form.waist || "—"}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Centered QR Code */}
+                          {qrUrl && (
+                            <div className="flex flex-col items-center justify-center rounded-xl border border-white/80 bg-white/70 py-1.5 sm:py-2 shadow-xs backdrop-blur-md">
+                              <div className="rounded-xl border border-black/10 bg-white p-1.5 sm:p-2 shadow-xs">
+                                <img
+                                  src={qrUrl}
+                                  alt="Official Accreditation QR Code"
+                                  className="h-24 w-24 object-contain sm:h-28 sm:w-28"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    )}
-                    <div className="sm:col-span-2">
-                      <dt className="font-mono text-[10px] uppercase tracking-wider text-fest-label">
-                        Mentorship Directory Consent
-                      </dt>
-                      <dd className="font-semibold text-fest-deep">
-                        {form.allowMentorshipShare ? "Yes — profile may be shared with students" : "No"}
-                      </dd>
-                    </div>
-                  </dl>
-                </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-3 border-t border-fest-border/60 pt-4">
-                  <CTAButton type="button" variant="dark" onClick={() => go(3)}>
-                    ← Edit Details
-                  </CTAButton>
-                  <CTAButton
-                    type="button"
-                    variant="dark"
-                    onClick={() => {
-                      setForm(INITIAL_STATE);
-                      setOtpSent(false);
-                      setOtpInput("");
-                      setErrs({});
-                      go(1);
-                    }}
-                  >
-                    Start Another Entry
-                  </CTAButton>
-                </div>
-              </motion.div>
-            )}
+                      {/* actions */}
+                      <div className="flex items-center gap-1.5 sm:gap-2.5 border-t border-white/70 bg-white/85 px-3 py-2 sm:px-4 sm:py-2.5 backdrop-blur-md">
+                        <button
+                          type="button"
+                          onClick={handlePrintOfficialPass}
+                          className="h-8.5 sm:h-9.5 flex-1 whitespace-nowrap rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-2 sm:px-3 font-display text-[10px] sm:text-xs uppercase tracking-wider text-fest-ink shadow-xs transition hover:brightness-110 active:scale-[0.98]"
+                        >
+                          🖨 PRINT / SAVE PASS
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPassOpen(false)}
+                          className="h-8.5 sm:h-9.5 shrink-0 whitespace-nowrap rounded-xl border border-white/80 bg-white/60 px-3 sm:px-4 font-display text-[10px] sm:text-xs uppercase tracking-wider text-fest-label shadow-xs backdrop-blur-md transition hover:border-fest-orange/60 hover:bg-white/80 hover:text-fest-white active:scale-[0.98]"
+                        >
+                          CLOSE
+                        </button>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
+                </motion.div>
+              );
+            })()}
           </AnimatePresence>
         </div>
       </main>
