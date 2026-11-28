@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Anton, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthSession } from "@/components/navigation/AuthSession";
@@ -93,6 +94,17 @@ export default function RootLayout({
         </div>
         <AuthSession />
         <Toaster />
+        <Script
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-5SHN3K39"
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          `}
+        </Script>
       </body>
     </html>
   );
