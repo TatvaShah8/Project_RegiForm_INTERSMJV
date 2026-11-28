@@ -29,6 +29,7 @@ import { TournamentNav } from "@/components/navigation/TournamentNav";
 import { CountdownTimer } from "@/components/home/CountdownTimer";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 import { useRegister } from "@/lib/store";
+import { REGISTRATION_OPEN } from "@/lib/fest";
 import { useFestQr, IdPass } from "@/components/register/IdPass";
 import { StudentAuthModal } from "@/components/navigation/StudentAuthModal";
 import { useToast } from "@/hooks/use-toast";
@@ -159,13 +160,24 @@ export function HomePage() {
               </>
             ) : (
               <>
-                <Link
-                  href="/register"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fest-yellow to-fest-orange px-7 py-3 font-display text-sm uppercase tracking-wider text-fest-ink shadow-lg shadow-fest-orange/25 transition hover:brightness-110 active:scale-95"
-                >
-                  <span>REGISTER TO PLAY</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
+                {REGISTRATION_OPEN ? (
+                  <Link
+                    href="/register"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fest-yellow to-fest-orange px-7 py-3 font-display text-sm uppercase tracking-wider text-fest-ink shadow-lg shadow-fest-orange/25 transition hover:brightness-110 active:scale-95"
+                  >
+                    <span>REGISTER TO PLAY</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setAuthModalOpen(true)}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-fest-yellow to-fest-orange px-7 py-3 font-display text-sm uppercase tracking-wider text-fest-ink shadow-lg shadow-fest-orange/25 transition hover:brightness-110 active:scale-95"
+                  >
+                    <span>LOG IN / VIEW PASS</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </button>
+                )}
                 <Link
                   href="/schedule/boys"
                   className="inline-flex items-center gap-2 rounded-2xl border border-fest-deep/20 bg-white/85 px-5 py-3 font-display text-sm uppercase tracking-wider text-fest-deep shadow-sm backdrop-blur-md transition hover:border-fest-orange hover:bg-white active:scale-95"
@@ -386,7 +398,7 @@ export function HomePage() {
                       className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-fest-yellow to-fest-orange px-4 py-2.5 font-display text-xs uppercase tracking-wider text-fest-ink shadow-sm transition hover:brightness-105 active:scale-95"
                     >
                       <LogIn className="h-3.5 w-3.5" />
-                      <span>LOG IN / REGISTER TO SCAN</span>
+                      <span>{REGISTRATION_OPEN ? "LOG IN / REGISTER TO SCAN" : "LOG IN TO SCAN"}</span>
                       <ArrowRight className="h-3.5 w-3.5" />
                     </button>
                     <span className="font-mono text-[11px] font-medium text-fest-label">

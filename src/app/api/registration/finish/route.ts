@@ -3,6 +3,7 @@ import sharp from "sharp";
 import { kitSchema, validateSports, validationError } from "@/lib/registration-helpers";
 import { randomUUID } from "node:crypto";
 import { authenticatedUser, authError } from "@/lib/firebase-admin";
+import { REGISTRATION_OPEN } from "@/lib/fest";
 import { registrations } from "@/lib/mongodb";
 import { completeRegistration, CULTURAL_FULL_MESSAGE } from "@/lib/cultural-quota";
 import { imageStorage, imageUrls as resolveImageUrls } from "@/lib/supabase";
@@ -10,6 +11,9 @@ import { normalizeBranch, normalizeJersey, duplicateMessage, badInput } from "@/
 export const runtime = "nodejs";
 const types: Record<string,string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 export async function POST(request: Request) {
+  if (!REGISTRATION_OPEN) {
+    return Response.json({ error: "Registrations are currently closed." }, { status: 403 });
+  }
   let user;
   try { user = await authenticatedUser(request); }
   catch (error) { return authError(error); }

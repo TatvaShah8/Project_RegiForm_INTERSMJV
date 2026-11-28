@@ -397,7 +397,7 @@ export function ScheduleView({ onProceed, onBack }: { onProceed: () => void; onB
 
                   ? gender === "boys"
 
-                    ? "/rule-books-and-schedules/boys-sports-rules.pdf"
+                    ? "/rule-books-and-schedules/INTER%20SMJV%20RULES%20FINAL%20Boys.pdf"
 
                     : "/rule-books-and-schedules/girls-sports-rules.pdf"
 

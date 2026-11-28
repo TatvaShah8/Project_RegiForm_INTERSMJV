@@ -4,6 +4,7 @@ import { z } from "zod";
 import {
   ALL_VALID_TRACK_PANT_SIZES,
   BLOOD_GROUPS,
+  EDIT_REGISTRATION_OPEN,
   JERSEY_SIZES,
   RELATIONS,
   YEARS_OF_STUDY,
@@ -51,6 +52,12 @@ const editSportsSchema = z.object({
 });
 
 export async function PATCH(request: Request) {
+  if (!EDIT_REGISTRATION_OPEN) {
+    return Response.json(
+      { error: "Registration editing is currently closed." },
+      { status: 403 }
+    );
+  }
   let user;
   try {
     user = await authenticatedUser(request);

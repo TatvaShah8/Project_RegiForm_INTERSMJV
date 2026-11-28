@@ -30,6 +30,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import {
   BLOOD_GROUPS,
+  EDIT_REGISTRATION_OPEN,
   RELATIONS,
   YEARS_OF_STUDY,
   getJerseySizeInfo,
@@ -371,7 +372,26 @@ export default function EditCulturalRegistrationPage() {
       <TournamentNav activeNav="edit" />
 
       <main className="fest-scroll mx-auto w-full max-w-4xl flex-1 px-4 pb-16 md:px-6">
-        {!isHydrated ? (
+        {!EDIT_REGISTRATION_OPEN ? (
+          <div className="mx-auto max-w-lg rounded-3xl border border-white/80 bg-white/75 p-8 text-center shadow-xl backdrop-blur-2xl">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-fest-orange/35 bg-fest-orange/15 text-fest-orange">
+              <Lock className="h-7 w-7" />
+            </div>
+            <h1 className="mt-4 font-display text-2xl uppercase text-fest-deep">
+              FORM EDITING IS CLOSED
+            </h1>
+            <p className="mt-2 text-sm text-fest-label">
+              Registration editing is currently closed. You can still log in and view or print your existing tournament ID pass.
+            </p>
+            <Link
+              href="/"
+              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-fest-deep px-5 py-2.5 font-display text-xs uppercase tracking-wider text-fest-yellow"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              <span>Back to Home</span>
+            </Link>
+          </div>
+        ) : !isHydrated ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-fest-orange" />
             <p className="mt-3 font-mono text-xs uppercase tracking-wider text-fest-label">

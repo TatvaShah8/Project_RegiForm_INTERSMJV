@@ -6,7 +6,8 @@ import { X, LogIn, UserPlus, Eye, EyeOff, Sparkles, CheckCircle2, User } from "l
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import { loadRegistration } from "@/lib/registration-api";
-import { signInWithGoogle, loginWithEmailPassword, resetAccountPassword, isUserEmailVerified } from "@/lib/auth-service";
+import { signInWithGoogle, loginWithEmailPassword, resetAccountPassword, isUserEmailVerified, logoutFirebase } from "@/lib/auth-service";
+import { REGISTRATION_OPEN } from "@/lib/fest";
 import {
   Dialog,
   DialogContent,
@@ -66,6 +67,11 @@ export function StudentAuthModal({
 
       // 1. Check if user already completed registration
       const account = await loadRegistration();
+      if (!account?.completed && !REGISTRATION_OPEN) {
+        await logoutFirebase();
+        setError("No completed registration found for this account. New registrations are currently closed.");
+        return;
+      }
       if (account?.completed) {
         s.loginAccount(account);
         toast({
@@ -73,6 +79,12 @@ export function StudentAuthModal({
           description: `Welcome back, ${[account.firstName, account.surname].filter(Boolean).join(" ")}!`,
         });
         onOpenChange(false);
+        return;
+      }
+
+      if (!REGISTRATION_OPEN) {
+        await logoutFirebase();
+        setError("No completed registration found for this Google account. New registrations are currently closed.");
         return;
       }
 
@@ -110,6 +122,11 @@ export function StudentAuthModal({
       const result = await loginWithEmailPassword(id, password);
       if (!result.ok || !result.user) throw new Error(result.error || "Sign-in failed");
       const account = await loadRegistration();
+      if (!account?.completed && !REGISTRATION_OPEN) {
+        await logoutFirebase();
+        setError("No completed registration found for this account. New registrations are currently closed.");
+        return;
+      }
       if (account) s.loginAccount(account);
       else {
         s.set("email", result.user.email ?? id);

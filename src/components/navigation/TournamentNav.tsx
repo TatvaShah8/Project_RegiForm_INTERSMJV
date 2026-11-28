@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, LogIn, LogOut, QrCode } from "lucide-react";
 import { SectionErrorBoundary } from "@/components/common/ErrorBoundary";
 import { logoutFirebase } from "@/lib/auth-service";
+import { EDIT_REGISTRATION_OPEN, REGISTRATION_OPEN } from "@/lib/fest";
 import { useRegister } from "@/lib/store";
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
@@ -136,7 +137,9 @@ export function TournamentNav({
               >
                 <LogIn className="h-3.5 w-3.5 shrink-0" />
                 <span className="sm:hidden">LOGIN</span>
-                <span className="hidden sm:inline">LOG IN / REGISTER</span>
+                <span className="hidden sm:inline">
+                  {REGISTRATION_OPEN ? "LOG IN / REGISTER" : "LOG IN / VIEW PASS"}
+                </span>
                 <ArrowRight className="hidden sm:inline h-3.5 w-3.5 shrink-0" />
               </button>
             )}
@@ -154,7 +157,7 @@ export function TournamentNav({
           {[
             { id: "rules", label: "RULES", href: `/rules/${activeGender}` },
             { id: "schedule", label: "SCHEDULE", href: `/schedule/${activeGender}` },
-            ...(isLoggedIn && (s.role === "sports" || s.role === "cultural")
+            ...(isLoggedIn && EDIT_REGISTRATION_OPEN && (s.role === "sports" || s.role === "cultural")
               ? [
                   {
                     id: "edit",
@@ -164,7 +167,7 @@ export function TournamentNav({
                 ]
               : []),
             ...(isLoggedIn ? [{ id: "reel-making", label: "REEL MAKING COMPETITION", href: "/reel-making" }] : []),
-            ...(!isLoggedIn ? [{ id: "register", label: "REGISTER", href: "/register" }] : []),
+            ...(!isLoggedIn && REGISTRATION_OPEN ? [{ id: "register", label: "REGISTER", href: "/register" }] : []),
             { id: "contact", label: "CONTACT US", href: "/contact" },
           ].map((tab) => {
             const active = activeNav === tab.id;

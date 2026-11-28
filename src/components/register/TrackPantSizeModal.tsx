@@ -64,19 +64,19 @@ export function TrackPantSizeModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl border-white/20 bg-fest-deep/95 p-0 text-white shadow-2xl backdrop-blur-2xl">
+      <DialogContent className="max-w-xl border-white/20 bg-slate-900/95 p-0 text-white shadow-2xl backdrop-blur-2xl">
         {/* Header */}
-        <div className="border-b border-white/10 p-5 sm:p-6 pb-4">
+        <div className="border-b border-white/15 p-5 sm:p-6 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-fest-orange/20 text-fest-orange">
                 {isJersey ? <Shirt className="h-5 w-5" /> : <Ruler className="h-5 w-5" />}
               </div>
               <div>
-                <DialogTitle className="font-display text-lg sm:text-xl uppercase tracking-wider text-fest-white">
+                <DialogTitle className="font-display text-lg sm:text-xl uppercase tracking-wider text-white">
                   {chartTitle}
                 </DialogTitle>
-                <DialogDescription className="text-xs text-fest-label">
+                <DialogDescription className="text-xs text-slate-300">
                   SMJV Youth Festival 2026 · All measurements are in inches (Boys &amp; Girls)
                 </DialogDescription>
               </div>
@@ -84,16 +84,16 @@ export function TrackPantSizeModal({
           </div>
 
           {/* Category Tabs: Jersey vs Track Pants */}
-          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/10">
-            <div className="flex rounded-lg bg-black/40 p-1 border border-white/10">
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-white/15">
+            <div className="flex rounded-lg bg-black/45 p-1 border border-white/15">
               <button
                 type="button"
                 onClick={() => setCategory("jersey")}
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-bold transition",
                   isJersey
-                    ? "bg-fest-orange text-fest-ink shadow-sm"
-                    : "text-fest-label hover:text-white"
+                    ? "bg-fest-orange text-slate-950 shadow-sm"
+                    : "text-slate-300 hover:text-white"
                 )}
               >
                 <Shirt className="h-3.5 w-3.5" />
@@ -105,8 +105,8 @@ export function TrackPantSizeModal({
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-3 py-1 text-xs font-bold transition",
                   !isJersey
-                    ? "bg-fest-orange text-fest-ink shadow-sm"
-                    : "text-fest-label hover:text-white"
+                    ? "bg-fest-orange text-slate-950 shadow-sm"
+                    : "text-slate-300 hover:text-white"
                 )}
               >
                 <Ruler className="h-3.5 w-3.5" />
@@ -196,7 +196,7 @@ export function TrackPantSizeModal({
                               <Check className="h-3 w-3" /> Selected
                             </span>
                           ) : (
-                            <span className="text-[11px] text-fest-label/60 transition hover:text-fest-orange">
+                            <span className="text-[11px] font-semibold text-amber-300/90 transition hover:text-amber-200">
                               Select →
                             </span>
                           )}
@@ -216,7 +216,7 @@ export function TrackPantSizeModal({
                     className="w-full h-auto max-h-[340px] rounded-lg object-contain mx-auto"
                   />
                 </div>
-                <p className="mt-3 text-xs text-fest-label font-mono">
+                <p className="mt-3 text-xs text-slate-300 font-mono">
                   Waist &amp; Length measurements in inches · Switch to <b className="text-fest-orange">Table</b> above to select size
                 </p>
               </div>
@@ -267,7 +267,7 @@ export function TrackPantSizeModal({
                               <Check className="h-3 w-3" /> Selected
                             </span>
                           ) : (
-                            <span className="text-[11px] text-fest-label/60 transition hover:text-fest-orange">
+                            <span className="text-[11px] font-semibold text-amber-300/90 transition hover:text-amber-200">
                               Select →
                             </span>
                           )}
@@ -281,26 +281,26 @@ export function TrackPantSizeModal({
           </div>
 
           {/* Measuring Guide Footer matching image instructions */}
-          <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3.5 text-xs leading-relaxed text-fest-label">
+          <div className="mt-4 rounded-xl border border-white/15 bg-white/5 p-3.5 text-xs leading-relaxed text-slate-300">
             <div className="flex items-start gap-2">
               <Info className="mt-0.5 h-4 w-4 shrink-0 text-fest-orange" />
               <div className="space-y-1">
                 {isJersey ? (
                   <>
                     <p>
-                      <strong className="text-fest-white">Chest:</strong> Measure around the fullest part of your chest for best fit.
+                      <strong className="text-white">Chest:</strong> Measure around the fullest part of your chest for best fit.
                     </p>
                     <p>
-                      <strong className="text-fest-white">Length:</strong> Length measured from shoulder seam straight down to hem.
+                      <strong className="text-white">Length:</strong> Length measured from shoulder seam straight down to hem.
                     </p>
                   </>
                 ) : (
                   <>
                     <p>
-                      <strong className="text-fest-white">Waist:</strong> Measure around your natural waistline.
+                      <strong className="text-white">Waist:</strong> Measure around your natural waistline.
                     </p>
                     <p>
-                      <strong className="text-fest-white">Length:</strong> Outseam length measured from top of waistband straight down to bottom hem.
+                      <strong className="text-white">Length:</strong> Outseam length measured from top of waistband straight down to bottom hem.
                     </p>
                   </>
                 )}

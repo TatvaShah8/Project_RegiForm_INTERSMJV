@@ -5,6 +5,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 const ts = require("typescript");
 const sharp = require("sharp");
+process.env.SMJV_TEST_REGISTRATION_OPEN = "true";
 // Run the real TypeScript handlers with controlled service boundaries; no live writes.
 function load(file, mocks = {}, cache = new Map()) {
   const full = path.resolve(file);
@@ -414,4 +415,34 @@ test("girls schedule preserves the updated Girls Tournament Schedule PDF times a
   assert.equal(sport(3, "PICKLE BALL").matches[0].time, "7:30 PM – 8:30 PM");
   assert.equal(sport(3, "CARROM").matches[0].no, "5");
   assert.equal(schedule.BOYS_SCHEDULE[0].sports[0].matches[0].time, "12.00 – 2.30");
+});
+
+test("closed registration and edit flags block new submissions and edits with 403", async () => {
+  const prev = process.env.SMJV_TEST_REGISTRATION_OPEN;
+  process.env.SMJV_TEST_REGISTRATION_OPEN = "false";
+  try {
+    const signup = load("src/app/api/registration/signup/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => assert.fail("Auth must not run") },
+    });
+    const general = load("src/app/api/registration/general/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => assert.fail("Auth must not run") },
+    });
+    const finishRoute = load("src/app/api/registration/finish/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => assert.fail("Auth must not run") },
+    });
+    const editSports = load("src/app/api/registration/edit-sports/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => assert.fail("Auth must not run") },
+    });
+    const editCultural = load("src/app/api/registration/edit-cultural/route.ts", {
+      "@/lib/firebase-admin": { authenticatedUser: async () => assert.fail("Auth must not run") },
+    });
+
+    assert.equal((await signup.POST(new Request("http://localhost", { method: "POST" }))).status, 403);
+    assert.equal((await general.PATCH(new Request("http://localhost", { method: "PATCH" }))).status, 403);
+    assert.equal((await finishRoute.POST(new Request("http://localhost", { method: "POST" }))).status, 403);
+    assert.equal((await editSports.PATCH(new Request("http://localhost", { method: "PATCH" }))).status, 403);
+    assert.equal((await editCultural.PATCH(new Request("http://localhost", { method: "PATCH" }))).status, 403);
+  } finally {
+    process.env.SMJV_TEST_REGISTRATION_OPEN = prev;
+  }
 });

@@ -4,6 +4,10 @@
 export const FEST_NAME = "SMJV Youth Festival 2026";
 export const FEST_ORG = "SMJV Youth Festival Vadodara Organizing Committee";
 
+/** Master switches to close/re-open new registrations and form editing */
+export const REGISTRATION_OPEN = process.env.SMJV_TEST_REGISTRATION_OPEN === "true";
+export const EDIT_REGISTRATION_OPEN = process.env.SMJV_TEST_REGISTRATION_OPEN === "true";
+
 export const BOYS_BRANCHES = [
   "Vadodara",
   "Ahmedabad",

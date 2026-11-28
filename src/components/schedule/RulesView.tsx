@@ -56,22 +56,6 @@ export function RulesView({
         </div>
       </motion.div>
 
-      {gender === "boys" && (
-        <div className="rounded-2xl border border-fest-orange/30 bg-white/55 p-4 md:p-5">
-          <p className="mb-3 text-sm text-fest-deep">
-            Updated cricket regulations and the 7-a-side turf football rulebook take precedence over conflicting wording in the general boys rulebook above. Other sports remain unchanged.
-          </p>
-          <div className="flex flex-wrap gap-3">
-            {rules.sportsRules.filter(sport => sport.pdfUrl).map(sport => (
-              <a key={sport.sport} href={sport.pdfUrl} download className="inline-flex items-center gap-2 rounded-xl bg-fest-orange/10 px-4 py-2 font-display text-sm uppercase text-fest-orange">
-                <Download className="h-4 w-4" />
-                Download updated {sport.sport} rules (PDF)
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* ── Quota Rule Highlight Card ── */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}

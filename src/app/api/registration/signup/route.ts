@@ -1,11 +1,15 @@
 import { readJson } from "@/lib/request-body";
 import { signupSchema, validationError } from "@/lib/registration-helpers";
 import { authenticatedUser, authError } from "@/lib/firebase-admin";
+import { REGISTRATION_OPEN } from "@/lib/fest";
 import { registrations } from "@/lib/mongodb";
 import { normalizeGender, normalizePhone, duplicateMessage, badInput } from "@/lib/registration-helpers";
 
 export const runtime = "nodejs";
 export async function POST(request: Request) {
+  if (!REGISTRATION_OPEN) {
+    return Response.json({ error: "Registrations are currently closed." }, { status: 403 });
+  }
   let user;
   try { user = await authenticatedUser(request, false); }
   catch (error) { return authError(error); }
