@@ -72,26 +72,26 @@ const diamondSchema = z
       });
     }
 
-    if (data.designation === "Trustee") {
+    if (data.designation !== "Hostel Rector") {
       if (!data.companyName) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["companyName"],
-          message: "Company / Organization name is required for Trustees",
+          message: "Company / Organization name is required",
         });
       }
       if (!data.position) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["position"],
-          message: "Position / Designation is required for Trustees",
+          message: "Position / Designation is required",
         });
       }
       if (!data.industry) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           path: ["industry"],
-          message: "Industry / Sector is required for Trustees",
+          message: "Industry / Sector is required",
         });
       }
     }

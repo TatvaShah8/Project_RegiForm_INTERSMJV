@@ -488,10 +488,10 @@ export function OfficialRegistrationFlow() {
     if (!form.waist) e.waist = "Please select a pant size";
     if (!form.branch) e.branch = "Please select your SMJV Branch / Hostel";
 
-    if (form.role === "Trustee") {
-      if (!form.companyName.trim()) e.companyName = "Company / Organization name is required for Trustees";
-      if (!form.position.trim()) e.position = "Position / Designation is required for Trustees";
-      if (!form.industry.trim()) e.industry = "Industry / Sector is required for Trustees";
+    if (form.role !== "Hostel Rector") {
+      if (!form.companyName.trim()) e.companyName = "Company / Organization name is required";
+      if (!form.position.trim()) e.position = "Position / Designation is required";
+      if (!form.industry.trim()) e.industry = "Industry / Sector is required";
     }
 
     if (!form.allowMentorshipShare) {
@@ -509,7 +509,7 @@ export function OfficialRegistrationFlow() {
   const stepLabel =
     step === "submitted" ? "PREVIEW READY ✓" : `STEP 0${step} / 03`;
 
-  const isTrustee = form.role === "Trustee";
+  const isProfessionalRequired = form.role !== "Hostel Rector";
 
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
@@ -1187,7 +1187,7 @@ export function OfficialRegistrationFlow() {
                     <SectionLabel
                       emoji="💼"
                       title="PROFESSIONAL INFORMATION"
-                      right={isTrustee ? "REQUIRED FOR TRUSTEES" : "OPTIONAL FOR RECTORS"}
+                      right={isProfessionalRequired ? "REQUIRED" : "OPTIONAL FOR RECTORS"}
                     />
                     <p className="mb-4 text-xs text-fest-label">
                       Helps SMJV students discover and connect with leaders working in their field of interest.
@@ -1196,7 +1196,7 @@ export function OfficialRegistrationFlow() {
                       <Field
                         label="Company / Organization"
                         htmlFor="off-company"
-                        required={isTrustee}
+                        required={isProfessionalRequired}
                         error={errs.companyName}
                       >
                         <FestInput
@@ -1211,7 +1211,7 @@ export function OfficialRegistrationFlow() {
                       <Field
                         label="Position in Company"
                         htmlFor="off-position"
-                        required={isTrustee}
+                        required={isProfessionalRequired}
                         error={errs.position}
                       >
                         <FestInput
@@ -1226,7 +1226,7 @@ export function OfficialRegistrationFlow() {
                       <Field
                         label="Industry"
                         htmlFor="off-industry"
-                        required={isTrustee}
+                        required={isProfessionalRequired}
                         error={errs.industry}
                       >
                         <FestInput
